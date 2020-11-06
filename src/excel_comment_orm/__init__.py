@@ -1,0 +1,1 @@
+from excel_comment_orm.__version__ import version
