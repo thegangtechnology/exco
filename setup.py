@@ -1,15 +1,16 @@
-from setuptools import setup, find_packages
 from os.path import join, dirname
+
+from setuptools import setup, find_packages
 
 
 def get_version():
     fname = join(dirname(__file__), "src/excel_comment_orm/__version__.py")
     with open(fname) as f:
-        ldict={}
+        ldict = {}
         code = f.read()
-        exec(code, globals(), ldict) # version defined here
+        exec(code, globals(), ldict)  # version defined here
         return ldict['version']
-    
+
 
 setup(name='excel_comment_orm',
       version=get_version(),
@@ -22,7 +23,8 @@ setup(name='excel_comment_orm',
       packages=find_packages('src'),
       py_modules=['excel_comment_orm'],
       install_requires=[
-          'numpy'
+          'openpyxl',
+          'pyyaml'
       ],
       extras_require={
           'dev': [
