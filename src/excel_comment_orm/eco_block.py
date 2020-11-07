@@ -1,19 +1,26 @@
-from typing import List, Any
+from typing import List, Any, TYPE_CHECKING
 import logging
 import yaml
 from dataclasses import dataclass
 from excel_comment_orm import setting
 from excel_comment_orm import exception as exc
 
+from excel_comment_orm import extractor_spec as ex_spec
+from excel_comment_orm.spec_source import SpecSource
+
 
 @dataclass
-class ECOBlock:
+class ECOBlock(SpecSource):
     start_line: int
     end_line: int
     raw: str
 
-    def parse(self) -> Any:
-        return yaml.load(self.raw)
+    def to_extractor_task_spec(self) -> ex_spec.ExtractionTaskSpec:
+        d = yaml.load(self.raw)
+        return ex_spec.ExtractionTaskSpec.from_dict(d, source=self)
+
+    def describe(self) -> str:
+        return self.raw
 
     @classmethod
     def from_string(cls, comment: str,

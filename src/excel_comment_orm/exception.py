@@ -1,8 +1,10 @@
 class ECOException(Exception):
     pass
 
+
 class ECOWarning(Warning):
     pass
+
 
 class TooManyBeginException(ECOException):
     pass
@@ -19,5 +21,10 @@ class ExpectEndException(ECOException):
 class BadTemplateException(ECOException):
     pass
 
+
 class CommentWithNoECOBlockWarning(ECOWarning):
+    pass
+
+
+class ECOBlockContainsExtraKey(ECOException):
     pass

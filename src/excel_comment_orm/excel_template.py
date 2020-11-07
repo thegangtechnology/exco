@@ -6,6 +6,7 @@ from excel_comment_orm.cell_location import CellLocation
 from excel_comment_orm.eco_block import ECOBlock
 import openpyxl as opx
 from excel_comment_orm.exception import ECOException, BadTemplateException, CommentWithNoECOBlockWarning
+from excel_comment_orm.extractor_spec import ExcelExtractorSpec
 
 
 @dataclass
@@ -63,3 +64,17 @@ class ExcelTemplate:
     @classmethod
     def from_excel(cls, fname: str) -> 'ExcelTemplate':
         return cls.from_workbook(workbook=opx.load_workbook(fname))
+
+    def to_excel_extractor_spec(self) -> ExcelExtractorSpec:
+        ret = {}
+        for cell_loc, eco_blocks in self.eco_blocks.items():
+            spec = []
+            for block in eco_blocks:
+                try:
+                    spec.append(block.to_extractor_task_spec())
+                except ECOException as e:
+                    raise BadTemplateException(f'Fail to construct spec at {cell_loc.short_name}\n'
+                                               f'{block.raw}') from e
+            ret[cell_loc] = spec
+
+        return ExcelExtractorSpec(ret)
