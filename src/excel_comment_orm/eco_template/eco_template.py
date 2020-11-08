@@ -1,15 +1,15 @@
-import logging
 from dataclasses import dataclass
 from typing import Dict, List
 
 from excel_comment_orm.cell_location import CellLocation
-from excel_comment_orm.eco_block import ECOBlock
+from excel_comment_orm.eco_template.eco_block import ECOBlock
 import openpyxl as opx
 from excel_comment_orm.exception import ECOException, BadTemplateException, CommentWithNoECOBlockWarning
+from excel_comment_orm.extraction_spec.excel_processor_spec import ExcelProcessorSpec
 
 
 @dataclass
-class ExcelTemplate:
+class ECOTemplate:
     eco_blocks: Dict[CellLocation, List[ECOBlock]]
 
     def n_cell(self) -> int:
@@ -37,7 +37,7 @@ class ExcelTemplate:
         return [k for k, v in self.eco_blocks.items() if len(v) == 0]
 
     @classmethod
-    def from_workbook(cls, workbook: opx.Workbook) -> 'ExcelTemplate':
+    def from_workbook(cls, workbook: opx.Workbook) -> 'ECOTemplate':
         from openpyxl.worksheet.worksheet import Worksheet
         ret = {}
         wb = workbook
@@ -53,7 +53,7 @@ class ExcelTemplate:
                             raise BadTemplateException(  # Todo: maybe be all these should be warning
                                 f'Bad Template at sheet: {cell_loc.sheet_name}, cell: {cell_loc.coordinate}') from e
 
-        et = ExcelTemplate(ret)
+        et = ECOTemplate(ret)
         if et.cells_with_no_eco_block():
             questionable_cells = et.cells_with_no_eco_block()
             raise CommentWithNoECOBlockWarning("Found Cell with comment but no eco block.\n"
@@ -61,5 +61,19 @@ class ExcelTemplate:
         return et
 
     @classmethod
-    def from_excel(cls, fname: str) -> 'ExcelTemplate':
+    def from_excel(cls, fname: str) -> 'ECOTemplate':
         return cls.from_workbook(workbook=opx.load_workbook(fname))
+
+    def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
+        ret = {}
+        for cell_loc, eco_blocks in self.eco_blocks.items():
+            spec = []
+            for block in eco_blocks:
+                try:
+                    spec.append(block.to_extractor_task_spec())
+                except ECOException as e:
+                    raise BadTemplateException(f'Fail to construct spec at {cell_loc.short_name}\n'
+                                               f'{block.raw}') from e
+            ret[cell_loc] = spec
+
+        return ExcelProcessorSpec(ret)

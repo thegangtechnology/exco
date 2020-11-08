@@ -1,19 +1,29 @@
-from typing import List, Any
+from typing import List
 import logging
+
+import excel_comment_orm.extraction_spec.extraction_task_spec
 import yaml
 from dataclasses import dataclass
 from excel_comment_orm import setting
 from excel_comment_orm import exception as exc
 
+from excel_comment_orm.extraction_spec.spec_source import SpecSource
+from excel_comment_orm.extraction_spec.extraction_task_spec import ExtractionTaskSpec
+
 
 @dataclass
-class ECOBlock:
+class ECOBlock(SpecSource):
     start_line: int
     end_line: int
     raw: str
 
-    def parse(self) -> Any:
-        return yaml.load(self.raw)
+    def to_extractor_task_spec(self) -> ExtractionTaskSpec:
+        # TODO: add special symbol to deref cell address at template
+        d = yaml.load(self.raw, Loader=yaml.FullLoader)
+        return ExtractionTaskSpec.from_dict(d, source=self)
+
+    def describe(self) -> str:
+        return self.raw
 
     @classmethod
     def from_string(cls, comment: str,
