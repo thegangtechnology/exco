@@ -7,13 +7,13 @@ from exco.extractor.locator.locator import Locator
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
+
 @dataclass
 class RightOfLocator(Locator):  # TODO: Add search scope
     label: str
 
     def locate(self, anchor_cell_location: CellLocation, workbook: Workbook) -> LocatingResult:
         sheet: Worksheet = workbook[anchor_cell_location.sheet_name]
-        compiled_regex = re.compile(self.regex)
         for row in sheet.iter_rows():
             for cell in row:
                 if cell.value == self.label:

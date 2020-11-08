@@ -1,6 +1,7 @@
 import textwrap
 from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type
 
+import openpyxl
 from openpyxl.utils import get_column_letter
 import stringcase
 
@@ -33,7 +34,7 @@ def tuple_to_coordinate(row, col) -> str:
 
 
 def coordinate_to_tuple(coord: str) -> Tuple[int, int]:
-    return coordinate_to_tuple(coord)
+    return openpyxl.utils.coordinate_to_tuple(coord)
 
 
 def shift_coord(coord: str, shift: Tuple[int, int]):

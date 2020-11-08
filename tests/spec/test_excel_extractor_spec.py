@@ -6,7 +6,7 @@ import exco
 
 @pytest.fixture
 def simple_spec():
-    template = exco.ExcoTemplate.from_excel(join(dirname(__file__), '../sample/test/simple.xlsx'))
+    template = exco.ExcoTemplate.from_excel(join(dirname(__file__), '../../sample/test/simple.xlsx'))
     spec = template.to_excel_extractor_spec()
     return spec
 
