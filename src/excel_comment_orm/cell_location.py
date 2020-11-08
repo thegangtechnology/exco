@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 
+from excel_comment_orm.excel_extraction_scope import ExcelExtractionScope
 from openpyxl import Workbook
-from openpyxl.cell import Cell
 from openpyxl.utils import coordinate_to_tuple
-from excel_comment_orm.excel_extraction_scope import ExcelExtractionScope, CellFullPath
+from excel_comment_orm.cell_full_path import CellFullPath
 from openpyxl.worksheet.worksheet import Worksheet
 
 

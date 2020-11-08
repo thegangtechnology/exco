@@ -1,12 +1,13 @@
-from typing import List, Any, TYPE_CHECKING
+from typing import List
 import logging
+
+import excel_comment_orm.extraction_spec.extraction_task_spec
 import yaml
 from dataclasses import dataclass
 from excel_comment_orm import setting
 from excel_comment_orm import exception as exc
 
-from excel_comment_orm import extractor_spec as ex_spec
-from excel_comment_orm.spec_source import SpecSource
+from excel_comment_orm.extraction_spec.spec_source import SpecSource
 
 
 @dataclass
@@ -15,9 +16,9 @@ class ECOBlock(SpecSource):
     end_line: int
     raw: str
 
-    def to_extractor_task_spec(self) -> ex_spec.ExtractionTaskSpec:
+    def to_extractor_task_spec(self) -> excel_comment_orm.extraction_spec.extraction_task_spec.ExtractionTaskSpec:
         d = yaml.load(self.raw)
-        return ex_spec.ExtractionTaskSpec.from_dict(d, source=self)
+        return excel_comment_orm.extraction_spec.extraction_task_spec.ExtractionTaskSpec.from_dict(d, source=self)
 
     def describe(self) -> str:
         return self.raw

@@ -15,6 +15,9 @@ def test_simple_template(simple_template: eco.ExcelTemplate):
     assert simple_template.n_cell() == 2
     assert simple_template.n_eco_blocks() == 3
 
+    coords = {k.coordinate for k in simple_template.eco_blocks.keys()}
+    assert coords == {'B5', 'D2'}
+
 
 def test_bad_template():
     fname = join(dirname(__file__), '../sample/test/bad_template.xlsx')

@@ -1,12 +1,11 @@
-import logging
 from dataclasses import dataclass
 from typing import Dict, List
 
 from excel_comment_orm.cell_location import CellLocation
-from excel_comment_orm.eco_block import ECOBlock
+from excel_comment_orm.excel_template.eco_block import ECOBlock
 import openpyxl as opx
 from excel_comment_orm.exception import ECOException, BadTemplateException, CommentWithNoECOBlockWarning
-from excel_comment_orm.extractor_spec import ExcelExtractorSpec
+from excel_comment_orm.extraction_spec.excel_extrator_spec import ExcelExtractorSpec
 
 
 @dataclass
