@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypeVar, Dict, Any, List
+from typing import TypeVar, Dict, Any, List, Optional
 
 import openpyxl
 from exco.extraction_spec import ExtractionTaskSpec, ExcelProcessorSpec
@@ -26,8 +26,22 @@ class ProcessorKey:
 
 
 @dataclass
+class LookupResult:
+    cell_location: CellLocation
+    result: ExtractionTaskResult
+
+
+@dataclass
 class ExcelProcessingResult:
     results: Dict[CellLocation, List[ExtractionTaskResult]]
+
+    def for_key(self, key: str) -> Optional[LookupResult]:
+        for cl, results in self.results.items():
+            for result in results:
+                if key == result.key:
+                    return LookupResult(cl, result)
+        # TODO: Fix this O(n) search.
+        return None
 
     def to_dict(self) -> Dict[str, Any]:
         ret = {}
