@@ -24,9 +24,9 @@ pip install excel_comment_orm
 # Simple Usage
 
 ```
-import excel_comment_orm as eco
-processor = eco.from_excel('./quickstart_template.xlsx')
-result = processor.process_file('./quickstart_data_file.xlsx')
+import exco
+processor = exco.from_excel('./quickstart_template.xlsx')
+result = processor.process_excel('./quickstart_data_file.xlsx')
 print(result.to_dict())
 ```
 

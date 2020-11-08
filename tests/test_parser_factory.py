@@ -1,5 +1,5 @@
-from excel_comment_orm.extraction_spec.parser_spec import ParserSpec
-from excel_comment_orm.extractor.parser.parser_factory import ParserFactory
+from exco.extraction_spec.parser_spec import ParserSpec
+from exco.extractor.parser.parser_factory import ParserFactory
 
 
 def test_create_simple_spec():

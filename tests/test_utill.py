@@ -1,4 +1,4 @@
-from excel_comment_orm import util
+from exco import util
 
 
 def test_long_string():

@@ -1,11 +1,11 @@
 from os.path import join, dirname
 
-from excel_comment_orm import ExcelProcessorSpec, ECOTemplate, ExcelProcessorFactory
+from exco import ExcelProcessorSpec, ExcoTemplate, ExcelProcessorFactory
 
 
 def test_simple():
     fname = join(dirname(__file__), '../sample/test/simple.xlsx')
-    template = ECOTemplate.from_excel(fname)
+    template = ExcoTemplate.from_excel(fname)
     spec = template.to_excel_extractor_spec()
     fac = ExcelProcessorFactory.default()
     processor = fac.create_from_spec(spec)

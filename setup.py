@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 def get_version():
-    fname = join(dirname(__file__), "src/excel_comment_orm/__version__.py")
+    fname = join(dirname(__file__), "src/exco/__version__.py")
     with open(fname) as f:
         ldict = {}
         code = f.read()
@@ -12,16 +12,16 @@ def get_version():
         return ldict['version']
 
 
-setup(name='excel_comment_orm',
+setup(name='exco',
       version=get_version(),
-      description='',
+      description='Excel Comment Orm',
       long_description=open('README.md').read().strip(),
       author='Piti Ongmongkolkul',
       author_email='piti118@gmail.com',
       url='',
       package_dir={'': 'src'},
       packages=find_packages('src'),
-      py_modules=['excel_comment_orm'],
+      py_modules=['exco'],
       install_requires=[
           'openpyxl',
           'pyyaml',
