@@ -16,15 +16,16 @@ setup(name='excel_comment_orm',
       version=get_version(),
       description='',
       long_description=open('README.md').read().strip(),
-      author='',
-      author_email='',
+      author='Piti Ongmongkolkul',
+      author_email='piti118@gmail.com',
       url='',
       package_dir={'': 'src'},
       packages=find_packages('src'),
       py_modules=['excel_comment_orm'],
       install_requires=[
           'openpyxl',
-          'pyyaml'
+          'pyyaml',
+          'stringcase'
       ],
       extras_require={
           'dev': [
