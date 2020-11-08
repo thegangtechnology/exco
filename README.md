@@ -21,7 +21,7 @@ Dynamic Location, Validation, Assumptions, custom Parser are also supported.
 # Installation
 
 ```
-pip install excel_comment_orm
+pip install exco
 ```
 
 # Simple Usage

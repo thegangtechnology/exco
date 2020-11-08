@@ -35,24 +35,26 @@ class ExtractionTaskResult(Generic[T]):
                all(vr.is_ok for vr in self.validation_results.values())
 
     @classmethod
-    def fail_locating(cls, locating_result: LocatingResult) -> 'ExtractionTaskResult':
+    def fail_locating(cls, key: str, locating_result: LocatingResult) -> 'ExtractionTaskResult':
         msg = "Fail Locating"
         assert not locating_result.is_ok
         return ExtractionTaskResult(
+            key=key,
             locating_result=locating_result,
             parsing_result=ParsingResult.bad(msg=msg)
         )
 
     @classmethod
-    def fail_assumptions(cls, locating_result: LocatingResult, assumption_results: Dict[str, AssumptionResult]):
+    def fail_assumptions(cls, key: str, locating_result: LocatingResult,
+                         assumption_results: Dict[str, AssumptionResult]):
         msg = "Fail Assumption"
         assert any(not ar.is_ok for ar in assumption_results.values())
         return ExtractionTaskResult(
+            key=key,
             locating_result=locating_result,
             assumption_results=assumption_results,
             parsing_result=ParsingResult.bad(msg=msg)
         )
-
 
 @dataclass
 class ExtractionTask(Generic[T]):
@@ -64,11 +66,11 @@ class ExtractionTask(Generic[T]):
 
     def __str__(self):
         s = long_string(f"""
-        key: "{self.key}"
-        locator: {self.locator}
-        parser: {self.parser}
-        validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
-        assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}""")
+    key: "{self.key}"
+    locator: {self.locator}
+    parser: {self.parser}
+    validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
+    assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}""")
         return s
 
     def process(self, anchor_cell_location: CellLocation, workbook: Workbook) -> ExtractionTaskResult:
@@ -77,12 +79,13 @@ class ExtractionTask(Generic[T]):
             workbook=workbook
         )
         if not locating_result.is_ok:
-            return ExtractionTaskResult.fail_locating(locating_result)
+            return ExtractionTaskResult.fail_locating(key=self.key, locating_result=locating_result)
         cfp = locating_result.location.get_cell_full_path(workbook)
 
         assumption_results = {k: assumption.assume(cfp) for k, assumption in self.assumptions.items()}
         if any(not ar.is_ok for ar in assumption_results.values()):
             return ExtractionTaskResult.fail_assumptions(
+                key=self.key,
                 locating_result=locating_result,
                 assumption_results=assumption_results
             )
@@ -90,6 +93,7 @@ class ExtractionTask(Generic[T]):
         parsing_result = self.parser.parse(cfp)
         if not parsing_result.is_ok:
             return ExtractionTaskResult(
+                key=self.key,
                 locating_result=locating_result,
                 assumption_results=assumption_results,
                 parsing_result=parsing_result

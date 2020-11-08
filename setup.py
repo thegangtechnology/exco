@@ -18,7 +18,7 @@ setup(name='exco',
       long_description=open('README.md').read().strip(),
       author='Piti Ongmongkolkul',
       author_email='piti118@gmail.com',
-      url='',
+      url='https://github.com/thegangtechnology/exco',
       package_dir={'': 'src'},
       packages=find_packages('src'),
       py_modules=['exco'],
@@ -33,7 +33,8 @@ setup(name='exco',
               'mypy',
               'autopep8',
               'pytest',
-              'pytest-cov'
+              'pytest-cov',
+              'wheel'
           ],
           'test': [
               'pytest',
