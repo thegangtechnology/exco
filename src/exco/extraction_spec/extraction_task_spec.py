@@ -24,7 +24,7 @@ class ExtractionTaskSpec:
         allowed_keys = ['key', 'parser', 'params', 'validations', 'assumptions', 'locator']
         extra_keys = util.extra_keys(d, allowed_keys)
         if extra_keys:
-            raise exception.ECOBlockContainsExtraKey(f'{extra_keys}\n'
+            raise exception.ExcoBlockContainsExtraKey(f'{extra_keys}\n'
                                                      f'allowed_keys are {allowed_keys}')
         return ExtractionTaskSpec(
             key=d['key'],

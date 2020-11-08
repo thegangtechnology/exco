@@ -5,7 +5,7 @@ import openpyxl
 from exco.extraction_spec import ExtractionTaskSpec, ExcelProcessorSpec
 from exco.exco_template import ExcoTemplate
 from exco.cell_location import CellLocation
-from exco.exception import ECOException, ExtractionTaskCreationException
+from exco.exception import ExcoException, ExtractionTaskCreationException
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
 from exco.extractor.extraction_task import ExtractionTaskResult, ExtractionTask
 from exco.extractor.locator.locator_factory import LocatorFactory
@@ -89,7 +89,7 @@ class ExcelProcessorFactory:
                 validators={k: self.validator_factory.create_from_spec(sp) for k, sp in
                             spec.validations.items()}
             )
-        except ECOException as e:
+        except ExcoException as e:
             raise ExtractionTaskCreationException(
                 f'Unable to create ExtractionTask for {spec.key} cf {spec.source.describe()}') from e
 

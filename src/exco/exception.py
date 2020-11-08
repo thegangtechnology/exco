@@ -1,48 +1,48 @@
-class ECOException(RuntimeError):
+class ExcoException(RuntimeError):
     def __init__(self, msg: str = ''):
         super().__init__(msg)
         self.msg = msg
 
 
-class ECOWarning(Warning):
+class ExcoWarning(Warning):
     pass
 
 
-class TooManyBeginException(ECOException):
+class TooManyBeginException(ExcoException):
     pass
 
 
-class TooManyEndException(ECOException):
+class TooManyEndException(ExcoException):
     pass
 
 
-class ExpectEndException(ECOException):
+class ExpectEndException(ExcoException):
     pass
 
 
-class BadTemplateException(ECOException):
+class BadTemplateException(ExcoException):
     pass
 
 
-class CommentWithNoECOBlockWarning(ECOWarning):
+class CommentWithNoExcoBlockWarning(ExcoWarning):
     pass
 
 
-class ECOBlockContainsExtraKey(ECOException):
+class ExcoBlockContainsExtraKey(ExcoException):
     pass
 
 
-class ParserCreationFailException(ECOException):
+class ParserCreationFailException(ExcoException):
     pass
 
 
-class ParsingFailException(ECOException):
+class ParsingFailException(ExcoException):
     pass
 
 
-class ExtractionTaskCreationException(ECOException):
+class ExtractionTaskCreationException(ExcoException):
     pass
 
 
-class ExcelProcessorCreationException(ECOException):
+class ExcelProcessorCreationException(ExcoException):
     pass
