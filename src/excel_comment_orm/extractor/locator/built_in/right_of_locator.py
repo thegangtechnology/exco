@@ -1,4 +1,5 @@
 import re
+from dataclasses import dataclass
 
 from excel_comment_orm import CellLocation, util
 from excel_comment_orm.extractor.locator.locating_result import LocatingResult
@@ -6,7 +7,7 @@ from excel_comment_orm.extractor.locator.locator import Locator
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
-
+@dataclass
 class RightOfLocator(Locator):  # TODO: Add search scope
     label: str
 

@@ -2,11 +2,12 @@ from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List
 
 import openpyxl
-from excel_comment_orm import ExtractionTaskSpec, ExcelProcessorSpec
+from excel_comment_orm.extraction_spec import ExtractionTaskSpec, ExcelProcessorSpec
+from excel_comment_orm.eco_template import ECOTemplate
 from excel_comment_orm.cell_location import CellLocation
 from excel_comment_orm.exception import ECOException, ExtractionTaskCreationException
 from excel_comment_orm.extractor.assumption.assumption_factory import AssumptionFactory
-from excel_comment_orm.extractor.block_processor import ExtractionTaskResult, ExtractionTask
+from excel_comment_orm.extractor.extraction_task import ExtractionTaskResult, ExtractionTask
 from excel_comment_orm.extractor.locator.locator_factory import LocatorFactory
 from excel_comment_orm.extractor.parser.parser_factory import ParserFactory
 from excel_comment_orm.extractor.validator.validator_factory import ValidatorFactory
@@ -46,9 +47,19 @@ class ExcelProcessor:
             ret[loc] = [bp.process(loc, workbook) for bp in bps]
         return ExcelProcessingResult(ret)
 
-    def process_file(self, fname: str) -> ExcelProcessingResult:
+    def process_excel(self, fname: str) -> ExcelProcessingResult:
         wb = openpyxl.load_workbook(fname)
         return self.process_workbook(wb)
+
+    def __str__(self):
+        tmp = []
+        for cl, tasks in self.processors.items():
+            header = f'Location: {cl.short_name}\n'
+            sep = '*\n' * 10
+            task_str = sep.join([str(task) + '\n' for task in tasks])
+            tmp.append(header + task_str)
+        ret = ("#" * 20 + '\n').join(tmp)
+        return ret
 
 
 @dataclass
@@ -82,7 +93,7 @@ class ExcelProcessorFactory:
             raise ExtractionTaskCreationException(
                 f'Unable to create ExtractionTask for {spec.key} cf {spec.source.describe()}') from e
 
-    def create_processor(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
+    def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
         ret = {}
         for cl, specs in spec.task_specs.items():
             tmp = []
@@ -90,3 +101,12 @@ class ExcelProcessorFactory:
                 tmp.append(self.create_extraction_task(spec))
             ret[cl] = tmp
         return ExcelProcessor(ret)
+
+    def create_from_template_excel(self, fname: str) -> ExcelProcessor:
+        workbook = openpyxl.load_workbook(fname)
+        return self.create_from_template_workbook(workbook)
+
+    def create_from_template_workbook(self, workbook: Workbook) -> ExcelProcessor:
+        template = ECOTemplate.from_workbook(workbook)
+        spec = template.to_excel_extractor_spec()
+        return self.create_from_spec(spec)

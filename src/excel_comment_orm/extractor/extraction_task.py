@@ -12,6 +12,7 @@ from excel_comment_orm.extractor.parser.parser import Parser
 from excel_comment_orm.extractor.parser.pasrsing_result import ParsingResult
 from excel_comment_orm.extractor.validator.validation_result import ValidationResult
 from excel_comment_orm.extractor.validator.validator import Validator
+from excel_comment_orm.util import long_string
 from openpyxl import Workbook
 
 T = TypeVar('T')
@@ -60,6 +61,15 @@ class ExtractionTask(Generic[T]):
     parser: Parser[T]
     validators: Dict[str, Validator[T]]
     assumptions: Dict[str, Assumption]
+
+    def __str__(self):
+        s = long_string(f"""
+        key: "{self.key}"
+        locator: {self.locator}
+        parser: {self.parser}
+        validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
+        assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}""")
+        return s
 
     def process(self, anchor_cell_location: CellLocation, workbook: Workbook) -> ExtractionTaskResult:
         locating_result = self.locator.locate(

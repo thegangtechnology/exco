@@ -10,3 +10,4 @@ from excel_comment_orm.extraction_spec import AssumptionSpec, \
     ExcelProcessorSpec
 
 from excel_comment_orm.extractor import ExcelProcessorFactory, ExcelProcessor
+from excel_comment_orm.shortcut import from_excel
