@@ -17,6 +17,7 @@ class ECOBlock(SpecSource):
     raw: str
 
     def to_extractor_task_spec(self) -> excel_comment_orm.extraction_spec.extraction_task_spec.ExtractionTaskSpec:
+        # TODO: add special symbol to deref cell address at template
         d = yaml.load(self.raw)
         return excel_comment_orm.extraction_spec.extraction_task_spec.ExtractionTaskSpec.from_dict(d, source=self)
 

@@ -1,21 +1,20 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 from excel_comment_orm import util, exception
-from excel_comment_orm.extraction_spec.assumption_task_spec import AssumptionTaskSpec
+from excel_comment_orm.extraction_spec.assumption_spec import AssumptionSpec
 from excel_comment_orm.extraction_spec.locator_spec import LocatorSpec
+from excel_comment_orm.extraction_spec.parser_spec import ParserSpec
 from excel_comment_orm.extraction_spec.spec_source import SpecSource, UnknownSource
-from excel_comment_orm.extraction_spec.type import SpecParam
-from excel_comment_orm.extraction_spec.validator_task_spec import ValidationTaskSpec
+from excel_comment_orm.extraction_spec.validator_spec import ValidatorSpec
 
 
 @dataclass
 class ExtractionTaskSpec:
     key: str
-    parser: str
-    params: SpecParam = field(default_factory=dict)
-    validations: List[ValidationTaskSpec] = field(default_factory=list)
-    assumptions: List[AssumptionTaskSpec] = field(default_factory=list)
+    parser: ParserSpec
+    validations: Dict[str, ValidatorSpec] = field(default_factory=dict)
+    assumptions: Dict[str, AssumptionSpec] = field(default_factory=dict)
     source: SpecSource = field(default_factory=UnknownSource)
     locator: LocatorSpec = field(default_factory=LocatorSpec.default)
 
@@ -29,10 +28,9 @@ class ExtractionTaskSpec:
                                                      f'allowed_keys are {allowed_keys}')
         return ExtractionTaskSpec(
             key=d['key'],
-            parser=d['parser'],
-            params=d.get('params', {}),
-            validations=[ValidationTaskSpec.from_dict(v) for v in d.get('validations', [])],
-            assumptions=[AssumptionTaskSpec.from_dict(v) for v in d.get('assumptions', [])],
+            parser=ParserSpec.from_dict(d),
+            validations={v['key']: ValidatorSpec.from_dict(v) for v in d.get('validations', [])},
+            assumptions={v['key']: AssumptionSpec.from_dict(v) for v in d.get('assumptions', [])},
             source=source if source is not None else UnknownSource(),
             locator=LocatorSpec.from_dict(d.get('locator', None))
         )

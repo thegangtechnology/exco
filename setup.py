@@ -24,7 +24,8 @@ setup(name='excel_comment_orm',
       py_modules=['excel_comment_orm'],
       install_requires=[
           'openpyxl',
-          'pyyaml'
+          'pyyaml',
+          'stringcase'
       ],
       extras_require={
           'dev': [

@@ -5,7 +5,7 @@ from excel_comment_orm.extraction_spec.type import SpecParam
 
 
 @dataclass
-class ValidationTaskSpec:
+class ValidatorSpec:
     """
     Validation is something to check after parsing
     Ex: if the parsed value is greater than 99
@@ -15,7 +15,7 @@ class ValidationTaskSpec:
     params: SpecParam = field(default_factory=dict)
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> 'ValidationTaskSpec':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ValidatorSpec':
         """Construct ValidationTaskSpec from dict
         {name: greater_than, threshold: 99}
 
@@ -25,5 +25,5 @@ class ValidationTaskSpec:
         Returns:
             ValidationTaskSpec
         """
-        params = {k: v for k, v in d.items() if k != 'name'}
-        return ValidationTaskSpec(name=d['name'], params=params)
+        params = {k: v for k, v in d.items() if k not in ['name', 'key']}
+        return ValidatorSpec(name=d['name'], params=params)
