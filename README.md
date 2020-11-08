@@ -30,5 +30,5 @@ result = processor.process_file('./quickstart_data_file.xlsx')
 print(result.to_dict())
 ```
 
-See Also [Quick Start Notebook](notebooks/quickstart/0 Quick Start.ipynb)
+See Also [Quick Start Notebook](notebooks/quickstart/0%20Quick%20Start.ipynb)
 
