@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List
 
 import openpyxl
-from excel_comment_orm import ExtractionTaskSpec
-from excel_comment_orm.cell_full_path import CellFullPath
+from excel_comment_orm import ExtractionTaskSpec, ExcelProcessorSpec
 from excel_comment_orm.cell_location import CellLocation
 from excel_comment_orm.exception import ECOException, ExtractionTaskCreationException
 from excel_comment_orm.extractor.assumption.assumption_factory import AssumptionFactory
@@ -37,6 +36,7 @@ class ExcelProcessingResult:
         return ret
 
 
+@dataclass
 class ExcelProcessor:
     processors: Dict[CellLocation, List[ExtractionTask]]
 
@@ -67,17 +67,26 @@ class ExcelProcessorFactory:
             validator_factory=ValidatorFactory.default()
         )
 
-    def create_extraction_task(self, cfp: CellFullPath, spec: ExtractionTaskSpec) -> ExtractionTask:
+    def create_extraction_task(self, spec: ExtractionTaskSpec) -> ExtractionTask:
         try:
             return ExtractionTask(
                 key=spec.key,
-                locator=self.locator_factory.create_from_spec(cfp, spec=spec.locator),
-                assumptions={k: self.assumption_factory.create_from_spec(cfp, sp) for k, sp in
+                locator=self.locator_factory.create_from_spec(spec=spec.locator),
+                assumptions={k: self.assumption_factory.create_from_spec(sp) for k, sp in
                              spec.assumptions.items()},
-                parser=self.parser_factory.create_from_spec(cfp, spec=spec.parser),
-                validators={k: self.validator_factory.create_from_spec(cfp, sp) for k, sp in
+                parser=self.parser_factory.create_from_spec(spec=spec.parser),
+                validators={k: self.validator_factory.create_from_spec(sp) for k, sp in
                             spec.validations.items()}
             )
         except ECOException as e:
             raise ExtractionTaskCreationException(
                 f'Unable to create ExtractionTask for {spec.key} cf {spec.source.describe()}') from e
+
+    def create_processor(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
+        ret = {}
+        for cl, specs in spec.task_specs.items():
+            tmp = []
+            for spec in specs:
+                tmp.append(self.create_extraction_task(spec))
+            ret[cl] = tmp
+        return ExcelProcessor(ret)

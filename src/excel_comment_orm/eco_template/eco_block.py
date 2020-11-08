@@ -8,6 +8,7 @@ from excel_comment_orm import setting
 from excel_comment_orm import exception as exc
 
 from excel_comment_orm.extraction_spec.spec_source import SpecSource
+from excel_comment_orm.extraction_spec.extraction_task_spec import ExtractionTaskSpec
 
 
 @dataclass
@@ -16,10 +17,10 @@ class ECOBlock(SpecSource):
     end_line: int
     raw: str
 
-    def to_extractor_task_spec(self) -> excel_comment_orm.extraction_spec.extraction_task_spec.ExtractionTaskSpec:
+    def to_extractor_task_spec(self) -> ExtractionTaskSpec:
         # TODO: add special symbol to deref cell address at template
         d = yaml.load(self.raw)
-        return excel_comment_orm.extraction_spec.extraction_task_spec.ExtractionTaskSpec.from_dict(d, source=self)
+        return ExtractionTaskSpec.from_dict(d, source=self)
 
     def describe(self) -> str:
         return self.raw

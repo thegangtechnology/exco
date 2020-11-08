@@ -1,9 +1,6 @@
 import re
-from plistlib import Dict
-from typing import Any
 
 from excel_comment_orm import CellLocation, util
-from excel_comment_orm.cell_full_path import CellFullPath
 from excel_comment_orm.extractor.locator.locating_result import LocatingResult
 from excel_comment_orm.extractor.locator.locator import Locator
 from openpyxl import Workbook

@@ -7,4 +7,6 @@ from excel_comment_orm.extraction_spec import AssumptionSpec, \
     ValidatorSpec, \
     ExtractionTaskSpec, \
     LocatorSpec, \
-    ExcelExtractorSpec
+    ExcelProcessorSpec
+
+from excel_comment_orm.extractor import ExcelProcessorFactory, ExcelProcessor

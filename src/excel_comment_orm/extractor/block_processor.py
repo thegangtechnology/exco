@@ -87,6 +87,7 @@ class ExtractionTask(Generic[T]):
 
         validation_results = {k: vt.validate(parsing_result.value) for k, vt in self.validators.items()}
         return ExtractionTaskResult(
+            key=self.key,
             locating_result=locating_result,
             assumption_results=assumption_results,
             parsing_result=parsing_result,

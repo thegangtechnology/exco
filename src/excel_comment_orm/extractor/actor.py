@@ -1,8 +1,6 @@
 import abc
-from typing import Dict
 from typing import Any, TypeVar, Type
-
-from excel_comment_orm.cell_full_path import CellFullPath
+from typing import Dict
 
 T = TypeVar('T')
 

@@ -5,7 +5,7 @@ from excel_comment_orm.cell_location import CellLocation
 from excel_comment_orm.eco_template.eco_block import ECOBlock
 import openpyxl as opx
 from excel_comment_orm.exception import ECOException, BadTemplateException, CommentWithNoECOBlockWarning
-from excel_comment_orm.extraction_spec.excel_extrator_spec import ExcelExtractorSpec
+from excel_comment_orm.extraction_spec.excel_processor_spec import ExcelProcessorSpec
 
 
 @dataclass
@@ -64,7 +64,7 @@ class ECOTemplate:
     def from_excel(cls, fname: str) -> 'ECOTemplate':
         return cls.from_workbook(workbook=opx.load_workbook(fname))
 
-    def to_excel_extractor_spec(self) -> ExcelExtractorSpec:
+    def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
         ret = {}
         for cell_loc, eco_blocks in self.eco_blocks.items():
             spec = []
@@ -76,4 +76,4 @@ class ECOTemplate:
                                                f'{block.raw}') from e
             ret[cell_loc] = spec
 
-        return ExcelExtractorSpec(ret)
+        return ExcelProcessorSpec(ret)

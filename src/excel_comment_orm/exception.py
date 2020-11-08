@@ -42,3 +42,7 @@ class ParsingFailException(ECOException):
 
 class ExtractionTaskCreationException(ECOException):
     pass
+
+
+class ExcelProcessorCreationException(ECOException):
+    pass

@@ -7,7 +7,7 @@ from excel_comment_orm.extraction_spec.extraction_task_spec import ExtractionTas
 
 
 @dataclass
-class ExcelExtractorSpec:
+class ExcelProcessorSpec:
     task_specs: Dict[CellLocation, List[ExtractionTaskSpec]]  # comment cell -> specs
 
     def n_spec(self) -> int:
