@@ -24,7 +24,7 @@ def cfp() -> object:
 
 
 @patch.multiple(Assumption, __abstractmethods__=set())
-def test_assumption(cfp):
+def test_assumption_abstract(cfp):
     with pytest.raises(NotImplementedError):
         assumption = Assumption()
         assumption.assume(cfp=cfp)

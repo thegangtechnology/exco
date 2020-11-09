@@ -1,6 +1,10 @@
 from os.path import join, dirname
+from unittest.mock import patch
+
+import pytest
 
 from exco import ExcoTemplate, ExcelProcessorFactory
+from exco.extractor.base_factory import BaseFactory
 
 
 def test_simple():
@@ -22,4 +26,11 @@ def test_simple_short_version():
     another_file = join(dirname(__file__), '../../sample/test/simple_no_comment.xlsx')
     result = processor.process_excel(another_file)
     assert result.to_dict() == {'random_value': 'hello', 'some_int': 99, 'some_str': '99'}
+
+
+@patch.multiple(BaseFactory, __abstractmethods__=set())
+def test_base_factory_abstract():
+    with pytest.raises(NotImplementedError):
+        bf = BaseFactory(class_map={})
+        bf.suffix()
 

@@ -31,7 +31,7 @@ def test_right_of_locator_fail(wb: Workbook):
 
 
 def test_right_of_locator_regex(wb: Workbook):
-    rol = RightOfRegexLocator(regex='the key\s\d')
+    rol = RightOfRegexLocator(regex='the key\\s\\d')
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A1"
@@ -44,7 +44,7 @@ def test_right_of_locator_regex(wb: Workbook):
 
 
 def test_right_of_locator_regex_failed(wb: Workbook):
-    rol = RightOfRegexLocator(regex='the key\s\ds')
+    rol = RightOfRegexLocator(regex='the key\\s\\ds')
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A1"
