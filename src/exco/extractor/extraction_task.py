@@ -9,7 +9,7 @@ from exco.extractor.locator.locator import Locator
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.parser.parser import Parser
 
-from exco.extractor.parser.pasrsing_result import ParsingResult
+from exco.extractor.parser.parsing_result import ParsingResult
 from exco.extractor.validator.validation_result import ValidationResult
 from exco.extractor.validator.validator import Validator
 from exco.util import long_string

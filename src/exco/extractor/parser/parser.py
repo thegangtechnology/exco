@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 from exco.cell_full_path import CellFullPath
 from exco.extractor.actor import Actor
 
-from exco.extractor.parser.pasrsing_result import ParsingResult
+from exco.extractor.parser.parsing_result import ParsingResult
 
 PARSERCLASS_SUFFIX = 'Parser'
 T = TypeVar('T')
