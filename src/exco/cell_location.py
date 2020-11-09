@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from typing import Tuple
 
 from exco.excel_extraction_scope import ExcelExtractionScope
+from exco.util import tuple_to_coordinate
 from openpyxl import Workbook
 from openpyxl.utils import coordinate_to_tuple
 from exco.cell_full_path import CellFullPath
@@ -14,6 +16,14 @@ class CellLocation(ExcelExtractionScope):
 
     def __hash__(self):
         return hash((self.sheet_name, self.coordinate))
+
+    def shift_row(self, offset: int) -> 'CellLocation':
+        row, col = self.row_col
+        return CellLocation(sheet_name=self.sheet_name, coordinate=tuple_to_coordinate(row + offset, col))
+
+    def shift_col(self, offset: int) -> 'CellLocation':
+        row, col = self.row_col
+        return CellLocation(sheet_name=self.sheet_name, coordinate=tuple_to_coordinate(row, col + offset))
 
     @property
     def short_name(self) -> str:
@@ -31,7 +41,7 @@ class CellLocation(ExcelExtractionScope):
         Returns:
             row number.
         """
-        r, _ = coordinate_to_tuple(self.coordinate)
+        r, _ = self.row_col
         return r
 
     @property
@@ -41,8 +51,12 @@ class CellLocation(ExcelExtractionScope):
         Returns:
             column number
         """
-        _, c = coordinate_to_tuple(self.coordinate)
+        _, c = self.row_col
         return c
+
+    @property
+    def row_col(self) -> Tuple[int, int]:
+        return coordinate_to_tuple(self.coordinate)
 
     def get_cell_full_path(self, wb: Workbook) -> CellFullPath:
         """ Obtain scope object

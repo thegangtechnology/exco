@@ -1,4 +1,4 @@
-from exco.extraction_spec.parser_spec import ParserSpec
+from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor.parser.parser_factory import ParserFactory
 
 

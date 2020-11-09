@@ -1,14 +1,12 @@
-from typing import List
 import logging
-
-import exco.extraction_spec.extraction_task_spec
-import yaml
 from dataclasses import dataclass
-from exco import setting
-from exco import exception as exc
+from typing import List
 
-from exco.extraction_spec.spec_source import SpecSource
-from exco.extraction_spec.extraction_task_spec import ExtractionTaskSpec
+import yaml
+from exco import exception as exc
+from exco import setting
+from exco.extractor_spec import CellExtractionSpec
+from exco.extractor_spec.spec_source import SpecSource
 
 
 @dataclass
@@ -17,9 +15,9 @@ class ExcoBlock(SpecSource):
     end_line: int
     raw: str
 
-    def to_extractor_task_spec(self) -> ExtractionTaskSpec:
+    def to_extractor_task_spec(self) -> CellExtractionSpec:
         d = yaml.load(self.raw, Loader=yaml.FullLoader)
-        return ExtractionTaskSpec.from_dict(d, source=self)
+        return CellExtractionSpec.from_dict(d, source=self)
 
     def describe(self) -> str:
         return self.raw

@@ -1,7 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any
 
-from exco.extraction_spec.type import SpecParam
+from exco.extractor_spec.type import SpecParam
+from exco.util import name_params
 
 
 @dataclass
@@ -23,5 +24,5 @@ class AssumptionSpec:
         Returns:
 
         """
-        params = {k: v for k, v in d.items() if k != 'name'}
-        return AssumptionSpec(name=d['name'], params=params)
+        name, param = name_params(d)
+        return AssumptionSpec(name=name, params=params)

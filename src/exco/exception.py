@@ -46,3 +46,6 @@ class ExtractionTaskCreationException(ExcoException):
 
 class ExcelProcessorCreationException(ExcoException):
     pass
+
+class TooManyRowRead(ExcoException):
+    pass

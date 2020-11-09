@@ -12,5 +12,5 @@ def simple_spec():
 
 
 def test_spec(simple_spec: exco.ExcelProcessorSpec):
-    assert simple_spec.n_spec() == 3
-    assert simple_spec.n_location() == 2
+    assert simple_spec.n_cell_spec() == 3
+    assert simple_spec.n_cell_location() == 2

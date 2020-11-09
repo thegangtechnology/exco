@@ -2,12 +2,12 @@ from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List, Optional
 
 import openpyxl
-from exco.extraction_spec import ExtractionTaskSpec, ExcelProcessorSpec
+from exco.extractor_spec import CellExtractionSpec, ExcelProcessorSpec
 from exco.exco_template import ExcoTemplate
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
-from exco.extractor.extraction_task import ExtractionTaskResult, ExtractionTask
+from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locator_factory import LocatorFactory
 from exco.extractor.parser.parser_factory import ParserFactory
 from exco.extractor.validator.validator_factory import ValidatorFactory
@@ -28,12 +28,12 @@ class ProcessorKey:
 @dataclass
 class LookupResult:
     cell_location: CellLocation
-    result: ExtractionTaskResult
+    result: CellExtractionTaskResult
 
 
 @dataclass
 class ExcelProcessingResult:
-    results: Dict[CellLocation, List[ExtractionTaskResult]]
+    results: Dict[CellLocation, List[CellExtractionTaskResult]]
 
     def for_key(self, key: str) -> Optional[LookupResult]:
         for cl, results in self.results.items():
@@ -53,7 +53,7 @@ class ExcelProcessingResult:
 
 @dataclass
 class ExcelProcessor:
-    processors: Dict[CellLocation, List[ExtractionTask]]
+    processors: Dict[CellLocation, List[CellExtractionTask]]
 
     def process_workbook(self, workbook: Workbook) -> ExcelProcessingResult:
         ret = {}
@@ -92,9 +92,9 @@ class ExcelProcessorFactory:
             validator_factory=ValidatorFactory.default()
         )
 
-    def create_extraction_task(self, spec: ExtractionTaskSpec) -> ExtractionTask:
+    def create_extraction_task(self, spec: CellExtractionSpec) -> CellExtractionTask:
         try:
-            return ExtractionTask(
+            return CellExtractionTask(
                 key=spec.key,
                 locator=self.locator_factory.create_from_spec(spec=spec.locator),
                 assumptions={k: self.assumption_factory.create_from_spec(sp) for k, sp in
@@ -109,7 +109,7 @@ class ExcelProcessorFactory:
 
     def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
         ret = {}
-        for cl, specs in spec.task_specs.items():
+        for cl, specs in spec.cell_specs.items():
             tmp = []
             for spec in specs:
                 tmp.append(self.create_extraction_task(spec))

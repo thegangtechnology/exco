@@ -3,9 +3,9 @@ from exco import util
 from exco import exception
 from exco.cell_location import CellLocation
 from exco.exco_template import ExcoTemplate, ExcoBlock
-from exco.extraction_spec import AssumptionSpec, \
+from exco.extractor_spec import AssumptionSpec, \
     ValidatorSpec, \
-    ExtractionTaskSpec, \
+    CellExtractionSpec, \
     LocatorSpec, \
     ExcelProcessorSpec
 

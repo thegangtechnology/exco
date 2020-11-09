@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Any, Optional
 
 from exco import setting
+from exco.util import name_params
 
 
 @dataclass
@@ -18,5 +19,5 @@ class LocatorSpec:
         if d is None:
             return cls.default()
         else:
-            return LocatorSpec(name=d['name'],
-                               params={k: v for k, v in d.items() if k != 'name'})
+            name, params = name_params(d)
+            return LocatorSpec(name=name, params=params)

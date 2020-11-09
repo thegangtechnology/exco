@@ -1,6 +1,6 @@
 from typing import Dict, Type
 
-from exco.extraction_spec.parser_spec import ParserSpec
+from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor.base_factory import BaseFactory
 from exco.extractor.parser.built_in.date_parser import DateParser
 from exco.extractor.parser.parser import Parser

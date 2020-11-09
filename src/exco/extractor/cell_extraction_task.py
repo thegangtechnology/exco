@@ -19,7 +19,7 @@ T = TypeVar('T')
 
 
 @dataclass
-class ExtractionTaskResult(Generic[T]):
+class CellExtractionTaskResult(Generic[T]):
     key: str
     locating_result: LocatingResult
     parsing_result: ParsingResult[T]
@@ -35,10 +35,10 @@ class ExtractionTaskResult(Generic[T]):
                all(vr.is_ok for vr in self.validation_results.values())
 
     @classmethod
-    def fail_locating(cls, key: str, locating_result: LocatingResult) -> 'ExtractionTaskResult':
+    def fail_locating(cls, key: str, locating_result: LocatingResult) -> 'CellExtractionTaskResult':
         msg = "Fail Locating"
         assert not locating_result.is_ok
-        return ExtractionTaskResult(
+        return CellExtractionTaskResult(
             key=key,
             locating_result=locating_result,
             parsing_result=ParsingResult.bad(msg=msg)
@@ -49,15 +49,16 @@ class ExtractionTaskResult(Generic[T]):
                          assumption_results: Dict[str, AssumptionResult]):
         msg = "Fail Assumption"
         assert any(not ar.is_ok for ar in assumption_results.values())
-        return ExtractionTaskResult(
+        return CellExtractionTaskResult(
             key=key,
             locating_result=locating_result,
             assumption_results=assumption_results,
             parsing_result=ParsingResult.bad(msg=msg)
         )
 
+
 @dataclass
-class ExtractionTask(Generic[T]):
+class CellExtractionTask(Generic[T]):
     key: str
     locator: Locator
     parser: Parser[T]
@@ -66,25 +67,25 @@ class ExtractionTask(Generic[T]):
 
     def __str__(self):
         s = long_string(f"""
-    key: "{self.key}"
-    locator: {self.locator}
-    parser: {self.parser}
-    validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
-    assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}""")
+        key: "{self.key}"
+        locator: {self.locator}
+        parser: {self.parser}
+        validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
+        assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}""")
         return s
 
-    def process(self, anchor_cell_location: CellLocation, workbook: Workbook) -> ExtractionTaskResult:
+    def process(self, anchor_cell_location: CellLocation, workbook: Workbook) -> CellExtractionTaskResult:
         locating_result = self.locator.locate(
             anchor_cell_location=anchor_cell_location,
             workbook=workbook
         )
         if not locating_result.is_ok:
-            return ExtractionTaskResult.fail_locating(key=self.key, locating_result=locating_result)
+            return CellExtractionTaskResult.fail_locating(key=self.key, locating_result=locating_result)
         cfp = locating_result.location.get_cell_full_path(workbook)
 
         assumption_results = {k: assumption.assume(cfp) for k, assumption in self.assumptions.items()}
         if any(not ar.is_ok for ar in assumption_results.values()):
-            return ExtractionTaskResult.fail_assumptions(
+            return CellExtractionTaskResult.fail_assumptions(
                 key=self.key,
                 locating_result=locating_result,
                 assumption_results=assumption_results
@@ -92,7 +93,7 @@ class ExtractionTask(Generic[T]):
 
         parsing_result = self.parser.parse(cfp)
         if not parsing_result.is_ok:
-            return ExtractionTaskResult(
+            return CellExtractionTaskResult(
                 key=self.key,
                 locating_result=locating_result,
                 assumption_results=assumption_results,
@@ -100,7 +101,7 @@ class ExtractionTask(Generic[T]):
             )
 
         validation_results = {k: vt.validate(parsing_result.value) for k, vt in self.validators.items()}
-        return ExtractionTaskResult(
+        return CellExtractionTaskResult(
             key=self.key,
             locating_result=locating_result,
             assumption_results=assumption_results,

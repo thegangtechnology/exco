@@ -8,7 +8,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, BadTemplateException, CommentWithNoExcoBlockWarning
 from exco.exco_template.exco_block import ExcoBlock
-from exco.extraction_spec.excel_processor_spec import ExcelProcessorSpec
+from exco.extractor_spec.excel_processor_spec import ExcelProcessorSpec
 
 
 @dataclass
@@ -85,4 +85,4 @@ class ExcoTemplate:
                                                f'{block.raw}') from e
             ret[cell_loc] = spec
 
-        return ExcelProcessorSpec(ret)
+        return ExcelProcessorSpec(cell_specs=ret, table_specs=[])  # TODO Temporary fix

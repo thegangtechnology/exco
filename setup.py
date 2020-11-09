@@ -25,7 +25,8 @@ setup(name='exco',
       install_requires=[
           'openpyxl',
           'pyyaml',
-          'stringcase'
+          'stringcase',
+          'watchdog'
       ],
       extras_require={
           'dev': [
