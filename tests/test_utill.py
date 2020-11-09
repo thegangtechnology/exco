@@ -9,6 +9,14 @@ def test_long_string():
     assert util.long_string(s) == "hello\nworld\n"
 
 
+def test_is_unique():
+    a = ["a", "b", "c"]
+    assert util.is_unique(a) is True
+
+    a = ["a", "b", "b"]
+    assert util.is_unique(a) is False
+
+
 def test_remove_suffix():
     s = "hello.com"
     assert util.remove_suffix(s, '.com') == 'hello'
