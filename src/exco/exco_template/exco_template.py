@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
+from openpyxl.worksheet.worksheet import Worksheet
+
 from exco.cell_location import CellLocation
 from exco.exco_template.exco_block import ExcoBlock
 import openpyxl as opx
@@ -36,6 +38,20 @@ class ExcoTemplate:
         """
         return [k for k, v in self.exco_blocks.items() if len(v) == 0]
 
+    @staticmethod
+    def extract_comments_from_sheet(sheet_name: str, sheet: Worksheet) -> dict:
+        ret = {}
+        for row in sheet.iter_rows():
+            for cell in row:
+                if cell.comment is not None:
+                    cell_loc = CellLocation(sheet_name=sheet_name, coordinate=cell.coordinate)
+                    try:
+                        ret[cell_loc] = ExcoBlock.from_string(cell.comment.text)
+                    except ExcoException as e:  # throw error with cell info
+                        raise BadTemplateException(  # Todo: maybe be all these should be warning
+                            f'Bad Template at sheet: {cell_loc.sheet_name}, cell: {cell_loc.coordinate}') from e
+        return ret
+
     @classmethod
     def from_workbook(cls, workbook: opx.Workbook) -> 'ExcoTemplate':
         from openpyxl.worksheet.worksheet import Worksheet
@@ -43,15 +59,7 @@ class ExcoTemplate:
         wb = workbook
         for sheet_name in wb.sheetnames:
             sheet: Worksheet = wb[sheet_name]
-            for row in sheet.iter_rows():
-                for cell in row:
-                    if cell.comment is not None:
-                        cell_loc = CellLocation(sheet_name=sheet_name, coordinate=cell.coordinate)
-                        try:
-                            ret[cell_loc] = ExcoBlock.from_string(cell.comment.text)
-                        except ExcoException as e:  # throw error with cell info
-                            raise BadTemplateException(  # Todo: maybe be all these should be warning
-                                f'Bad Template at sheet: {cell_loc.sheet_name}, cell: {cell_loc.coordinate}') from e
+            ret.update(ExcoTemplate.extract_comments_from_sheet(sheet_name=sheet_name, sheet=sheet))
 
         et = ExcoTemplate(ret)
         if et.cells_with_no_exco_block():
