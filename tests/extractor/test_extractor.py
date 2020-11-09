@@ -1,9 +1,6 @@
 from os.path import join, dirname
 
-import pytest
-
 from exco import ExcoTemplate, ExcelProcessorFactory
-from exco.exception import BadTemplateException
 
 
 def test_simple():
