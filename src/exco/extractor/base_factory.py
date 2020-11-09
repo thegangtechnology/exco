@@ -25,7 +25,7 @@ class BaseFactory(abc.ABC, Generic[ActorType, SpecType]):
         return util.default_key(clz, suffix=cls.suffix())
 
     @classmethod
-    def build_class_dict(cls, classes: Type[ActorType]) -> Dict[str, Type[ActorType]]:
+    def build_class_dict(cls, classes: List[ActorType]) -> Dict[str, Type[ActorType]]:
         return {cls.key_for_class(clz): clz for clz in classes}
 
     def register(self, clz: Type[ActorType]):

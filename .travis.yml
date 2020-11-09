@@ -13,6 +13,7 @@ addons:
       secure: ddPviWaq5HrAo9R7Lf+/ZdDl/FCrt89xnouZwi+FqB6txipB+syR8U0ekZAbna91ax9MCreETqILlfkzzLxGtZJUU4LMATQ3vZ6RQ8VAeg0qKOwVEwOY7XFMki+ktpV2g3YZCIinr0nwbSC3doRxVS8SRa1wGLkuLBGs13O+CoaXOYqtbrJgu+mS+FCi/m8vT/BlShIdCnBaiyGGG0fkIgxgqtywRpM2xf2vQJQP48S/HKT1OoMN+A5Ql2nQeSQbAmJBoIP3Qhw3Egpb5s+MS/ug9J5KiVs/JXEDM1SE0ORvlINlzZ5TxcI3cCtqfOhK8ctUpEKkJBnCEi5fw+WneXTyKFNADn/c1BOYqTkqGDpHae/a/KqdXaDCmvGdnv4e7V9tkIOSuSUJds9k4x2MIpKKrSVoV6r71B/v11Z3HyqG2qKb59FA0i8zOyd55dyN7owVjHR3G50OQQKF1/WxYJEi+cvNyeVPGC+NjGM32Maxm9xiINXv/yQFpd6Ks+mBFflsfnFzVLF1T3elIPKf3MndTgKYvZqdvGvsvFbQNMoFjBeUWbIIU6chf4zSicEcwrw4TixdiNeXQ3q5dcMxFvtt6PcpLbiwYAeCx/bpr81hIYZSeowWD8Ve9l0p8B0/7aUK1HmVaQPD14VprSaYoJpRQeyJMSlY/G508G5vdpA=
 script:
 - pytest --cov-report=xml --cov=src
-- sonar-scanner
+- git fetch origin master
+- sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.python.coverage.reportPaths=coverage.xml -Dsonar.exclusions="*.xml"
 after_success:
 - codecov

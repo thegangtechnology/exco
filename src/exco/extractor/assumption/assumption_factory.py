@@ -11,7 +11,7 @@ class AssumptionFactory(BaseFactory[Assumption, AssumptionSpec]):
         super().__init__(class_map)
 
     @classmethod
-    def suffix(self):
+    def suffix(cls):
         return 'Assumption'
 
     @classmethod

@@ -21,12 +21,12 @@ def test_simple_template(simple_template: exco.ExcoTemplate):
 
 def test_bad_template():
     fname = join(dirname(__file__), '../sample/test/bad_template.xlsx')
-    with pytest.raises(exco.exception.BadTemplateException) as exc:
+    with pytest.raises(exco.exception.BadTemplateException):
         exco.ExcoTemplate.from_excel(fname)
 
 
 def test_questionable_template():
     fname = join(dirname(__file__), '../sample/test/questionable.xlsx')
     with pytest.raises(exco.exception.CommentWithNoExcoBlockWarning) as exc:
-        et = exco.ExcoTemplate.from_excel(fname)
+        exco.ExcoTemplate.from_excel(fname)
     assert "B8" in str(exc.value)

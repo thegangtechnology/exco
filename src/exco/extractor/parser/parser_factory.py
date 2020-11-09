@@ -14,7 +14,7 @@ class ParserFactory(BaseFactory[Parser, ParserSpec]):
         super().__init__(class_map)
 
     @classmethod
-    def suffix(self):
+    def suffix(cls):
         return 'Parser'
 
     @classmethod

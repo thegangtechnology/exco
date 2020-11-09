@@ -52,5 +52,5 @@ def test_from_string_should_throw_on_no_end():
         hello
     """)
 
-    with pytest.raises(exco.exception.ExpectEndException) as exc:
+    with pytest.raises(exco.exception.ExpectEndException):
         exco.ExcoBlock.from_string(comment)
