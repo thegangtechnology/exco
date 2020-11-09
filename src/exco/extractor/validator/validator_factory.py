@@ -12,7 +12,7 @@ class ValidatorFactory(BaseFactory[Validator, ValidatorSpec]):
         super().__init__(class_map)
 
     @classmethod
-    def suffix(self):
+    def suffix(cls):
         return 'Validator'
 
     @classmethod

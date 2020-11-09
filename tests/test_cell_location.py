@@ -23,4 +23,5 @@ def test_col(cell_location: exco.CellLocation):
 
 
 def test_cell_location_has_hash(cell_location: exco.CellLocation):
-    assert hash(cell_location) is not None
+    assert cell_location is not None
+    hash(cell_location)
