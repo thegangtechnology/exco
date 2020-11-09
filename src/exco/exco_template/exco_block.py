@@ -18,7 +18,6 @@ class ExcoBlock(SpecSource):
     raw: str
 
     def to_extractor_task_spec(self) -> ExtractionTaskSpec:
-        # TODO: add special symbol to deref cell address at template
         d = yaml.load(self.raw, Loader=yaml.FullLoader)
         return ExtractionTaskSpec.from_dict(d, source=self)
 

@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
+import openpyxl as opx
+from openpyxl.cell.read_only import EmptyCell
 from openpyxl.worksheet.worksheet import Worksheet
 
 from exco.cell_location import CellLocation
-from exco.exco_template.exco_block import ExcoBlock
-import openpyxl as opx
 from exco.exception import ExcoException, BadTemplateException, CommentWithNoExcoBlockWarning
+from exco.exco_template.exco_block import ExcoBlock
 from exco.extraction_spec.excel_processor_spec import ExcelProcessorSpec
 
 
@@ -39,11 +40,11 @@ class ExcoTemplate:
         return [k for k, v in self.exco_blocks.items() if len(v) == 0]
 
     @staticmethod
-    def extract_comments_from_sheet(sheet_name: str, sheet: Worksheet) -> dict:
+    def extract_comments_from_sheet(sheet_name: str, sheet: Worksheet) -> Dict[CellLocation, ExcoBlock]:
         ret = {}
         for row in sheet.iter_rows():
             for cell in row:
-                if cell.comment is not None:
+                if not isinstance(cell, EmptyCell) and cell.comment is not None:
                     cell_loc = CellLocation(sheet_name=sheet_name, coordinate=cell.coordinate)
                     try:
                         ret[cell_loc] = ExcoBlock.from_string(cell.comment.text)
@@ -65,7 +66,7 @@ class ExcoTemplate:
         if et.cells_with_no_exco_block():
             questionable_cells = et.cells_with_no_exco_block()
             raise CommentWithNoExcoBlockWarning("Found Cell with comment but no exco block.\n"
-                                               f"[{', '.join(x.short_name for x in questionable_cells)}]")
+                                                f"[{', '.join(x.short_name for x in questionable_cells)}]")
         return et
 
     @classmethod
