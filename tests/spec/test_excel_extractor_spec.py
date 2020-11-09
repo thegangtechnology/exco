@@ -14,3 +14,7 @@ def simple_spec():
 def test_spec(simple_spec: exco.ExcelProcessorSpec):
     assert simple_spec.n_spec() == 3
     assert simple_spec.n_location() == 2
+
+
+def test_is_unique(simple_spec: exco.ExcelProcessorSpec):
+    assert simple_spec.is_keys_unique() is True
