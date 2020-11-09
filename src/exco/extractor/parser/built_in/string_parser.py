@@ -10,6 +10,6 @@ class StringParser(ValueParser[str]):
 
     def parse_value(self, v: Any) -> str:
         try:
-            return str(v)
+            return '' if v is None else str(v)
         except ValueError as e:
             raise ParsingFailException(f'Unable to parse {v} to string') from e
