@@ -1,6 +1,9 @@
 from os.path import join, dirname
 
-from exco import ExcelProcessorSpec, ExcoTemplate, ExcelProcessorFactory
+import pytest
+
+from exco import ExcoTemplate, ExcelProcessorFactory
+from exco.exception import BadTemplateException
 
 
 def test_simple():
@@ -22,3 +25,4 @@ def test_simple_short_version():
     another_file = join(dirname(__file__), '../../sample/test/simple_no_comment.xlsx')
     result = processor.process_excel(another_file)
     assert result.to_dict() == {'random_value': 'hello', 'some_int': 99, 'some_str': '99'}
+

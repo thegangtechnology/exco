@@ -77,11 +77,7 @@ class ExcoTemplate:
         for cell_loc, exco_blocks in self.exco_blocks.items():
             spec = []
             for block in exco_blocks:
-                try:
-                    spec.append(block.to_extractor_task_spec())
-                except ExcoException as e:
-                    raise BadTemplateException(f'Fail to construct spec at {cell_loc.short_name}\n'
-                                               f'{block.raw}') from e
+                spec.append(block.to_extractor_task_spec())
             ret[cell_loc] = spec
 
         return ExcelProcessorSpec(ret)

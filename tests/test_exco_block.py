@@ -54,3 +54,19 @@ def test_from_string_should_throw_on_no_end():
 
     with pytest.raises(exco.exception.ExpectEndException):
         exco.ExcoBlock.from_string(comment)
+
+
+def test_exo_block_describe():
+    comment = exco.util.long_string("""
+        {{--
+        key: sample_int
+        type: int
+        }}--
+    """)
+
+    block = exco.ExcoBlock(
+        start_line=0,
+        end_line=4,
+        raw=comment
+    )
+    assert block.describe() == comment
