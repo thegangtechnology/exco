@@ -2,7 +2,6 @@ import abc
 from typing import TypeVar, Generic, Dict, Type, List
 
 from exco import util
-from exco.cell_full_path import CellFullPath
 from exco.exception import ParserCreationFailException
 from exco.extractor.actor import Actor
 
