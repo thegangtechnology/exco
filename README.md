@@ -6,7 +6,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thegangtechnology_exco&metric=alert_status)](https://sonarcloud.io/dashboard?id=thegangtechnology_exco)
 [![PyPI version](https://badge.fury.io/py/exco.svg)](https://badge.fury.io/py/exco)
 
-Excel Comment ORM. Declare ORM Spec descriptively right on excel file.
+Excel Comment ORM. Declare ORM Spec descriptively right on the excel file.
 
 # What it does
 
