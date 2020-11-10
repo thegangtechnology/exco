@@ -3,7 +3,7 @@ from os.path import join, dirname
 import exco
 import pytest
 from exco import ExcoTemplate, CellLocation, ExcoBlock, util
-from exco.exception import BadTemplateException, MissingTableBlock
+from exco.exception import BadTemplateException, MissingTableBlock, TableKeyNotFound, TableHasNoColumn
 from exco.exco_template.exco_template import ExcoBlockWithLocation
 
 
@@ -61,3 +61,36 @@ def test_missing_col_has_no_matching_table_template():
     )
     with pytest.raises(MissingTableBlock):
         template.to_excel_extractor_spec()
+
+
+def test_missing_col_has_no_table_key_template():
+    template = ExcoTemplate(
+        table_blocks=[],
+        column_blocks=[ExcoBlockWithLocation.simple(
+            raw=util.long_string("""
+                key: my_col
+            """)
+        )],
+        cell_blocks=[]
+    )
+    with pytest.raises(TableKeyNotFound):
+        template.to_excel_extractor_spec()
+
+
+def test_table_has_no_column():
+    template = ExcoTemplate(
+        table_blocks=[ExcoBlockWithLocation.simple(
+            raw=util.long_string("""
+            key: table
+            """)
+        )],
+        column_blocks=[],
+        cell_blocks=[]
+    )
+    with pytest.raises(TableHasNoColumn):
+        template.to_excel_extractor_spec()
+
+
+def test_describe():
+    got = ExcoBlock(1, 2, 'hello').describe()
+    assert 'hello' in got

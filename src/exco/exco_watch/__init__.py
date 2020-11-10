@@ -24,19 +24,20 @@ class ExcoWatchHandler(PatternMatchingEventHandler):
             processor = exco.from_excel(self.path)
             result = processor.process_excel(self.path)
             pprint(result.to_dict())
-        except ExcoException as e:
-            print_exc(e)
+        except ExcoException:
+            print_exc()
         finally:
             current_time = datetime.now().strftime("%H:%M:%S")
             print(f'Latest Result At: {current_time}')
 
     def on_modified(self, event):
         if datetime.now() - self.last_modified < timedelta(seconds=1):
-            return
+            return False
         else:
             self.last_modified = datetime.now()
 
         self.run_exco()
+        return True
 
 
 class ExcoWatch:
@@ -59,7 +60,6 @@ class ExcoWatch:
         """
 
         from watchdog.observers import Observer
-        print(dirname(path))
         event_handler = ExcoWatchHandler(path=path)
         observer = Observer()
         observer.schedule(event_handler, dirname(path), recursive=False)
@@ -69,6 +69,8 @@ class ExcoWatch:
         try:
             while True:
                 time.sleep(1)
+        except InterruptedError:
+            print('Quitting...')
         finally:
             observer.stop()
             observer.join()
