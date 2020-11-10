@@ -3,9 +3,12 @@ from os.path import join, dirname
 import exco
 import datetime
 
+from exco import ExcelProcessorSpec, ExcoTemplate
+
+fname = join(dirname(__file__), '../../sample/test/everything/everything_template.xlsx')
+
 
 def test_everything():
-    fname = join(dirname(__file__), '../../sample/test/everything/everything_template.xlsx')
     template = exco.from_excel(fname)
     result = template.process_excel(fname)
 
@@ -21,3 +24,15 @@ def test_everything():
            'some_string': 'string'}
 
     assert result.to_dict() == exp
+
+
+def test_everything_spec():
+    template = ExcoTemplate.from_excel(fname)
+    spec = template.to_excel_extractor_spec()
+
+    assert spec.n_table_spec() == 2
+    assert spec.n_cell_spec() == 4
+    assert spec.n_table_location() == 2
+    assert spec.n_cell_location() == 4
+    assert spec.n_total_location() == 6
+    assert spec.n_total_spec() == 6

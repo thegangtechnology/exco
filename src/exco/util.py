@@ -98,6 +98,8 @@ def flatten(lol: Iterable[Iterable[T]]) -> Iterable[T]:
 
 
 def flattened_len(it: Iterable[Iterable]):
+    """Find the len of flatten list
+    """
     return sum(1 for _ in flatten(it))
 
 

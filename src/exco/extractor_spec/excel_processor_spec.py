@@ -20,7 +20,7 @@ class ExcelProcessorSpec:
         return len(set(self.cell_specs.keys()) | set(self.table_specs.keys()))
 
     def n_table_spec(self) -> int:
-        return util.flattened_len(self.cell_specs.values())
+        return util.flattened_len(self.table_specs.values())
 
     def n_cell_spec(self) -> int:
         return util.flattened_len(self.cell_specs.values())
