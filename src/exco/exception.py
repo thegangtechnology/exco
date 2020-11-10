@@ -69,3 +69,6 @@ class TableExtractionTaskCreationException(ExcoException):
 
 class NoEndConditonError(ExcoException):
     pass
+
+class YamlParseError(ExcoException):
+    pass

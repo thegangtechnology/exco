@@ -140,12 +140,15 @@ class ExcoTemplate:
         return dict(ret)
 
     def build_cell_specs(self) -> Dict[CellLocation, List[CellExtractionSpec]]:
+
         ret: Dict[CellLocation, List[CellExtractionSpec]] = defaultdict(list)
-        for cb in self.cell_blocks:
-            cl = cb.cell_location
-            print(type(cl))
-            ret[cl].append(CellExtractionSpec.from_dict(cb.exco_block.to_dict(), cb))
-        return dict(ret)
+        try:
+            for cb in self.cell_blocks:
+                cl = cb.cell_location
+                ret[cl].append(CellExtractionSpec.from_dict(cb.exco_block.to_dict(), cb))
+            return dict(ret)
+        except ExcoException as e:
+            raise BadTemplateException(cl.short_name) from e
 
     def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
 

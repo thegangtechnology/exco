@@ -8,11 +8,12 @@ import yaml
 from exco import exception as exc
 from exco import setting
 from exco.exception import TooManyBeginException, TooManyEndException, BadTemplateException, ExcoException, \
-    TableKeyNotFound, ExpectEndException
+    TableKeyNotFound, ExpectEndException, YamlParseError
 from exco.extractor_spec import CellExtractionSpec
 from exco.extractor_spec.spec_source import SpecSource
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec
 from exco.setting import k_table_key
+from yaml.scanner import ScannerError
 
 
 @dataclass
@@ -47,7 +48,10 @@ class ExcoBlock(SpecSource):
         return self.to_dict()[setting.k_key]
 
     def to_dict(self):
-        return yaml.load(self.raw, Loader=yaml.FullLoader)
+        try:
+            return yaml.load(self.raw, Loader=yaml.FullLoader)
+        except ScannerError as e:
+            raise YamlParseError(self.raw) from e
 
     def to_extractor_task_spec(self) -> CellExtractionSpec:
         return CellExtractionSpec.from_dict(self.to_dict(), source=self)

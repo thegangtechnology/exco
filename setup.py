@@ -22,6 +22,9 @@ setup(name='exco',
       package_dir={'': 'src'},
       packages=find_packages('src'),
       py_modules=['exco'],
+      entry_points={
+          'console_scripts': ['exco_watch=exco.exco_watch:ExcoWatch.main'],
+      },
       install_requires=[
           'openpyxl',
           'pyyaml',

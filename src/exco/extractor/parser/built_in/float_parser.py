@@ -11,5 +11,5 @@ class FloatParser(ValueParser[float]):
     def parse_value(self, v: Any) -> float:
         try:
             return float(v)
-        except ValueError as e:
+        except (TypeError, ValueError) as e:
             raise ParsingFailException(f'Fail parsing {v} to float.') from e
