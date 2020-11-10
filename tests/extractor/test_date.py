@@ -19,5 +19,5 @@ def test_good_date(template):
 def test_bad_date(template):
     fname = join(dirname(__file__), '../../sample/test/date/bad_date.xlsx')
     result = template.process_excel(fname)
-    assert not result.for_key('some_date').result.is_ok()
-    assert not result.for_key('some_date').result.parsing_result.is_ok
+    assert not result.cell_result_for_key('some_date').result.is_ok()
+    assert not result.cell_result_for_key('some_date').result.parsing_result.is_ok

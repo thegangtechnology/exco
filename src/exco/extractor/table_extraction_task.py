@@ -3,13 +3,14 @@ from typing import Dict, List, Any
 
 from exco import CellLocation
 from exco.exception import TooManyRowRead
-from exco.extractor import Locator
+from exco.extractor.locator.locator import Locator
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.table_end_conditions.table_end_condition import TableEndCondition
+from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
 from exco.extractor.table_end_conditions.table_end_condition_param import TableEndConditionParam
 from exco.extractor.table_end_conditions.table_end_condition_result import TableEndConditionResult
-from exco.extractor_spec.table_extraction_spec import TableItemDirection
+from exco.extractor_spec.table_extraction_spec import TableItemDirection, TableEndConditionSpec
 from openpyxl import Workbook
 from exco import setting as st
 
@@ -43,6 +44,12 @@ class EndConditionCollection:
         return EndConditionCollectionResult(
             end_condition_results=[ec.test(param) for ec in self.end_conditions]
         )
+
+    def from_spec(self,
+                  specs: List[TableEndConditionSpec],
+                  factory: TableEndConditionFactory) -> 'EndConditionCollection':
+        ecs = [factory.create_from_spec(spec) for spec in specs]
+        return EndConditionCollection(end_conditions=ecs)
 
 
 @dataclass

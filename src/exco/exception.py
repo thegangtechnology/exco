@@ -55,8 +55,14 @@ class TooManyRowRead(ExcoException):
 class TableKeyNotFound(ExcoException):
     pass
 
+
 class TableHasNoColumn(ExcoException):
     pass
 
+
 class MissingTableBlock(ExcoException):
+    pass
+
+
+class TableExtractionTaskCreationException(ExcoException):
     pass
