@@ -36,3 +36,8 @@ class IntWithOffsetParser:
 def test_default_key():
     assert util.default_key(HelloParser, 'Parser') == 'hello'
     assert util.default_key(IntWithOffsetParser, 'Parser') == 'int_with_offset'
+
+
+def test_flatten_len():
+    lol = [[1, 2, 3], [3, 4, 5]]
+    assert util.flattened_len(lol) == 6
