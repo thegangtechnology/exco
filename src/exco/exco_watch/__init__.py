@@ -14,7 +14,6 @@ from exco.exception import ExcoException
 class ExcoWatchHandler(PatternMatchingEventHandler):
     def __init__(self, path: str):
         pattern = f'*/{basename(path)}'
-        print(pattern)
         super().__init__(patterns=[pattern])
         self.path = path
         self.last_modified = datetime.now()

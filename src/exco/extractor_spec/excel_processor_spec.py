@@ -10,6 +10,7 @@ from itertools import chain
 
 @dataclass
 class ExcelProcessorSpec:
+    # TODO: don't group by cell loc.
     cell_specs: Dict[CellLocation, List[CellExtractionSpec]]  # anchor -> specs
     table_specs: Dict[CellLocation, List[TableExtractionSpec]]  # anchor -> specs
 

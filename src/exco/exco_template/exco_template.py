@@ -191,7 +191,7 @@ class ExcoTemplate:
                 columns_dicts.append(ColumnSpecDict(
                     offset=offset, dict=cb.exco_block.to_dict(), source=cb
                 ))
-            table_spec = TableExtractionSpec.from_dict(
+            table_spec = TableExtractionSpec.from_table_and_column_dict(
                 d=tb.exco_block.to_dict(),
                 source=tb,
                 column_dicts=columns_dicts

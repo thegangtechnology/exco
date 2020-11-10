@@ -40,6 +40,10 @@ class ParserCreationFailException(ExcoException):
     pass
 
 
+class ParserSpecCreationException(ExcoException):
+    pass
+
+
 class ParsingFailException(ExcoException):
     pass
 

@@ -40,7 +40,7 @@ class TableEndConditionSpec:
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> 'TableEndConditionSpec':
-        name, params = name_params[d]
+        name, params = name_params(d)
         return TableEndConditionSpec(name=name, params=params)
 
 
@@ -61,9 +61,26 @@ class TableExtractionSpec:
     source: SpecSource = field(default_factory=UnknownSource)
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any],
-                  source: SpecSource,
-                  column_dicts: List[ColumnSpecDict]) -> 'TableExtractionSpec':
+    def from_dict(cls, d: Dict[str, Any], source: SpecSource = None):
+        """Construct form dict
+
+        Args:
+            d ():
+            source ():
+
+        Returns:
+
+        """
+        source = source if source is not None else UnknownSource()
+        col_dicts = [ColumnSpecDict(offset, col_spec, UnknownSource()) for offset, col_spec in d[st.k_columns].items()]
+        return cls.from_table_and_column_dict(
+            d, source, col_dicts
+        )
+
+    @classmethod
+    def from_table_and_column_dict(cls, d: Dict[str, Any],
+                                   source: SpecSource,
+                                   column_dicts: List[ColumnSpecDict]) -> 'TableExtractionSpec':
         """
         Example:
 

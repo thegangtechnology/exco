@@ -64,7 +64,7 @@ class ExcoBlock(SpecSource):
         except ScannerError as e:
             raise YamlParseError(self.raw) from e
 
-    def to_extractor_task_spec(self) -> CellExtractionSpec:
+    def to_cell_extractor_task_spec(self) -> CellExtractionSpec:
         """To CellExtractionSpec
 
         Returns:
@@ -94,6 +94,14 @@ class ExcoBlock(SpecSource):
             start_line=line_collector.start_line,
             end_line=line_collector.end_line,
             raw='\n'.join(line_collector.raw)
+        )
+
+    @classmethod
+    def simple(cls, raw: str, start_line: int = 0, end_line: int = 0) -> 'ExcoBlock':
+        return ExcoBlock(
+            raw=raw,
+            start_line=start_line,
+            end_line=end_line
         )
 
 

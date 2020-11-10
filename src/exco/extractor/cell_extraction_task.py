@@ -5,6 +5,7 @@ from typing import Generic, Dict, TypeVar
 from exco.cell_location import CellLocation
 from exco.extractor.assumption.assumption import Assumption
 from exco.extractor.assumption.assumption_result import AssumptionResult
+from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
 from exco.extractor.locator.locator import Locator
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.parser.parser import Parser
@@ -119,4 +120,14 @@ class CellExtractionTask(Generic[T]):
             assumption_results=assumption_results,
             parsing_result=parsing_result,
             validation_results=validation_results
+        )
+
+    @classmethod
+    def simple(cls, key: str, parser: Parser):
+        return cls(
+            key=key,
+            locator=AtCommentCellLocator(),
+            parser=parser,
+            validators={},
+            assumptions={}
         )
