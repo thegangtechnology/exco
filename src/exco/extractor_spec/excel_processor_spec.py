@@ -32,9 +32,9 @@ class ExcelProcessorSpec:
         return len(self.table_specs)
 
     def is_keys_unique(self) -> bool:
-        iter = chain(
+        it = chain(
             util.flatten(self.cell_specs.values()),
             util.flatten(self.table_specs.values()))
         return util.is_unique(
-            spec.key for spec in iter
+            spec.key for spec in it
         )

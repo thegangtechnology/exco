@@ -50,7 +50,7 @@ def test_from_string_should_throw_double_begin():
         {{--
     """)
 
-    with pytest.raises(exco.exception.BadTemplateException) as exc:
+    with pytest.raises(exco.exception.BadTemplateException):
         ExcoBlockCollection.from_string(comment)
 
 
@@ -60,7 +60,7 @@ def test_from_string_should_throw_on_end_before_begin():
         {{--
     """)
 
-    with pytest.raises(exco.exception.BadTemplateException) as exc:
+    with pytest.raises(exco.exception.BadTemplateException):
         ExcoBlockCollection.from_string(comment)
 
 

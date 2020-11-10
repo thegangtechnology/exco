@@ -163,7 +163,7 @@ class ExcoTemplate:
             try:
                 return block.exco_block.table_key()
             except ExcoException as e:
-                raise TableKeyNotFound(f'{block.cell_location.short_name}')
+                raise TableKeyNotFound(f'{block.cell_location.short_name}') from e
 
         return util.group_by(get_table_key, self.column_blocks)
 
@@ -183,7 +183,7 @@ class ExcoTemplate:
             try:
                 column_blocks = group_columns[table_key]
             except LookupError as e:
-                raise TableHasNoColumn(table_key)
+                raise TableHasNoColumn(table_key) from e
             # TODO: Support other orientation by allowing tuple
             columns_dicts = []
             for cb in column_blocks:
