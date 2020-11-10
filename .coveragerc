@@ -4,3 +4,8 @@ omit =
   notebooks/**/*
   sample/**/*
   setup.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    @abstract

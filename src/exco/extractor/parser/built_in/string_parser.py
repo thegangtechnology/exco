@@ -9,7 +9,4 @@ from exco.extractor.parser.built_in.value_parser import ValueParser
 class StringParser(ValueParser[str]):
 
     def parse_value(self, v: Any) -> str:
-        try:
-            return '' if v is None else str(v)
-        except ValueError as e:
-            raise ParsingFailException(f'Unable to parse {v} to string') from e
+        return '' if v is None else str(v)

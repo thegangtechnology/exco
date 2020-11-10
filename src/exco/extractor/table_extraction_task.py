@@ -6,6 +6,7 @@ from exco.exception import TooManyRowRead, NoEndConditonError
 from exco.extractor.locator.locator import Locator
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locating_result import LocatingResult
+from exco.extractor.table_end_conditions.built_in.all_blank_table_end_condition import AllBlankTableEndCondition
 from exco.extractor.table_end_conditions.table_end_condition import TableEndCondition
 from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
 from exco.extractor.table_end_conditions.table_end_condition_param import TableEndConditionParam
@@ -58,6 +59,10 @@ class EndConditionCollection:
 
         return EndConditionCollection(end_conditions=ecs)
 
+    @classmethod
+    def default(cls) -> 'EndConditionCollection':
+        return EndConditionCollection([AllBlankTableEndCondition()])
+
 
 @dataclass
 class RowExtractionTaskResult:
@@ -77,7 +82,7 @@ class TableExtractionTaskResult:
     end_condition_results: List[EndConditionCollectionResult] = field(default_factory=list)
 
     @classmethod
-    def fail_locating_result(cls, locating_result: LocatingResult) -> 'TableExtractionTaskResult':
+    def fail_locating_result(cls, key: str, locating_result: LocatingResult) -> 'TableExtractionTaskResult':
         """TableExtractionTaskResult when it fails locating the cell
 
         Args:
@@ -86,7 +91,7 @@ class TableExtractionTaskResult:
         Returns:
             TableExtractionTaskResult
         """
-        return TableExtractionTaskResult(locating_result=locating_result)
+        return TableExtractionTaskResult(key=key, locating_result=locating_result)
 
     def get_value(self) -> List[Dict[str, Any]]:
         """
@@ -158,7 +163,7 @@ class TableExtractionTask:
         """
         locating_result = self.locator.locate(anchor_cell_location, workbook)
         if not locating_result.is_ok:
-            return TableExtractionTaskResult.fail_locating_result(locating_result)
+            return TableExtractionTaskResult.fail_locating_result(key=self.key, locating_result=locating_result)
 
         irow = 0
         should_terminate = False
