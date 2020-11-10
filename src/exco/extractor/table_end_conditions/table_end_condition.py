@@ -6,6 +6,9 @@ from exco.extractor.table_end_conditions.table_end_condition_result import Table
 
 
 class TableEndCondition(Actor, abc.ABC):
+    """Abstract class for TableEndCondition"""
+
     @abc.abstractmethod
     def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
+        """abstract method on how each implementation decides where the table should end"""
         raise NotImplementedError()

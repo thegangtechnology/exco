@@ -2,6 +2,9 @@ from os.path import join, dirname
 
 import exco
 import pytest
+from exco import ExcoTemplate, CellLocation, ExcoBlock, util
+from exco.exception import BadTemplateException, MissingTableBlock
+from exco.exco_template.exco_template import ExcoBlockWithLocation
 
 
 @pytest.fixture
@@ -30,3 +33,31 @@ def test_questionable_template():
     with pytest.raises(exco.exception.CommentWithNoExcoBlockWarning) as exc:
         exco.ExcoTemplate.from_excel(fname)
     assert "B8" in str(exc.value)
+
+
+def test_bad_cell_template():
+    template = ExcoTemplate(
+        table_blocks=[],
+        column_blocks=[],
+        cell_blocks=[
+            ExcoBlockWithLocation.simple(
+                raw="key: hello\nd:1"  # missing space
+            )
+        ]
+    )
+    with pytest.raises(BadTemplateException):
+        template.to_excel_extractor_spec()
+
+
+def test_missing_col_has_no_matching_table_template():
+    template = ExcoTemplate(
+        table_blocks=[],
+        column_blocks=[ExcoBlockWithLocation.simple(
+            raw=util.long_string("""
+                table_key: my_table
+            """)
+        )],
+        cell_blocks=[]
+    )
+    with pytest.raises(MissingTableBlock):
+        template.to_excel_extractor_spec()

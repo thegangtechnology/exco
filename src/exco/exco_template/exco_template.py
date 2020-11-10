@@ -1,22 +1,19 @@
 import itertools
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List, Iterable, Tuple
+from typing import Dict, List
 
 import openpyxl as opx
 from exco import util
-from exco.extractor_spec.cell_extraction_spec import CellExtractionSpec
-from exco.extractor_spec.apv_spec import APVSpec
-from exco.extractor_spec.spec_source import SpecSource
-from exco.extractor_spec.table_extraction_spec import TableExtractionSpec, ColumnSpecDict
-from openpyxl.cell.read_only import EmptyCell
-from openpyxl.worksheet.worksheet import Worksheet
-
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, BadTemplateException, CommentWithNoExcoBlockWarning, TableKeyNotFound, \
     TableHasNoColumn, MissingTableBlock
 from exco.exco_template.exco_block import ExcoBlock, ExcoBlockCollection
+from exco.extractor_spec.cell_extraction_spec import CellExtractionSpec
 from exco.extractor_spec.excel_processor_spec import ExcelProcessorSpec
+from exco.extractor_spec.spec_source import SpecSource
+from exco.extractor_spec.table_extraction_spec import TableExtractionSpec, ColumnSpecDict
+from openpyxl.cell.read_only import EmptyCell
 
 
 @dataclass
@@ -26,10 +23,35 @@ class ExcoBlockWithLocation(SpecSource):
 
     @property
     def key(self) -> str:
+        """
+
+        Returns:
+            Block's key
+        """
         return self.exco_block.key
 
     def describe(self) -> str:
+        """
+
+        Returns:
+            Block description.
+        """
         return self.cell_location.sheet_name + '\n' + self.exco_block.raw
+
+    @classmethod
+    def simple(cls, raw: str,
+               sheet: str = 'SHEET1',
+               coord: str = 'A1',
+               start_line: int = 1,
+               end_line: int = 1):
+        return ExcoBlockWithLocation(
+            cell_location=CellLocation(sheet, coord),
+            exco_block=ExcoBlock(
+                start_line=start_line,
+                end_line=end_line,
+                raw=raw
+            )
+        )
 
 
 @dataclass
@@ -40,9 +62,24 @@ class ExcoTemplate:
 
     @classmethod
     def empty(cls) -> 'ExcoTemplate':
+        """Create Empty Template
+
+        Returns:
+            ExcoTemplate
+        """
         return ExcoTemplate(table_blocks=[], column_blocks=[], cell_blocks=[])
 
-    def add_to_block_collections(self, cell_location: CellLocation, block_collection: ExcoBlockCollection):
+    def add_to_block_collections(self, cell_location: CellLocation, block_collection: ExcoBlockCollection) -> None:
+        """Add block collection as if anchor cell is at cell_location.
+
+        Args:
+            cell_location (CellLocation):
+            block_collection (ExcoBlockCollection):
+
+        Returns:
+            None.
+        """
+
         for tb in block_collection.table_blocks:
             self.table_blocks.append(ExcoBlockWithLocation(cell_location, tb))
         for cell_block in block_collection.cell_blocks:
@@ -54,7 +91,7 @@ class ExcoTemplate:
         """
 
         Returns:
-            List of unique cell location
+            List of unique cell locations
         """
         return util.unique(x.cell_location for x in itertools.chain(
             self.table_blocks,
@@ -80,6 +117,14 @@ class ExcoTemplate:
 
     @classmethod
     def from_workbook(cls, workbook: opx.Workbook) -> 'ExcoTemplate':
+        """Construct from Excel workbook
+
+        Args:
+            workbook (workbook):
+
+        Returns:
+            ExcoTemplate
+        """
         wb = workbook
         ret = ExcoTemplate.empty()
         for cfp in util.iterate_cells_in_workbook(wb):
@@ -97,9 +142,23 @@ class ExcoTemplate:
 
     @classmethod
     def from_excel(cls, fname: str) -> 'ExcoTemplate':
+        """Construct from excel file.
+
+        Args:
+            fname (str): file name.
+
+        Returns:
+            ExcoTemplate
+        """
         return cls.from_workbook(workbook=opx.load_workbook(fname))
 
-    def column_block_by_table_key(self) -> Dict[str, List[ExcoBlockWithLocation]]:
+    def column_block_dict_by_table_key(self) -> Dict[str, List[ExcoBlockWithLocation]]:
+        """ Compute column block dicationary grouped by table key
+
+        Returns:
+            Dict[str, List[ExcoBlockWithLocation]]. TableKey -> [Column's ExcoBlock]
+        """
+
         def get_table_key(block: ExcoBlockWithLocation):
             try:
                 return block.exco_block.table_key()
@@ -109,7 +168,12 @@ class ExcoTemplate:
         return util.group_by(get_table_key, self.column_blocks)
 
     def build_table_specs(self) -> Dict[CellLocation, List[TableExtractionSpec]]:
-        group_columns = self.column_block_by_table_key()
+        """build table spec
+
+        Returns:
+            Dict[CellLocation, List[TableExtractionSpec]]. Anchor -> List[TableExtractionSpec]
+        """
+        group_columns = self.column_block_dict_by_table_key()
         used_keys = []
         ret: Dict[CellLocation, List[TableExtractionSpec]] = defaultdict(list)
         for tb in self.table_blocks:
@@ -140,18 +204,28 @@ class ExcoTemplate:
         return dict(ret)
 
     def build_cell_specs(self) -> Dict[CellLocation, List[CellExtractionSpec]]:
+        """build cell specs
+
+        Returns:
+             Dict[CellLocation, List[CellExtractionSpec]]. Anchor to CellExtractionSpec.
+        """
 
         ret: Dict[CellLocation, List[CellExtractionSpec]] = defaultdict(list)
-        try:
-            for cb in self.cell_blocks:
-                cl = cb.cell_location
+
+        for cb in self.cell_blocks:
+            cl = cb.cell_location
+            try:
                 ret[cl].append(CellExtractionSpec.from_dict(cb.exco_block.to_dict(), cb))
-            return dict(ret)
-        except ExcoException as e:
-            raise BadTemplateException(cl.short_name) from e
+            except ExcoException as e:
+                raise BadTemplateException(cl.short_name) from e
+        return dict(ret)
 
     def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
+        """compute excel extractor spec
 
+        Returns:
+            ExcelProcessorSpec
+        """
         return ExcelProcessorSpec(
             cell_specs=self.build_cell_specs(),
-            table_specs=self.build_table_specs())  # TODO Temporary fix
+            table_specs=self.build_table_specs())
