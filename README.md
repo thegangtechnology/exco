@@ -1,7 +1,7 @@
 # Exco
 
-
-[![Build Status](https://travis-ci.org/thegangtechnology/exco.svg?branch=master)](https://travis-ci.org/thegangtechnology/exco)
+![Build](https://github.com/thegangtechnology/exco/workflows/Build/badge.svg)
+![CodeQL](https://github.com/thegangtechnology/exco/workflows/CodeQL/badge.svg)
 [![codecov](https://codecov.io/gh/thegangtechnology/exco/branch/master/graph/badge.svg?token=8BrjxREw2O)](https://codecov.io/gh/thegangtechnology/exco)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=thegangtechnology_exco&metric=alert_status)](https://sonarcloud.io/dashboard?id=thegangtechnology_exco)
 [![PyPI version](https://badge.fury.io/py/exco.svg)](https://badge.fury.io/py/exco)
