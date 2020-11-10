@@ -2,8 +2,8 @@ from os.path import join, dirname
 
 import exco
 import pytest
-from exco import ExcoTemplate, CellLocation, ExcoBlock
-from exco.exception import BadTemplateException
+from exco import ExcoTemplate, CellLocation, ExcoBlock, util
+from exco.exception import BadTemplateException, MissingTableBlock
 from exco.exco_template.exco_template import ExcoBlockWithLocation
 
 
@@ -40,15 +40,24 @@ def test_bad_cell_template():
         table_blocks=[],
         column_blocks=[],
         cell_blocks=[
-            ExcoBlockWithLocation(
-                cell_location=CellLocation('SHEET1', 'A1'),
-                exco_block=ExcoBlock(
-                    start_line=1,
-                    end_line=3,
-                    raw="key: hello\nd:1"  # missing space
-                )
+            ExcoBlockWithLocation.simple(
+                raw="key: hello\nd:1"  # missing space
             )
         ]
     )
     with pytest.raises(BadTemplateException):
+        template.to_excel_extractor_spec()
+
+
+def test_missing_col_has_no_matching_table_template():
+    template = ExcoTemplate(
+        table_blocks=[],
+        column_blocks=[ExcoBlockWithLocation.simple(
+            raw=util.long_string("""
+                table_key: my_table
+            """)
+        )],
+        cell_blocks=[]
+    )
+    with pytest.raises(MissingTableBlock):
         template.to_excel_extractor_spec()

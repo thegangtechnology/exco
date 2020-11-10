@@ -38,6 +38,21 @@ class ExcoBlockWithLocation(SpecSource):
         """
         return self.cell_location.sheet_name + '\n' + self.exco_block.raw
 
+    @classmethod
+    def simple(cls, raw: str,
+               sheet: str = 'SHEET1',
+               coord: str = 'A1',
+               start_line: int = 1,
+               end_line: int = 1):
+        return ExcoBlockWithLocation(
+            cell_location=CellLocation(sheet, coord),
+            exco_block=ExcoBlock(
+                start_line=start_line,
+                end_line=end_line,
+                raw=raw
+            )
+        )
+
 
 @dataclass
 class ExcoTemplate:
