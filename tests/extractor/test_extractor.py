@@ -5,7 +5,7 @@ import pytest
 
 from exco import ExcoTemplate, ExcelProcessorFactory
 from exco.exception import ParserCreationFailException
-from exco.extraction_spec.parser_spec import ParserSpec
+from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor.base_factory import BaseFactory
 from exco.extractor.parser.built_in.int_parser import IntParser
 from exco.extractor.parser.built_in.string_parser import StringParser

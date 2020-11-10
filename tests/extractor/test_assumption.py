@@ -11,7 +11,7 @@ from exco.extractor.assumption.built_in.left_cell_match_assumption import LeftCe
 
 
 @pytest.fixture
-def cfp() -> object:
+def cfp() -> CellFullPath:
     wb = Workbook()
 
     ws = wb.active
@@ -19,7 +19,7 @@ def cfp() -> object:
     ws['A2'] = 'the key'
 
     cell = Cell(row=2, column=2, worksheet=wb)
-    cell_full_path = CellFullPath(workbook=wb, sheet=wb.active, cell=cell)
+    cell_full_path = CellFullPath(workbook=wb, sheet=wb.active, cell=cell, sheetname=ws.title)
     return cell_full_path
 
 

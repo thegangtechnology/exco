@@ -24,5 +24,5 @@ class AssumptionSpec:
         Returns:
 
         """
-        name, param = name_params(d)
+        name, params = name_params(d)
         return AssumptionSpec(name=name, params=params)

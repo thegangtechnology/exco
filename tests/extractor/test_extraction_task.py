@@ -4,7 +4,7 @@ from openpyxl import Workbook
 from exco import CellLocation, AssumptionSpec
 from exco.extractor.assumption.assumption_result import AssumptionResult
 from exco.extractor.assumption.built_in.left_cell_match_assumption import LeftCellMatchAssumption
-from exco.extractor.extraction_task import ExtractionTaskResult, ExtractionTask
+from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
 from exco.extractor.locator.built_in.right_of_locator import RightOfLocator
 from exco.extractor.locator.locating_result import LocatingResult
@@ -22,20 +22,21 @@ def wb() -> object:
 
 
 def test_extraction_task_result_failed():
-    assert ExtractionTaskResult.fail_locating(key="something",
-                                              locating_result=LocatingResult(location=None, is_ok=False)) is not None
+    assert CellExtractionTaskResult.fail_locating(key="something",
+                                                  locating_result=LocatingResult(location=None,
+                                                                                 is_ok=False)) is not None
 
 
 def test_extraction_task_assumption_failed():
-    assert ExtractionTaskResult.fail_assumptions(key="something",
-                                                 locating_result=LocatingResult(location=None, is_ok=False),
-                                                 assumption_results={
-                                                     "a": AssumptionResult.bad(msg="failed")
-                                                 }) is not None
+    assert CellExtractionTaskResult.fail_assumptions(key="something",
+                                                     locating_result=LocatingResult(location=None, is_ok=False),
+                                                     assumption_results={
+                                                         "a": AssumptionResult.bad(msg="failed")
+                                                     }) is not None
 
 
 def test_extraction_task_locating_failed(wb: Workbook):
-    et = ExtractionTask(
+    et = CellExtractionTask(
         key="h1",
         locator=RightOfLocator(label="hi"),
         parser=IntParser(),
@@ -50,7 +51,7 @@ def test_extraction_task_locating_failed(wb: Workbook):
 
 
 def test_extraction_task_assumption(wb: Workbook):
-    et = ExtractionTask(
+    et = CellExtractionTask(
         key="h1",
         locator=AtCommentCellLocator(),
         parser=IntParser(),

@@ -2,8 +2,10 @@ from os.path import dirname, join
 
 import pytest
 
-from exco import CellLocation, ExcoTemplate, ExtractionTaskSpec, LocatorSpec
+from exco import CellLocation, ExcoTemplate, CellExtractionSpec, LocatorSpec
+from exco.exception import ExtractionTaskCreationException
 from exco.extractor.excel_processor import ProcessorKey, ExcelProcessingResult, ExcelProcessorFactory
+from exco.extractor_spec.apv_spec import APVSpec
 
 
 def test_processor_key_hash():
@@ -16,8 +18,8 @@ def test_processor_key_hash():
 
 
 def test_empty_excel_processing_result():
-    epr = ExcelProcessingResult(results={})
-    assert epr.for_key('a') is None
+    epr = ExcelProcessingResult(cell_results={}, table_results={})
+    assert epr.cell_result_for_key('a') is None
 
 
 def test_excel_processor():
@@ -30,13 +32,15 @@ def test_fail_extraction_task():
     fname = join(dirname(__file__), '../../sample/test/simple.xlsx')
     template = ExcoTemplate.from_excel(fname)
     spec = template.to_excel_extractor_spec()
-    spec.task_specs[CellLocation(sheet_name='TestSheet', coordinate='Z1')] = [ExtractionTaskSpec(
-        key="something",
+    spec.cell_specs[CellLocation(sheet_name='TestSheet', coordinate='Z1')] = [CellExtractionSpec(
         locator=LocatorSpec(name="right_of"),
-        parser=None,
-        source=None,
-        validations={}
+        apv=APVSpec(
+            key="something",
+            parser=None,
+            source=None,
+            validations={}
+        )
     )]
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(ExtractionTaskCreationException):
         ExcelProcessorFactory.default().create_from_spec(spec=spec)
