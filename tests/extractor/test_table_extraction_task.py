@@ -78,7 +78,7 @@ def test_table_extraction_fail_locating(workbook, cell_loc):
 def test_shift_cell_downward(cell_loc):
     tt = TableExtractionTask(
         key="some_table",
-        locator=RightOfLocator(label='Non Existent'),
+        locator=AtCommentCellLocator(),
         columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection.default(),
         item_direction=TableItemDirection.DOWNWARD
@@ -91,7 +91,7 @@ def test_shift_cell_downward(cell_loc):
 def test_shift_cell_rightward(cell_loc):
     tt = TableExtractionTask(
         key="some_table",
-        locator=RightOfLocator(label='Non Existent'),
+        locator=AtCommentCellLocator(),
         columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection.default(),
         item_direction=TableItemDirection.RIGHTWARD

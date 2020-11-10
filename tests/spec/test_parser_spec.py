@@ -15,10 +15,11 @@ def test_parser_spec():
 
 def test_parser_spec_no_name():
     with pytest.raises(ParserSpecCreationException):
-        spec = ParserSpec.from_dict({
+        ParserSpec.from_dict({
             'parserrr': 'int',
             'params': {}
         })
+
 
 def test_parser_spec_no_param():
     spec = ParserSpec.from_dict({
