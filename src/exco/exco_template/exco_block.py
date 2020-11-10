@@ -96,6 +96,14 @@ class ExcoBlock(SpecSource):
             raw='\n'.join(line_collector.raw)
         )
 
+    @classmethod
+    def simple(cls, raw: str, start_line: int = 0, end_line: int = 0) -> 'ExcoBlock':
+        return ExcoBlock(
+            raw=raw,
+            start_line=start_line,
+            end_line=end_line
+        )
+
 
 @dataclass
 class ExcoBlockCollection:

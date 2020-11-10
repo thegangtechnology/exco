@@ -1,6 +1,8 @@
 import exco
 import pytest
+from exco import CellLocation
 from exco.exco_template.exco_block import ExcoBlockCollection, ExcoBlock
+from exco.exco_template.exco_template import ExcoBlockWithLocation
 
 
 def test_exco_block_collection():
@@ -84,3 +86,11 @@ def test_from_string_should_throw_on_no_end():
 
     with pytest.raises(exco.exception.BadTemplateException):
         ExcoBlockCollection.from_string(comment)
+
+
+def test_exco_block_with_location():
+    eb = ExcoBlockWithLocation(
+        cell_location=CellLocation(sheet_name='S1', coordinate='A1'),
+        exco_block=ExcoBlock.simple("key: hello\nparser: int")
+    )
+    assert isinstance(eb.describe(), str)
