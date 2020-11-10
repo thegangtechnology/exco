@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from exco import ExcoTemplate, ExcelProcessorFactory
-from exco.exception import ParserCreationFailException, ActorCreationFailException
+from exco.exception import ActorCreationFailException
 from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor.base_factory import BaseFactory
 from exco.extractor.parser.built_in.int_parser import IntParser
@@ -57,4 +57,3 @@ def test_failed_create_spec():
 
     with pytest.raises(ActorCreationFailException):
         pf.create_from_spec(ParserSpec(name='something'))
-
