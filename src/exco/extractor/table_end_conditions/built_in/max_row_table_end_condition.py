@@ -7,10 +7,21 @@ from exco.extractor.table_end_conditions.table_end_condition import TableEndCond
 
 @dataclass
 class MaxRowTableEndCondition(TableEndCondition):
+    """
+    End Condition when maximum number of row is reached.
+    """
     n: int
     inclusive: bool = True
 
     def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
+        """Return True if the the row number is greater than or equal to
+        self.n.
+        Args:
+            param (TableEndConditionParam):
+
+        Returns:
+            TableEndConditionResult
+        """
         max_row_reached = param.row_count >= self.n
         return TableEndConditionResult.good(
             should_terminate=max_row_reached,

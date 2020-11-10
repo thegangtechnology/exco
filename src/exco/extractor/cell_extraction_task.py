@@ -27,9 +27,21 @@ class CellExtractionTaskResult(Generic[T]):
     assumption_results: Dict[str, AssumptionResult] = field(default_factory=dict)
 
     def get_value(self, default: T) -> T:
+        """Get Python equivalent value
+
+        Args:
+            default (T):
+
+        Returns:
+            T. Python equivalent value.
+        """
         return self.parsing_result.get_value(default=default)
 
     def is_ok(self):
+        """
+        Returns:
+            True if it pass assumption, parsing, and validation.
+        """
         return all(ar.is_ok for ar in self.assumption_results.values()) and \
                self.parsing_result.is_ok and \
                all(vr.is_ok for vr in self.validation_results.values())

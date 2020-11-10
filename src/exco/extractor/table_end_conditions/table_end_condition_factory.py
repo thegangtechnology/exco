@@ -12,11 +12,17 @@ class TableEndConditionFactory(BaseFactory[TableEndCondition, TableEndConditionS
         super().__init__(class_map)
 
     @classmethod
-    def suffix(cls):
+    def suffix(cls) -> str:
+        """TableEndCondition class's suffix"""
         return 'TableEndCondition'
 
     @classmethod
     def default(cls) -> 'TableEndConditionFactory':
+        """
+
+        Returns:
+            Default TableEncConditionFactory.
+        """
         return cls(cls.build_class_dict([
             AllBlankTableEndCondition,
             MaxRowTableEndCondition

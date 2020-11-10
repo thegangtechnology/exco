@@ -32,6 +32,10 @@ class ExcoBlockContainsExtraKey(ExcoException):
     pass
 
 
+class ActorCreationFailException(ExcoException):
+    pass
+
+
 class ParserCreationFailException(ExcoException):
     pass
 
@@ -67,8 +71,10 @@ class MissingTableBlock(ExcoException):
 class TableExtractionTaskCreationException(ExcoException):
     pass
 
+
 class NoEndConditonError(ExcoException):
     pass
+
 
 class YamlParseError(ExcoException):
     pass

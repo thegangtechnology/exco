@@ -62,7 +62,7 @@ class ExcelProcessingResult:
 
         for results in self.table_results.values():  # TODO: Warn of duplicate key
             for result in results:
-                ret[result.key] = result.get_value(None)
+                ret[result.key] = result.get_value()
         return ret
 
 
@@ -143,7 +143,7 @@ class ExcelProcessorFactory:
             )
         except ExcoException as e:
             raise TableExtractionTaskCreationException(
-                f'Unable to create TableExtractionTask for {spec.key} cf {spec.source.describe()}') from e
+                f'Unable to create TableExtractionTask for {spec.key} cf\n {spec.source.describe()}') from e
 
     def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
         cell_tasks = {}
