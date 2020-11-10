@@ -1,4 +1,6 @@
-start_marker = '{{--'
+start_cell_marker = '{{--'
+start_table_marker = '{{--table'
+start_col_marker = '{{--col'
 end_marker = '--}}'
 
 default_locator = 'at_comment_cell'

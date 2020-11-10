@@ -1,19 +1,66 @@
+import itertools
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Iterable, Tuple
 
 import openpyxl as opx
+from exco import util
+from exco.extractor_spec.cell_extraction_spec import CellExtractionSpec
+from exco.extractor_spec.apv_spec import APVSpec
+from exco.extractor_spec.spec_source import SpecSource
+from exco.extractor_spec.table_extraction_spec import TableExtractionSpec, ColumnSpecDict
 from openpyxl.cell.read_only import EmptyCell
 from openpyxl.worksheet.worksheet import Worksheet
 
 from exco.cell_location import CellLocation
-from exco.exception import ExcoException, BadTemplateException, CommentWithNoExcoBlockWarning
-from exco.exco_template.exco_block import ExcoBlock
+from exco.exception import ExcoException, BadTemplateException, CommentWithNoExcoBlockWarning, TableKeyNotFound, \
+    TableHasNoColumn, MissingTableBlock
+from exco.exco_template.exco_block import ExcoBlock, ExcoBlockCollection
 from exco.extractor_spec.excel_processor_spec import ExcelProcessorSpec
 
 
 @dataclass
+class ExcoBlockWithLocation(SpecSource):
+    cell_location: CellLocation
+    exco_block: ExcoBlock
+
+    @property
+    def key(self) -> str:
+        return self.exco_block.key
+
+    def describe(self) -> str:
+        return self.cell_location.sheet_name + '\n' + self.exco_block.raw
+
+
+@dataclass
 class ExcoTemplate:
-    exco_blocks: Dict[CellLocation, List[ExcoBlock]]
+    table_blocks: List[ExcoBlockWithLocation]
+    column_blocks: List[ExcoBlockWithLocation]
+    cell_blocks: List[ExcoBlockWithLocation]
+
+    @classmethod
+    def empty(cls) -> 'ExcoTemplate':
+        return ExcoTemplate(table_blocks=[], column_blocks=[], cell_blocks=[])
+
+    def add_to_block_collections(self, cell_location: CellLocation, block_collection: ExcoBlockCollection):
+        for tb in block_collection.table_blocks:
+            self.table_blocks.append(ExcoBlockWithLocation(cell_location, tb))
+        for cell_block in block_collection.cell_blocks:
+            self.cell_blocks.append(ExcoBlockWithLocation(cell_location, cell_block))
+        for col_block in block_collection.column_blocks:
+            self.column_blocks.append(ExcoBlockWithLocation(cell_location, col_block))
+
+    def cell_locations(self) -> List[CellLocation]:
+        """
+
+        Returns:
+            List of unique cell location
+        """
+        return util.unique(x.cell_location for x in itertools.chain(
+            self.table_blocks,
+            self.column_blocks,
+            self.cell_blocks
+        ))
 
     def n_cell(self) -> int:
         """
@@ -21,7 +68,7 @@ class ExcoTemplate:
         Returns:
             Total number of cells with comments. Some comment may have no exco block.
         """
-        return len(self.exco_blocks)
+        return len(self.cell_locations())
 
     def n_exco_blocks(self) -> int:
         """
@@ -29,60 +76,79 @@ class ExcoTemplate:
         Returns:
             Total number of ExcoBlocks
         """
-        return sum(len(block) for block in self.exco_blocks.values())
-
-    def cells_with_no_exco_block(self) -> List[CellLocation]:
-        """
-
-        Returns:
-            List[CellLocation] where it has comments but no Exco Block.
-        """
-        return [k for k, v in self.exco_blocks.items() if len(v) == 0]
-
-    @staticmethod
-    def extract_comments_from_sheet(sheet_name: str, sheet: Worksheet) -> Dict[CellLocation, ExcoBlock]:
-        ret = {}
-        for row in sheet.iter_rows():
-            for cell in row:
-                if not isinstance(cell, EmptyCell) and cell.comment is not None:
-                    cell_loc = CellLocation(sheet_name=sheet_name, coordinate=cell.coordinate)
-                    try:
-                        ret[cell_loc] = ExcoBlock.from_string(cell.comment.text)
-                    except ExcoException as e:  # throw error with cell info
-                        raise BadTemplateException(  # Todo: maybe be all these should be warning
-                            f'Bad Template at sheet: {cell_loc.sheet_name}, cell: {cell_loc.coordinate}') from e
-        return ret
+        return len(self.table_blocks) + len(self.column_blocks) + len(self.cell_blocks)
 
     @classmethod
     def from_workbook(cls, workbook: opx.Workbook) -> 'ExcoTemplate':
-        from openpyxl.worksheet.worksheet import Worksheet
-        ret = {}
         wb = workbook
-        for sheet_name in wb.sheetnames:
-            sheet: Worksheet = wb[sheet_name]
-            ret.update(ExcoTemplate.extract_comments_from_sheet(sheet_name=sheet_name, sheet=sheet))
-
-        et = ExcoTemplate(ret)
-        if et.cells_with_no_exco_block():
-            questionable_cells = et.cells_with_no_exco_block()
-            raise CommentWithNoExcoBlockWarning("Found Cell with comment but no exco block.\n"
-                                                f"[{', '.join(x.short_name for x in questionable_cells)}]")
-        return et
+        ret = ExcoTemplate.empty()
+        for cfp in util.iterate_cells_in_workbook(wb):
+            if not isinstance(cfp.cell, EmptyCell) and cfp.cell.comment is not None:
+                cell_loc = cfp.to_cell_location()
+                try:
+                    ebc = ExcoBlockCollection.from_string(cfp.cell.comment.text)
+                    if ebc.n_total_blocks() == 0:
+                        raise CommentWithNoExcoBlockWarning(f"{cell_loc.short_name} has comment but no exco block.")
+                    ret.add_to_block_collections(cell_loc, ebc)
+                except ExcoException as e:  # throw error with cell info
+                    raise BadTemplateException(  # Todo: maybe be all these should be warning
+                        f'Bad Template at sheet: {cell_loc.sheet_name}, cell: {cell_loc.coordinate}') from e
+        return ret
 
     @classmethod
     def from_excel(cls, fname: str) -> 'ExcoTemplate':
         return cls.from_workbook(workbook=opx.load_workbook(fname))
 
-    def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
-        ret = {}
-        for cell_loc, exco_blocks in self.exco_blocks.items():
-            spec = []
-            for block in exco_blocks:
-                try:
-                    spec.append(block.to_extractor_task_spec())
-                except ExcoException as e:
-                    raise BadTemplateException(f'Fail to construct spec at {cell_loc.short_name}\n'
-                                               f'{block.raw}') from e
-            ret[cell_loc] = spec
+    def column_block_by_table_key(self) -> Dict[str, List[ExcoBlockWithLocation]]:
+        def get_table_key(block: ExcoBlockWithLocation):
+            try:
+                return block.exco_block.table_key()
+            except ExcoException as e:
+                raise TableKeyNotFound(f'{block.cell_location.short_name}')
 
-        return ExcelProcessorSpec(cell_specs=ret, table_specs=[])  # TODO Temporary fix
+        return util.group_by(get_table_key, self.column_blocks)
+
+    def build_table_specs(self) -> Dict[CellLocation, List[TableExtractionSpec]]:
+        group_columns = self.column_block_by_table_key()
+        used_keys = []
+        ret: Dict[CellLocation, List[TableExtractionSpec]] = defaultdict(list)
+        for tb in self.table_blocks:
+            table_key = tb.key
+            table_loc = tb.cell_location
+            used_keys.append(table_key)
+            try:
+                column_blocks = group_columns[table_key]
+            except LookupError as e:
+                raise TableHasNoColumn(table_key)
+            # TODO: Support other orientation by allowing tuple
+            columns_dicts = []
+            for cb in column_blocks:
+                offset = tb.cell_location.offset_to(cb.cell_location)[1]
+                columns_dicts.append(ColumnSpecDict(
+                    offset=offset, dict=cb.exco_block.to_dict(), source=cb
+                ))
+            table_spec = TableExtractionSpec.from_dict(
+                d=tb.exco_block.to_dict(),
+                source=tb,
+                column_dicts=columns_dicts
+            )
+            ret[table_loc].append(table_spec)
+
+        if len(group_columns) != len(used_keys):
+            missing_key = [gc for gc in group_columns.keys() if gc not in used_keys]
+            raise MissingTableBlock(f"{missing_key} has no matching table block.")
+        return dict(ret)
+
+    def build_cell_specs(self) -> Dict[CellLocation, List[CellExtractionSpec]]:
+        ret: Dict[CellLocation, List[CellExtractionSpec]] = defaultdict(list)
+        for cb in self.cell_blocks:
+            cl = cb.cell_location
+            print(type(cl))
+            ret[cl].append(CellExtractionSpec.from_dict(cb.exco_block.to_dict(), cb))
+        return dict(ret)
+
+    def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
+
+        return ExcelProcessorSpec(
+            cell_specs=self.build_cell_specs(),
+            table_specs=self.build_table_specs())  # TODO Temporary fix

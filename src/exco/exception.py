@@ -47,5 +47,16 @@ class ExtractionTaskCreationException(ExcoException):
 class ExcelProcessorCreationException(ExcoException):
     pass
 
+
 class TooManyRowRead(ExcoException):
+    pass
+
+
+class TableKeyNotFound(ExcoException):
+    pass
+
+class TableHasNoColumn(ExcoException):
+    pass
+
+class MissingTableBlock(ExcoException):
     pass

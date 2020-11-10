@@ -70,6 +70,13 @@ class CellLocation(ExcelExtractionScope):
         sheet: Worksheet = wb[self.sheet_name]
         return CellFullPath(
             workbook=wb,
+            sheetname=self.sheet_name,
             sheet=sheet,
             cell=sheet[self.coordinate]
         )
+
+    def offset_to(self, other: 'CellLocation') -> Tuple[int, int]:  # row, col
+        # our + offset = other
+        our_r, our_c = self.row_col
+        other_r, other_c = other.row_col
+        return other_r - our_r, other_c - our_c

@@ -15,7 +15,7 @@ def test_simple_template(simple_template: exco.ExcoTemplate):
     assert simple_template.n_cell() == 2
     assert simple_template.n_exco_blocks() == 3
 
-    coords = {k.coordinate for k in simple_template.exco_blocks.keys()}
+    coords = {k.cell_location.coordinate for k in simple_template.cell_blocks}
     assert coords == {'B5', 'D2'}
 
 

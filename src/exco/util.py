@@ -1,12 +1,18 @@
 import textwrap
-from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional
+from collections import defaultdict
+from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Sequence, Callable
 
 import openpyxl
+from exco.cell_full_path import CellFullPath
+from openpyxl import Workbook
+from openpyxl.cell import Cell
 
 from openpyxl.utils import get_column_letter
 import stringcase
 from exco import setting as st
 import itertools
+
+from openpyxl.worksheet.worksheet import Worksheet
 
 T = TypeVar('T')
 
@@ -93,3 +99,35 @@ def flatten(lol: Iterable[Iterable[T]]) -> Iterable[T]:
 
 def flattened_len(it: Iterable[Iterable]):
     return sum(1 for _ in flatten(it))
+
+
+def iterate_cells_in_worksheet(sheet: Worksheet) -> Generator[Cell, None, None]:
+    for row in sheet.iter_rows():
+        for cell in row:
+            yield cell
+
+
+def iterate_cells_in_workbook(workbook: Workbook) -> Generator[CellFullPath, None, None]:
+    for sheetname in workbook.sheetnames:
+        sheet: Worksheet = workbook[sheetname]
+        for cell in iterate_cells_in_worksheet(sheet):
+            yield CellFullPath(
+                workbook=workbook,
+                sheetname=sheetname,
+                sheet=sheet,
+                cell=cell)
+
+
+def unique(xs: Iterable[T]) -> List[T]:
+    return list(set(xs))
+
+
+T2 = TypeVar('T2')
+
+
+def group_by(f: Callable[[T], T2], xs: List[T]) -> Dict[T2, List[T]]:
+    ret = defaultdict(list)
+    for x in xs:
+        key = f(x)
+        ret[key].append(x)
+    return dict(ret)

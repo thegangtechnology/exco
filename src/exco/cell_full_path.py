@@ -9,6 +9,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 @dataclass
 class CellFullPath:
     workbook: Workbook
+    sheetname: str
     sheet: Worksheet
     cell: Cell
 
@@ -20,6 +21,11 @@ class CellFullPath:
         cell = self.sheet.cell(row=r + row, column=c + col)
         return CellFullPath(
             workbook=self.workbook,
+            sheetname=self.sheetname,
             sheet=self.sheet,
             cell=cell
         )
+
+    def to_cell_location(self) -> 'CellLocation':
+        from exco.cell_location import CellLocation
+        return CellLocation(sheet_name=self.sheetname, coordinate=self.cell.coordinate)
