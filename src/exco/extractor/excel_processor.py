@@ -2,18 +2,17 @@ from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List, Optional, Generic
 
 import openpyxl
-from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
-from exco.extractor.table_extraction_task import TableExtractionTask, EndConditionCollection, TableExtractionTaskResult
-from exco.extractor_spec import CellExtractionSpec, ExcelProcessorSpec
-from exco.exco_template import ExcoTemplate
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException, TableExtractionTaskCreationException
+from exco.exco_template import ExcoTemplate
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locator_factory import LocatorFactory
 from exco.extractor.parser.parser_factory import ParserFactory
+from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
+from exco.extractor.table_extraction_task import TableExtractionTask, EndConditionCollection, TableExtractionTaskResult
 from exco.extractor.validator.validator_factory import ValidatorFactory
-from exco.extractor_spec.apv_spec import APVSpec
+from exco.extractor_spec import CellExtractionSpec, ExcelProcessorSpec
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec
 from openpyxl import Workbook
 
