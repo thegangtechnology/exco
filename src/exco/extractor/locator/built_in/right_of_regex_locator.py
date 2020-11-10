@@ -17,7 +17,7 @@ class RightOfRegexLocator(Locator):
         compiled_regex = re.compile(self.regex)
         for row in sheet.iter_rows():
             for cell in row:
-                if compiled_regex.fullmatch(row) is not None:
+                if compiled_regex.fullmatch(str(cell.value)) is not None:
                     cell_loc = CellLocation(
                         sheet_name=anchor_cell_location.sheet_name,
                         coordinate=util.shift_coord(cell.coordinate, (0, 1))
