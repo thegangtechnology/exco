@@ -33,6 +33,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
+          -Dsonar.sources=src
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.exclusions="*.xml"
           -Dsonar.qualitygate.wait=true
