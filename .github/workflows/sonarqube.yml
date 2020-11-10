@@ -24,7 +24,7 @@ jobs:
         pip install codecov
     - name: Test with pytest
       run: |
-        pytest --cov-report=xml --cov=src
+        pytest --cov-report=xml:coverage.xml --cov=./
         codecov
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
@@ -33,7 +33,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.sources=src
           -Dsonar.python.coverage.reportPaths=coverage.xml
           -Dsonar.exclusions="*.xml"
           -Dsonar.qualitygate.wait=true
