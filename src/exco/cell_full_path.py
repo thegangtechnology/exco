@@ -9,7 +9,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 @dataclass
 class CellFullPath:
     workbook: Workbook
-    sheetname: str
+    sheetname: str  # todo: make sheetname a property from sheet.title
     sheet: Worksheet
     cell: Cell
 
