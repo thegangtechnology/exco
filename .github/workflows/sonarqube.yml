@@ -24,7 +24,7 @@ jobs:
         pip install codecov
     - name: Test with pytest
       run: |
-        pytest --cov-report=xml:coverage.xml --cov=./src
+        pytest --cov-report=xml:coverage.xml --cov=./ pytest --cov-config=.coveragerc
         codecov
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master

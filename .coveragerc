@@ -1,0 +1,6 @@
+[run]
+omit = 
+  tests/*
+  notebooks/**/*
+  sample/**/*
+  setup.py
