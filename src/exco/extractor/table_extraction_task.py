@@ -1,81 +1,17 @@
-import abc
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Any
 
 from exco import CellLocation
-from exco.cell_full_path import CellFullPath
 from exco.exception import TooManyRowRead
 from exco.extractor import Locator
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locating_result import LocatingResult
+from exco.extractor.table_end_conditions.table_end_condition import TableEndCondition
+from exco.extractor.table_end_conditions.table_end_condition_param import TableEndConditionParam
+from exco.extractor.table_end_conditions.table_end_condition_result import TableEndConditionResult
 from exco.extractor_spec.table_extraction_spec import TableItemDirection
 from openpyxl import Workbook
 from exco import setting as st
-
-
-@dataclass
-class TableEndConditionResult:
-    should_terminate: bool
-    is_inclusive: bool
-    is_ok: bool
-    msg: str = ''
-    exception: Optional[Exception] = None
-
-    @property
-    def is_exclusive(self):
-        return not self.is_inclusive
-
-    def good(self, should_terminate: bool, is_inclusive: bool) -> 'TableEndConditionResult':
-        return TableEndConditionResult(
-            should_terminate=should_terminate,
-            is_inclusive=is_inclusive,
-            is_ok=True
-        )
-
-    def bad(self, msg: str = '', exception: Optional[Exception] = None) -> 'TableEndConditionResult':
-        return TableEndConditionResult(
-            should_terminate=True,
-            is_inclusive=False,
-            is_ok=False,
-            msg=msg,
-            exception=exception
-        )
-
-
-@dataclass
-class TableEndConditionParam:
-    row_count: int  # include this row
-    cfps: Dict[str, CellFullPath]
-
-
-class TableEndCondition(abc.ABC):
-    @abc.abstractmethod
-    def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
-        raise NotImplementedError()
-
-
-@dataclass
-class AllRowBlankTableEndCondition(TableEndCondition):
-
-    def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
-        all_blanks = all(cfp.is_blank() for key, cfp in param.cfps.items())
-        return TableEndConditionResult.good(
-            should_terminate=all_blanks,
-            is_inclusive=False
-        )
-
-
-@dataclass
-class MaxRowTableEndCondition(TableEndCondition):
-    n: int
-    inclusive: bool = True
-
-    def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
-        max_row_reached = param.row_count >= self.n
-        return TableEndConditionResult.good(
-            should_terminate=max_row_reached,
-            is_inclusive=self.inclusive
-        )
 
 
 @dataclass
