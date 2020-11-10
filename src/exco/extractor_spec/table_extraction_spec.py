@@ -60,7 +60,8 @@ class TableExtractionSpec:
     item_direction: TableItemDirection = TableItemDirection.DOWNWARD
     source: SpecSource = field(default_factory=UnknownSource)
 
-    def from_dict(self, d: Dict[str, Any],
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any],
                   source: SpecSource,
                   column_dicts: List[ColumnSpecDict]) -> 'TableExtractionSpec':
         """
@@ -86,10 +87,15 @@ class TableExtractionSpec:
             col.offset: APVSpec.from_dict(d=col.dict, source=col.source)
             for col in column_dicts
         }
+        if st.k_end_conditions in d:
+            end_conditions = [TableEndConditionSpec.from_dict(v) for v in d.get(st.k_end_conditions, [])]
+        else:
+            end_conditions = TableEndConditionSpec.default_conditions()  # should i have this default??
         return TableExtractionSpec(
             key=d[st.k_key],
             locator=LocatorSpec.from_dict(d.get(st.k_locator, None)),
             columns=columns,
-            end_conditions=[TableEndConditionSpec.from_dict(v) for v in d.get(st.k_end_conditions, [])],
-            item_direction=TableItemDirection.from_value(d.get(st.k_item_direction, None))
+            end_conditions=end_conditions,
+            item_direction=TableItemDirection.from_value(d.get(st.k_item_direction, None)),
+            source=source
         )

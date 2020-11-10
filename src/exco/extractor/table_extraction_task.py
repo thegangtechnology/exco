@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Any
 
 from exco import CellLocation
-from exco.exception import TooManyRowRead
+from exco.exception import TooManyRowRead, NoEndConditonError
 from exco.extractor.locator.locator import Locator
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locating_result import LocatingResult
@@ -45,10 +45,14 @@ class EndConditionCollection:
             end_condition_results=[ec.test(param) for ec in self.end_conditions]
         )
 
-    def from_spec(self,
+    @classmethod
+    def from_spec(cls,
                   specs: List[TableEndConditionSpec],
                   factory: TableEndConditionFactory) -> 'EndConditionCollection':
+        if not specs:
+            raise NoEndConditonError()
         ecs = [factory.create_from_spec(spec) for spec in specs]
+
         return EndConditionCollection(end_conditions=ecs)
 
 
@@ -128,7 +132,9 @@ class TableExtractionTask:
             for offset, cet in self.columns.items():
                 cell_cl = self.shift_column_direction(key_cell, offset)
                 cell_results.append(cet.process(cell_cl, workbook))
-
+            row_results.append(RowExtractionTaskResult(
+                {cr.key: cr for cr in cell_results}
+            ))
             if ec_results.should_terminate_inclusively():
                 break
 

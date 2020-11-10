@@ -14,14 +14,16 @@ class TableEndConditionResult:
     def is_exclusive(self):
         return not self.is_inclusive
 
-    def good(self, should_terminate: bool, is_inclusive: bool) -> 'TableEndConditionResult':
+    @classmethod
+    def good(cls, should_terminate: bool, is_inclusive: bool) -> 'TableEndConditionResult':
         return TableEndConditionResult(
             should_terminate=should_terminate,
             is_inclusive=is_inclusive,
             is_ok=True
         )
 
-    def bad(self, msg: str = '', exception: Optional[Exception] = None) -> 'TableEndConditionResult':
+    @classmethod
+    def bad(cls, msg: str = '', exception: Optional[Exception] = None) -> 'TableEndConditionResult':
         return TableEndConditionResult(
             should_terminate=True,
             is_inclusive=False,

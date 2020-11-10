@@ -1,7 +1,7 @@
 from typing import Dict, Type
 
 from exco.extractor.base_factory import BaseFactory
-from exco.extractor.table_end_conditions.built_in.all_row_blank_table_end_condition import AllRowBlankTableEndCondition
+from exco.extractor.table_end_conditions.built_in.all_blank_table_end_condition import AllBlankTableEndCondition
 from exco.extractor.table_end_conditions.built_in.max_row_table_end_condition import MaxRowTableEndCondition
 from exco.extractor.table_end_conditions.table_end_condition import TableEndCondition
 from exco.extractor_spec.table_extraction_spec import TableEndConditionSpec
@@ -18,6 +18,6 @@ class TableEndConditionFactory(BaseFactory[TableEndCondition, TableEndConditionS
     @classmethod
     def default(cls) -> 'TableEndConditionFactory':
         return cls(cls.build_class_dict([
-            AllRowBlankTableEndCondition,
+            AllBlankTableEndCondition,
             MaxRowTableEndCondition
         ]))

@@ -137,7 +137,8 @@ class ExcelProcessorFactory:
                 key=spec.key,
                 locator=self.locator_factory.create_from_spec(spec=spec.locator),
                 columns=columns,
-                end_condition=EndConditionCollection.from_spec(spec.end_conditions),
+                end_condition=EndConditionCollection.from_spec(spec.end_conditions,
+                                                               factory=self.table_end_condition_factory),
                 item_direction=spec.item_direction
             )
         except ExcoException as e:

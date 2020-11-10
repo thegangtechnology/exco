@@ -6,7 +6,7 @@ from exco.extractor.table_end_conditions.table_end_condition import TableEndCond
 
 
 @dataclass
-class AllRowBlankTableEndCondition(TableEndCondition):
+class AllBlankTableEndCondition(TableEndCondition):
 
     def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
         all_blanks = all(cfp.is_blank() for key, cfp in param.cfps.items())

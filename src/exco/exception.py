@@ -66,3 +66,6 @@ class MissingTableBlock(ExcoException):
 
 class TableExtractionTaskCreationException(ExcoException):
     pass
+
+class NoEndConditonError(ExcoException):
+    pass
