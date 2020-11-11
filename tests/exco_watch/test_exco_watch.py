@@ -42,7 +42,7 @@ def test_handler_bad_input(capfd):
 
 @patch("time.sleep", side_effect=InterruptedError)
 def test_main(mocked_sleep, capfd):
-    with patch.object(sys, 'argv', ['exo_watch', fname]):
+    with patch.object(sys, 'argv', ['exco_watch', fname]):
         ExcoWatch.main()
         out, err = capfd.readouterr()
         assert 'Quitting' in out
