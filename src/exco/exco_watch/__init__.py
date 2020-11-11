@@ -23,7 +23,11 @@ class ExcoWatchHandler(PatternMatchingEventHandler):
             processor = exco.from_excel(self.path)
             result = processor.process_excel(self.path)
             pprint(result.to_dict())
-        except ExcoException:
+        except (ExcoException, TypeError, LookupError, ValueError, AttributeError, OSError):
+            print_exc()
+        except InterruptedError as e:
+            raise e from e
+        except Exception as e:
             print_exc()
         finally:
             current_time = datetime.now().strftime("%H:%M:%S")
