@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Dict, Any, ClassVar, Set
+from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
 from exco import util, exception
 from exco.extractor_spec.validator_spec import ValidatorSpec
@@ -10,14 +10,16 @@ from exco.extractor_spec.spec_source import SpecSource, UnknownSource
 from exco import setting as st
 from exco.extractor_spec.assumption_spec import AssumptionSpec
 
+T = TypeVar('T')
+
 
 @dataclass
-class CellExtractionSpec:
+class CellExtractionSpec(Generic[T]):
     apv: APVSpec
     locator: LocatorSpec = field(default_factory=LocatorSpec.default)
     source: SpecSource = field(default_factory=UnknownSource)
 
-    consumed_keys: ClassVar[Set[str]] = {st.k_locator}
+    consumed_keys: ClassVar[Set[str]] = {st.k_locator, st.k_fallback}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | APVSpec.allowed_keys
 
     @property
@@ -36,6 +38,10 @@ class CellExtractionSpec:
     def assumptions(self) -> Dict[str, AssumptionSpec]:
         return self.apv.assumptions
 
+    @property
+    def fallback(self) -> T:
+        return self.apv.fallback
+
     @classmethod
     def from_dict(cls, d: Dict[str, Any], source: SpecSource = None) -> 'CellExtractionSpec':
         source = source if source is not None else UnknownSource()
@@ -46,5 +52,5 @@ class CellExtractionSpec:
         return CellExtractionSpec(
             locator=LocatorSpec.from_dict(d.get(st.k_locator, None)),
             apv=APVSpec.from_dict(d, source),
-            source=source
+            source=source,
         )

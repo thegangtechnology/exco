@@ -25,4 +25,4 @@ def test_with_bad_result(template: exco.ExcelProcessor):
     task_result = bad_result.cell_result_for_key('some_value').result
     assert not task_result.validation_results['between'].is_ok
 
-    assert not task_result.is_ok()
+    assert not task_result.is_ok

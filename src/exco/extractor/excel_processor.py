@@ -62,7 +62,7 @@ class ExcelProcessingResult:
         ret = {}
         for results in self.cell_results.values():  # TODO: Warn of duplicate key
             for result in results:
-                ret[result.key] = result.get_value(None)
+                ret[result.key] = result.get_value()
 
         for results in self.table_results.values():  # TODO: Warn of duplicate key
             for result in results:
@@ -127,7 +127,8 @@ class ExcelProcessorFactory:
                              spec.assumptions.items()},
                 parser=self.parser_factory.create_from_spec(spec=spec.parser),
                 validators={k: self.validator_factory.create_from_spec(sp) for k, sp in
-                            spec.validations.items()}
+                            spec.validations.items()},
+                fallback=spec.fallback
             )
         except ExcoException as e:
             raise ExtractionTaskCreationException(

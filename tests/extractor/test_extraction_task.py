@@ -22,17 +22,23 @@ def wb() -> object:
 
 
 def test_extraction_task_result_failed():
-    assert CellExtractionTaskResult.fail_locating(key="something",
-                                                  locating_result=LocatingResult(location=None,
-                                                                                 is_ok=False)) is not None
+    ctr = CellExtractionTaskResult.fail_locating(key="something",
+                                                 locating_result=LocatingResult(location=None,
+                                                                                is_ok=False),
+                                                 fallback='funny')
+    assert not ctr.is_ok
+    assert ctr.get_value() == 'funny'
 
 
 def test_extraction_task_assumption_failed():
-    assert CellExtractionTaskResult.fail_assumptions(key="something",
-                                                     locating_result=LocatingResult(location=None, is_ok=False),
-                                                     assumption_results={
-                                                         "a": AssumptionResult.bad(msg="failed")
-                                                     }) is not None
+    ctr = CellExtractionTaskResult.fail_assumptions(key="something",
+                                                    locating_result=LocatingResult(location=None, is_ok=False),
+                                                    assumption_results={
+                                                        "a": AssumptionResult.bad(msg="failed")
+                                                    },
+                                                    fallback='fallback')
+    assert not ctr.is_ok
+    assert ctr.get_value() == 'fallback'
 
 
 def test_extraction_task_locating_failed(wb: Workbook):
@@ -41,13 +47,15 @@ def test_extraction_task_locating_failed(wb: Workbook):
         locator=RightOfLocator(label="hi"),
         parser=IntParser(),
         validators={},
-        assumptions={}
+        assumptions={},
+        fallback='fallback'
     )
 
     result = et.process(anchor_cell_location=CellLocation(sheet_name="Sheet",
                                                           coordinate="A1"),
                         workbook=wb)
-    assert result.is_ok() is False
+    assert not result.is_ok
+    assert result.get_value() == 'fallback'
 
 
 def test_extraction_task_assumption(wb: Workbook):
@@ -56,10 +64,12 @@ def test_extraction_task_assumption(wb: Workbook):
         locator=AtCommentCellLocator(),
         parser=IntParser(),
         validators={},
-        assumptions={"B2": LeftCellMatchAssumption(label="the koi")}
+        assumptions={"B2": LeftCellMatchAssumption(label="the koi")},
+        fallback='fallback'
     )
 
     result = et.process(anchor_cell_location=CellLocation(sheet_name="Sheet",
                                                           coordinate="B2"),
                         workbook=wb)
-    assert result.is_ok() is False
+    assert not result.is_ok
+    assert result.get_value() == 'fallback'

@@ -41,7 +41,8 @@ def test_fail_extraction_creation():
             key="something",
             parser=ParserSpec(name='int'),
             source=UnknownSource(),
-            validations={}
+            validations={},
+            fallback=None
         )
     )]
 

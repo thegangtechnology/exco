@@ -14,10 +14,12 @@ k_params = 'params'
 k_locator = 'locator'
 k_validations = 'validations'
 k_assumptions = 'assumptions'
-
+k_fallback = 'fallback'
 k_table_key = 'table_key'
 k_columns = 'columns'
 k_end_conditions = 'end_conditions'
 k_item_direction = 'item_direction'
 
 table_infinite_loop_guard = 10000
+
+default_fallback_value = None  # Note should I make another none like singleton for this?
