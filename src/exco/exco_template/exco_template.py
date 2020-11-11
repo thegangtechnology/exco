@@ -14,6 +14,7 @@ from exco.extractor_spec.excel_processor_spec import ExcelProcessorSpec
 from exco.extractor_spec.spec_source import SpecSource
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec, ColumnSpecDict
 from openpyxl.cell.read_only import EmptyCell
+import warnings
 
 
 @dataclass
@@ -133,7 +134,8 @@ class ExcoTemplate:
                 try:
                     ebc = ExcoBlockCollection.from_string(cfp.cell.comment.text)
                     if ebc.n_total_blocks() == 0:
-                        raise CommentWithNoExcoBlockWarning(f"{cell_loc.short_name} has comment but no exco block.")
+                        warnings.warn(f"{cell_loc.short_name} has comment but no exco block.",
+                                      CommentWithNoExcoBlockWarning)
                     ret.add_to_block_collections(cell_loc, ebc)
                 except ExcoException as e:  # throw error with cell info
                     raise BadTemplateException(  # Todo: maybe be all these should be warning

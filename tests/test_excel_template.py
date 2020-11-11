@@ -30,9 +30,10 @@ def test_bad_template():
 
 def test_questionable_template():
     fname = join(dirname(__file__), '../sample/test/questionable.xlsx')
-    with pytest.raises(exco.exception.CommentWithNoExcoBlockWarning) as exc:
+    with pytest.warns(exco.exception.CommentWithNoExcoBlockWarning) as exc:
         exco.ExcoTemplate.from_excel(fname)
-    assert "B8" in str(exc.value)
+    assert len(exc) == 1
+    assert "B8" in str(exc[0].message.args[0])
 
 
 def test_bad_cell_template():
