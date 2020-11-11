@@ -39,6 +39,11 @@ class ExcelProcessingResult:
     cell_results: Dict[CellLocation, List[CellExtractionTaskResult]]
     table_results: Dict[CellLocation, List[TableExtractionTaskResult]]
 
+    @property
+    def is_ok(self):
+        return all(cr.is_ok for crs in self.cell_results.values() for cr in crs) and \
+               all(tr.is_ok for trs in self.table_results.values() for tr in trs)
+
     def _lookup_for_key(self, d: Dict[CellLocation, List[T]], key: str) -> Optional[LookupResult[T]]:
         for cl, results in d.items():
             for result in results:

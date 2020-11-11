@@ -20,6 +20,15 @@ from exco import setting as st
 class EndConditionCollectionResult:
     end_condition_results: List[TableEndConditionResult]
 
+    @property
+    def is_ok(self) -> bool:
+        """
+
+        Returns:
+            bool. True if the result is ok.
+        """
+        return all(x.is_ok for x in self.end_condition_results)
+
     def should_terminate_exclusively(self) -> bool:
         """
 
@@ -69,6 +78,10 @@ class RowExtractionTaskResult:
     """Extraction Result for a Row"""
     cell_results: Dict[str, CellExtractionTaskResult]
 
+    @property
+    def is_ok(self) -> bool:
+        return all(x.is_ok for x in self.cell_results.values())
+
     def to_dict(self) -> Dict[str, Any]:
         return {k: v.get_value(None) for k, v in self.cell_results.items()}
 
@@ -80,6 +93,12 @@ class TableExtractionTaskResult:
     locating_result: LocatingResult
     row_results: List[RowExtractionTaskResult] = field(default_factory=list)
     end_condition_results: List[EndConditionCollectionResult] = field(default_factory=list)
+
+    @property
+    def is_ok(self):
+        return self.locating_result.is_ok and \
+               all(rr.is_ok for rr in self.row_results) and \
+               all(ec.is_ok for ec in self.end_condition_results)
 
     @classmethod
     def fail_locating_result(cls, key: str, locating_result: LocatingResult) -> 'TableExtractionTaskResult':

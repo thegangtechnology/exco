@@ -24,6 +24,7 @@ def test_everything():
            'some_string': 'string'}
 
     assert result.to_dict() == exp
+    assert result.is_ok
 
 
 def test_everything_spec():
