@@ -15,11 +15,12 @@ class ValueParser(Parser[T], abc.ABC):
     def parse_value(self, v: Any) -> T:
         raise NotImplementedError()
 
-    def parse(self, cfp: CellFullPath) -> ParsingResult[T]:
+    def parse(self, cfp: CellFullPath, fallback: T) -> ParsingResult[T]:
         try:
             return ParsingResult.good(self.parse_value(cfp.cell.value))
         except ParsingFailException as e:
-            return ParsingResult.bad(f'Parsing {cfp.cell.coordinate} fail.\n'
-                                     f'value => "{cfp.cell.value}"\n'
-                                     f'{e.msg}',
+            return ParsingResult.bad(msg=f'Parsing {cfp.cell.coordinate} fail.\n'
+                                         f'value => "{cfp.cell.value}"\n'
+                                         f'{e.msg}',
+                                     fallback=fallback,
                                      exception=e)

@@ -27,22 +27,3 @@ def test_parser_parse_int():
 
 def test_parser_parse_str():
     assert StringParser().parse_value('a') == str('a')
-
-
-@patch.multiple(ValueParser, __abstractmethods__=set())
-def test_value_parser_abstract():
-    with pytest.raises(NotImplementedError):
-        vp = ValueParser()
-        vp.parse_value("a")
-
-
-@patch.multiple(Parser, __abstractmethods__=set())
-def test_parser_abstract():
-    with pytest.raises(NotImplementedError):
-        p = Parser()
-        p.parse(cfp=None)
-
-
-def test_parsing_result_default():
-    pr = ParsingResult(value=1.0, is_ok=False, msg="default test")
-    assert pr.get_value("test") == "test"
