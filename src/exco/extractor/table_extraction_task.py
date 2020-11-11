@@ -83,7 +83,7 @@ class RowExtractionTaskResult:
         return all(x.is_ok for x in self.cell_results.values())
 
     def to_dict(self) -> Dict[str, Any]:
-        return {k: v.get_value(None) for k, v in self.cell_results.items()}
+        return {k: v.get_value() for k, v in self.cell_results.items()}
 
 
 @dataclass

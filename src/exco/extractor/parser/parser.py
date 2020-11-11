@@ -12,5 +12,5 @@ T = TypeVar('T')
 
 class Parser(Actor, abc.ABC, Generic[T]):
     @abc.abstractmethod
-    def parse(self, cfp: CellFullPath) -> ParsingResult[T]:
+    def parse(self, cfp: CellFullPath, fallback: T) -> ParsingResult[T]:
         raise NotImplementedError()

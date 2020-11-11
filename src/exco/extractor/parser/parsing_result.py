@@ -6,25 +6,22 @@ T = TypeVar('T')
 
 @dataclass
 class ParsingResult(Generic[T]):
-    value: Optional[T]
+    value: T
     is_ok: bool
     msg: str = ""
     exception: Optional[Exception] = None
 
-    def get_value(self, default: T) -> T:
-        if self.is_ok:
-            return self.value
-        else:
-            return default
+    def get_value(self) -> T:
+        return self.value
 
     @classmethod
-    def bad(cls, msg: str = "", exception: Optional[Exception] = None) -> 'ParsingResult':
+    def bad(cls, fallback: T, msg: str = "", exception: Optional[Exception] = None) -> 'ParsingResult[T]':
         return ParsingResult(
-            value=None, is_ok=False, msg=msg, exception=exception
+            value=fallback, is_ok=False, msg=msg, exception=exception
         )
 
     @classmethod
-    def good(cls, value: T, msg: str = "") -> 'ParsingResult':
+    def good(cls, value: T, msg: str = "") -> 'ParsingResult[T]':
         return ParsingResult(
             value=value, is_ok=True, msg=msg
         )
