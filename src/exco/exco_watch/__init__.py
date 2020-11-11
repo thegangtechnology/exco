@@ -25,8 +25,6 @@ class ExcoWatchHandler(PatternMatchingEventHandler):
             pprint(result.to_dict())
         except (ExcoException, TypeError, LookupError, ValueError, AttributeError):
             print_exc()
-        except InterruptedError as e:
-            raise e from e
         finally:
             current_time = datetime.now().strftime("%H:%M:%S")
             print(f'Latest Result At: {current_time}')
