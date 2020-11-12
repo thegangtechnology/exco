@@ -16,5 +16,7 @@ class LocatingResult:
         return LocatingResult(location=location, is_ok=True)
 
     @classmethod
-    def bad(cls, msg: str, exception: Optional[Exception] = None) -> 'LocatingResult':
-        return LocatingResult(location=None, is_ok=False, msg=msg, exception=exception)
+    def bad(cls, msg: str,
+            exception: Optional[Exception] = None) -> 'LocatingResult':
+        return LocatingResult(location=None, is_ok=False,
+                              msg=msg, exception=exception)

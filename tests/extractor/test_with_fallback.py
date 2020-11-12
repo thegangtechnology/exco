@@ -1,6 +1,7 @@
-from exco import util, ExcelProcessorSpec, ExcoTemplate, ExcelProcessor, ExcelProcessorFactory
 from openpyxl import Workbook
 from openpyxl.comments import Comment
+
+from exco import util, ExcoTemplate, ExcelProcessorFactory
 
 
 def test_with_defaults():

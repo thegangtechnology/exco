@@ -39,7 +39,8 @@ def test_table_extraction_task(workbook, cell_loc):
     tt = TableExtractionTask(
         key="some_table",
         locator=AtCommentCellLocator(),
-        columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
+        columns={0: CellExtractionTask.simple(
+            key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection([MaxRowTableEndCondition(n=3)]),
         item_direction=TableItemDirection.DOWNWARD
     )
@@ -53,7 +54,8 @@ def test_table_extraction_task_hit_infinite_loop_guard(workbook, cell_loc):
     tt = TableExtractionTask(
         key="some_table",
         locator=AtCommentCellLocator(),
-        columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
+        columns={0: CellExtractionTask.simple(
+            key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection([]),
         item_direction=TableItemDirection.DOWNWARD
     )
@@ -66,7 +68,8 @@ def test_table_extraction_fail_locating(workbook, cell_loc):
     tt = TableExtractionTask(
         key="some_table",
         locator=RightOfLocator(label='Non Existent'),
-        columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
+        columns={0: CellExtractionTask.simple(
+            key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection.default(),
         item_direction=TableItemDirection.DOWNWARD
     )
@@ -79,7 +82,8 @@ def test_shift_cell_downward(cell_loc):
     tt = TableExtractionTask(
         key="some_table",
         locator=AtCommentCellLocator(),
-        columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
+        columns={0: CellExtractionTask.simple(
+            key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection.default(),
         item_direction=TableItemDirection.DOWNWARD
     )
@@ -92,7 +96,8 @@ def test_shift_cell_rightward(cell_loc):
     tt = TableExtractionTask(
         key="some_table",
         locator=AtCommentCellLocator(),
-        columns={0: CellExtractionTask.simple(key='some_key', parser=StringParser())},
+        columns={0: CellExtractionTask.simple(
+            key='some_key', parser=StringParser())},
         end_condition=EndConditionCollection.default(),
         item_direction=TableItemDirection.RIGHTWARD
     )

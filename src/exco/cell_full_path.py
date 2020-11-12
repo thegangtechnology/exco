@@ -1,9 +1,14 @@
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from openpyxl import Workbook
 from openpyxl.cell import Cell
 from openpyxl.cell.read_only import EmptyCell
 from openpyxl.worksheet.worksheet import Worksheet
+
+if TYPE_CHECKING:
+    from exco.cell_location\
+        import CellLocation
 
 
 @dataclass
@@ -46,4 +51,5 @@ class CellFullPath:
             CellLocation
         """
         from exco.cell_location import CellLocation
-        return CellLocation(sheet_name=self.sheetname, coordinate=self.cell.coordinate)
+        return CellLocation(sheet_name=self.sheetname,
+                            coordinate=self.cell.coordinate)

@@ -97,7 +97,8 @@ class ExcoBlock(SpecSource):
         )
 
     @classmethod
-    def simple(cls, raw: str, start_line: int = 0, end_line: int = 0) -> 'ExcoBlock':
+    def simple(cls, raw: str, start_line: int = 0,
+               end_line: int = 0) -> 'ExcoBlock':
         return ExcoBlock(
             raw=raw,
             start_line=start_line,
@@ -117,7 +118,8 @@ class ExcoBlockCollection:
         Returns:
             total number of blocks.
         """
-        return len(self.table_blocks) + len(self.cell_blocks) + len(self.column_blocks)
+        return len(self.table_blocks) + len(self.cell_blocks) + \
+            len(self.column_blocks)
 
     @classmethod
     def from_string(cls, block: str):
@@ -190,7 +192,7 @@ class ExcoBlockParser:
             if current_state.is_inside():
                 return S.OUTSIDE
             else:
-                raise TooManyEndException(f'Too many end markers.')
+                raise TooManyEndException('Too many end markers.')
         else:
             return current_state
 
@@ -227,9 +229,13 @@ class ExcoBlockParser:
                 raise ExpectEndException()
 
             return ExcoBlockCollection(
-                table_blocks=[ExcoBlock.from_line_collector(lc) for lc in collectors[S.INSIDE_TABLE]],
-                cell_blocks=[ExcoBlock.from_line_collector(lc) for lc in collectors[S.INSIDE_CELL]],
-                column_blocks=[ExcoBlock.from_line_collector(lc) for lc in collectors[S.INSIDE_COL]]
+                table_blocks=[ExcoBlock.from_line_collector(
+                    lc) for lc in collectors[S.INSIDE_TABLE]],
+                cell_blocks=[ExcoBlock.from_line_collector(
+                    lc) for lc in collectors[S.INSIDE_CELL]],
+                column_blocks=[ExcoBlock.from_line_collector(
+                    lc) for lc in collectors[S.INSIDE_COL]]
             )
         except ExcoException as e:
-            raise BadTemplateException(f'Bad template at Line {i}\n{lines}') from e
+            raise BadTemplateException(
+                f'Bad template at Line {i}\n{lines}') from e

@@ -39,11 +39,13 @@ setup(name='exco',
               'autopep8',
               'pytest',
               'pytest-cov',
-              'wheel'
+              'wheel',
+              'flake8'
           ],
           'test': [
               'pytest',
-              'pytest-cov'
+              'pytest-cov',
+              'flake8'
           ]
       },
       license='Private',

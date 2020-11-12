@@ -37,7 +37,8 @@ class BaseFactory(abc.ABC, Generic[ActorType, SpecType]):
         return util.default_key(clz, suffix=cls.suffix())
 
     @classmethod
-    def build_class_dict(cls, classes: List[ActorType]) -> Dict[str, Type[ActorType]]:
+    def build_class_dict(
+            cls, classes: List[ActorType]) -> Dict[str, Type[ActorType]]:
         """Build class dictionary.
         The key is by default the class name with the suffix removed and then snake case.
         Ex: AllBlankTableEndCondition -> all_blank (suffix is specified in suffix())
@@ -90,8 +91,9 @@ class BaseFactory(abc.ABC, Generic[ActorType, SpecType]):
         """
         suffix = self.suffix()
         if spec.name not in self.class_map:
-            raise ActorCreationFailException(f'Cannot find {suffix} for name {spec.name}\n'
-                                             f'available keys are {list(self.class_map.keys())}')
+            raise ActorCreationFailException(
+                f'Cannot find {suffix} for name {spec.name}\n'
+                f'available keys are {list(self.class_map.keys())}')
         clz = self.class_map[spec.name]
         try:
             return clz.create(params=spec.params)

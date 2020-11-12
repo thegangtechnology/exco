@@ -10,7 +10,8 @@ from exco.extractor.validator.validation_result import ValidationResult
 
 def test_is_not_blank_validator():
     validator = IsNotBlankValidator()
-    assert validator.validate('a') == ValidationResult.bad(msg=f'Fail a fail validation of {str(validator)}')
+    assert validator.validate('a') == ValidationResult.bad(
+        msg=f'Fail a fail validation of {str(validator)}')
     assert validator.validate('') == ValidationResult.good()
 
 
@@ -26,4 +27,3 @@ def test_validator_abstract():
     with pytest.raises(NotImplementedError):
         vv = Validator()
         vv.validate(value="a")
-

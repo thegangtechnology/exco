@@ -27,7 +27,8 @@ def test_right_of_locator_fail(wb: Workbook):
         sheet_name="Sheet",
         coordinate="A3"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg=f'Unable to find cell to the right of the key')
+    assert result == LocatingResult.bad(
+        msg='Unable to find cell to the right of the key')
 
 
 def test_right_of_locator_regex(wb: Workbook):
@@ -49,4 +50,5 @@ def test_right_of_locator_regex_failed(wb: Workbook):
         sheet_name="Sheet",
         coordinate="A1"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg='Unable to find cell to the right of the key\\s\\ds')
+    assert result == LocatingResult.bad(
+        msg='Unable to find cell to the right of the key\\s\\ds')

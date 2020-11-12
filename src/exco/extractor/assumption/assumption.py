@@ -1,9 +1,9 @@
 import abc
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from exco.cell_full_path import CellFullPath
-from exco.extractor.assumption.assumption_result import AssumptionResult
 from exco.extractor.actor import Actor
+from exco.extractor.assumption.assumption_result import AssumptionResult
 
 T = TypeVar('T')
 

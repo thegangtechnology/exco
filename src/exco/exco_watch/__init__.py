@@ -44,7 +44,8 @@ class ExcoWatch:
     @classmethod
     def main(cls):
 
-        parser = argparse.ArgumentParser(description='Continuously Watch Template and Output.')
+        parser = argparse.ArgumentParser(
+            description='Continuously Watch Template and Output.')
         parser.add_argument('path', type=str,
                             help='Path to template file')
 

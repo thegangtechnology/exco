@@ -35,7 +35,8 @@ class EndConditionCollectionResult:
         Returns:
             bool. should terminate WITHOUT parsing this row
         """
-        return any(ecr.should_terminate and ecr.is_exclusive for ecr in self.end_condition_results)
+        return any(
+            ecr.should_terminate and ecr.is_exclusive for ecr in self.end_condition_results)
 
     def should_terminate_inclusively(self) -> bool:
         """
@@ -43,7 +44,8 @@ class EndConditionCollectionResult:
         Returns:
             bool. should terminate AFTER parsing this row
         """
-        return any(ecr.should_terminate and ecr.is_inclusive for ecr in self.end_condition_results)
+        return any(
+            ecr.should_terminate and ecr.is_inclusive for ecr in self.end_condition_results)
 
 
 @dataclass
@@ -53,15 +55,19 @@ class EndConditionCollection:
     """
     end_conditions: List[TableEndCondition]
 
-    def test(self, param: TableEndConditionParam) -> EndConditionCollectionResult:
+    def test(
+            self,
+            param: TableEndConditionParam) -> EndConditionCollectionResult:
         return EndConditionCollectionResult(
-            end_condition_results=[ec.test(param) for ec in self.end_conditions]
+            end_condition_results=[ec.test(param)
+                                   for ec in self.end_conditions]
         )
 
     @classmethod
-    def from_spec(cls,
-                  specs: List[TableEndConditionSpec],
-                  factory: TableEndConditionFactory) -> 'EndConditionCollection':
+    def from_spec(
+            cls,
+            specs: List[TableEndConditionSpec],
+            factory: TableEndConditionFactory) -> 'EndConditionCollection':
         if not specs:
             raise NoEndConditonError()
         ecs = [factory.create_from_spec(spec) for spec in specs]
@@ -92,16 +98,20 @@ class TableExtractionTaskResult:
     key: str
     locating_result: LocatingResult
     row_results: List[RowExtractionTaskResult] = field(default_factory=list)
-    end_condition_results: List[EndConditionCollectionResult] = field(default_factory=list)
+    end_condition_results: List[EndConditionCollectionResult] = field(
+        default_factory=list)
 
     @property
     def is_ok(self):
         return self.locating_result.is_ok and \
-               all(rr.is_ok for rr in self.row_results) and \
-               all(ec.is_ok for ec in self.end_condition_results)
+            all(rr.is_ok for rr in self.row_results) and \
+            all(ec.is_ok for ec in self.end_condition_results)
 
     @classmethod
-    def fail_locating_result(cls, key: str, locating_result: LocatingResult) -> 'TableExtractionTaskResult':
+    def fail_locating_result(
+            cls,
+            key: str,
+            locating_result: LocatingResult) -> 'TableExtractionTaskResult':
         """TableExtractionTaskResult when it fails locating the cell
 
         Args:
@@ -110,7 +120,8 @@ class TableExtractionTaskResult:
         Returns:
             TableExtractionTaskResult
         """
-        return TableExtractionTaskResult(key=key, locating_result=locating_result)
+        return TableExtractionTaskResult(
+            key=key, locating_result=locating_result)
 
     def get_value(self) -> List[Dict[str, Any]]:
         """
@@ -128,7 +139,8 @@ class TableExtractionTask:
     end_condition: EndConditionCollection  # there is inclusive and exclusive
     item_direction: TableItemDirection = TableItemDirection.DOWNWARD
 
-    def shift_item_direction(self, cl: CellLocation, offset: int = 1) -> CellLocation:
+    def shift_item_direction(self, cl: CellLocation,
+                             offset: int = 1) -> CellLocation:
         """Shift cell location in the item direction.
 
         Args:
@@ -143,7 +155,8 @@ class TableExtractionTask:
         else:
             return cl.shift_col(offset)
 
-    def shift_column_direction(self, cl: CellLocation, offset: int) -> CellLocation:
+    def shift_column_direction(self, cl: CellLocation,
+                               offset: int) -> CellLocation:
         """Shift cell location in the column direction.
 
         Args:
@@ -158,7 +171,8 @@ class TableExtractionTask:
         else:
             return cl.shift_row(offset)
 
-    def _build_row_cell_locations(self, key_cell: CellLocation) -> Dict[str, CellLocation]:
+    def _build_row_cell_locations(
+            self, key_cell: CellLocation) -> Dict[str, CellLocation]:
         """Build a dictionary from column key to each columns' CellLocation.
         The offset is applied and the key is change to column key
 
@@ -168,9 +182,11 @@ class TableExtractionTask:
         Returns:
             Dict[str, CellLocation]. column key -> CellLocation
         """
-        return {cet.key: self.shift_column_direction(key_cell, offset) for offset, cet in self.columns.items()}
+        return {cet.key: self.shift_column_direction(
+            key_cell, offset) for offset, cet in self.columns.items()}
 
-    def process(self, anchor_cell_location: CellLocation, workbook: Workbook) -> TableExtractionTaskResult:
+    def process(self, anchor_cell_location: CellLocation,
+                workbook: Workbook) -> TableExtractionTaskResult:
         """ Extract table from work book as if the anchor location is at anchor_cell_location
 
         Args:
@@ -182,7 +198,8 @@ class TableExtractionTask:
         """
         locating_result = self.locator.locate(anchor_cell_location, workbook)
         if not locating_result.is_ok:
-            return TableExtractionTaskResult.fail_locating_result(key=self.key, locating_result=locating_result)
+            return TableExtractionTaskResult.fail_locating_result(
+                key=self.key, locating_result=locating_result)
 
         irow = 0
         should_terminate = False
@@ -192,9 +209,11 @@ class TableExtractionTask:
         while not should_terminate:
             irow += 1
             if irow >= st.table_infinite_loop_guard:
-                raise TooManyRowRead(f'setting.table_infinite_loop_guard ({st.table_infinite_loop_guard}) reached')
+                raise TooManyRowRead(
+                    f'setting.table_infinite_loop_guard ({st.table_infinite_loop_guard}) reached')
             cell_locations = self._build_row_cell_locations(key_cell)
-            cfps = {k: cl.get_cell_full_path(workbook) for k, cl in cell_locations.items()}
+            cfps = {k: cl.get_cell_full_path(workbook)
+                    for k, cl in cell_locations.items()}
 
             # Test end condition
             ec_param = TableEndConditionParam(row_count=irow, cfps=cfps)

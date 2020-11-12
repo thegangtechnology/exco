@@ -12,7 +12,8 @@ from itertools import chain
 class ExcelProcessorSpec:
     # TODO: don't group by cell loc.
     cell_specs: Dict[CellLocation, List[CellExtractionSpec]]  # anchor -> specs
-    table_specs: Dict[CellLocation, List[TableExtractionSpec]]  # anchor -> specs
+    table_specs: Dict[CellLocation,
+                      List[TableExtractionSpec]]  # anchor -> specs
 
     def n_total_spec(self) -> int:
         return self.n_table_spec() + self.n_cell_spec()

@@ -8,7 +8,9 @@ class TableEndConditionResult:
     Table End Conditon Result
     """
     should_terminate: bool
-    is_inclusive: bool  # should the row that end condition evaluates to true be included in the results
+    # should the row that end condition evaluates to true be included in the
+    # results
+    is_inclusive: bool
     is_ok: bool
     msg: str = ''
     exception: Optional[Exception] = None
@@ -24,7 +26,8 @@ class TableEndConditionResult:
         return not self.is_inclusive
 
     @classmethod
-    def good(cls, should_terminate: bool, is_inclusive: bool) -> 'TableEndConditionResult':
+    def good(cls, should_terminate: bool,
+             is_inclusive: bool) -> 'TableEndConditionResult':
         """Good TableEndConditionResult
 
         Args:
@@ -41,7 +44,10 @@ class TableEndConditionResult:
         )
 
     @classmethod
-    def bad(cls, msg: str = '', exception: Optional[Exception] = None) -> 'TableEndConditionResult':
+    def bad(
+            cls,
+            msg: str = '',
+            exception: Optional[Exception] = None) -> 'TableEndConditionResult':
         """Bad TableEndConditionResult
 
         Args:

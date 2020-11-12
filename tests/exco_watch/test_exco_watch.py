@@ -5,7 +5,8 @@ from unittest.mock import patch
 from os.path import join, dirname
 import sys
 
-fname = join(dirname(__file__), '../../sample/test/everything/everything_template.xlsx')
+fname = join(dirname(__file__),
+             '../../sample/test/everything/everything_template.xlsx')
 
 
 @patch("time.sleep", side_effect=InterruptedError)

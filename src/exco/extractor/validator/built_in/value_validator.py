@@ -16,4 +16,5 @@ class ValueValidator(Generic[T], Validator[T], abc.ABC):
         if self.validate_value(value):
             return ValidationResult.good()
         else:
-            return ValidationResult.bad(msg=f"Fail {value} fail validation of {self}")
+            return ValidationResult.bad(
+                msg=f"Fail {value} fail validation of {self}")

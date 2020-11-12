@@ -12,7 +12,8 @@ from openpyxl.worksheet.worksheet import Worksheet
 class RightOfRegexLocator(Locator):
     regex: str
 
-    def locate(self, anchor_cell_location: CellLocation, workbook: Workbook) -> LocatingResult:
+    def locate(self, anchor_cell_location: CellLocation,
+               workbook: Workbook) -> LocatingResult:
         sheet: Worksheet = workbook[anchor_cell_location.sheet_name]
         compiled_regex = re.compile(self.regex)
         for row in sheet.iter_rows():
@@ -23,4 +24,5 @@ class RightOfRegexLocator(Locator):
                         coordinate=util.shift_coord(cell.coordinate, (0, 1))
                     )
                     return LocatingResult.good(cell_loc)
-        return LocatingResult.bad(msg=f"Unable to find cell to the right of {self.regex}")
+        return LocatingResult.bad(
+            msg=f"Unable to find cell to the right of {self.regex}")

@@ -7,7 +7,8 @@ from exco.extractor.table_end_conditions.table_end_condition import TableEndCond
 from exco.extractor_spec.table_extraction_spec import TableEndConditionSpec
 
 
-class TableEndConditionFactory(BaseFactory[TableEndCondition, TableEndConditionSpec]):
+class TableEndConditionFactory(
+        BaseFactory[TableEndCondition, TableEndConditionSpec]):
     def __init__(self, class_map: Dict[str, Type[TableEndCondition]]):
         super().__init__(class_map)
 

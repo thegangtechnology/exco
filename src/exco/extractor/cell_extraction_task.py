@@ -1,20 +1,19 @@
-import abc
 from dataclasses import dataclass, field
 from typing import Generic, Dict, TypeVar
+
+from openpyxl import Workbook
 
 from exco.cell_location import CellLocation
 from exco.extractor.assumption.assumption import Assumption
 from exco.extractor.assumption.assumption_result import AssumptionResult
 from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
-from exco.extractor.locator.locator import Locator
 from exco.extractor.locator.locating_result import LocatingResult
+from exco.extractor.locator.locator import Locator
 from exco.extractor.parser.parser import Parser
-
 from exco.extractor.parser.parsing_result import ParsingResult
 from exco.extractor.validator.validation_result import ValidationResult
 from exco.extractor.validator.validator import Validator
 from exco.util import long_string
-from openpyxl import Workbook
 
 T = TypeVar('T')
 
@@ -24,8 +23,10 @@ class CellExtractionTaskResult(Generic[T]):
     key: str
     locating_result: LocatingResult
     parsing_result: ParsingResult[T]
-    validation_results: Dict[str, ValidationResult] = field(default_factory=dict)
-    assumption_results: Dict[str, AssumptionResult] = field(default_factory=dict)
+    validation_results: Dict[str, ValidationResult] = field(
+        default_factory=dict)
+    assumption_results: Dict[str, AssumptionResult] = field(
+        default_factory=dict)
 
     def get_value(self) -> T:
         """Get Python equivalent value
@@ -45,11 +46,12 @@ class CellExtractionTaskResult(Generic[T]):
             True if it pass assumption, parsing, and validation.
         """
         return all(ar.is_ok for ar in self.assumption_results.values()) and \
-               self.parsing_result.is_ok and \
-               all(vr.is_ok for vr in self.validation_results.values())
+            self.parsing_result.is_ok and \
+            all(vr.is_ok for vr in self.validation_results.values())
 
     @classmethod
-    def fail_locating(cls, key: str, locating_result: LocatingResult, fallback: T) -> 'CellExtractionTaskResult[T]':
+    def fail_locating(cls, key: str, locating_result: LocatingResult,
+                      fallback: T) -> 'CellExtractionTaskResult[T]':
         msg = "Fail Locating"
         assert not locating_result.is_ok
         return CellExtractionTaskResult(
@@ -92,18 +94,19 @@ class CellExtractionTask(Generic[T]):
         fallback: {self.fallback}""")
         return s
 
-    def process(self, anchor_cell_location: CellLocation, workbook: Workbook) -> CellExtractionTaskResult[T]:
+    def process(self, anchor_cell_location: CellLocation,
+                workbook: Workbook) -> CellExtractionTaskResult[T]:
         locating_result = self.locator.locate(
             anchor_cell_location=anchor_cell_location,
             workbook=workbook
         )
         if not locating_result.is_ok:
-            return CellExtractionTaskResult.fail_locating(key=self.key,
-                                                          locating_result=locating_result,
-                                                          fallback=self.fallback)
+            return CellExtractionTaskResult.fail_locating(
+                key=self.key, locating_result=locating_result, fallback=self.fallback)
         cfp = locating_result.location.get_cell_full_path(workbook)
 
-        assumption_results = {k: assumption.assume(cfp) for k, assumption in self.assumptions.items()}
+        assumption_results = {k: assumption.assume(
+            cfp) for k, assumption in self.assumptions.items()}
         if any(not ar.is_ok for ar in assumption_results.values()):
             return CellExtractionTaskResult.fail_assumptions(
                 key=self.key,
@@ -121,7 +124,8 @@ class CellExtractionTask(Generic[T]):
                 parsing_result=parsing_result
             )
 
-        validation_results = {k: vt.validate(parsing_result.value) for k, vt in self.validators.items()}
+        validation_results = {k: vt.validate(
+            parsing_result.value) for k, vt in self.validators.items()}
         return CellExtractionTaskResult(
             key=self.key,
             locating_result=locating_result,

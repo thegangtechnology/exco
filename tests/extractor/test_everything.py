@@ -1,11 +1,11 @@
+import datetime
 from os.path import join, dirname
 
 import exco
-import datetime
+from exco import ExcoTemplate
 
-from exco import ExcelProcessorSpec, ExcoTemplate
-
-fname = join(dirname(__file__), '../../sample/test/everything/everything_template.xlsx')
+fname = join(dirname(__file__),
+             '../../sample/test/everything/everything_template.xlsx')
 
 
 def test_everything():

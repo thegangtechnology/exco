@@ -1,7 +1,7 @@
 import pytest
 from openpyxl import Workbook
 
-from exco import CellLocation, AssumptionSpec
+from exco import CellLocation
 from exco.extractor.assumption.assumption_result import AssumptionResult
 from exco.extractor.assumption.built_in.left_cell_match_assumption import LeftCellMatchAssumption
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
@@ -32,7 +32,8 @@ def test_extraction_task_result_failed():
 
 def test_extraction_task_assumption_failed():
     ctr = CellExtractionTaskResult.fail_assumptions(key="something",
-                                                    locating_result=LocatingResult(location=None, is_ok=False),
+                                                    locating_result=LocatingResult(
+                                                        location=None, is_ok=False),
                                                     assumption_results={
                                                         "a": AssumptionResult.bad(msg="failed")
                                                     },
