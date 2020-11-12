@@ -6,10 +6,9 @@ from os.path import dirname
 from pprint import pprint
 from traceback import print_exc
 
-from watchdog.events import FileSystemEventHandler
-
 import exco
 from exco.exception import ExcoException
+from watchdog.events import FileSystemEventHandler
 
 
 class ExcoWatchHandler(FileSystemEventHandler):
@@ -50,8 +49,7 @@ class ExcoWatch:
     @classmethod
     def main(cls):
 
-        parser = argparse.ArgumentParser(
-            description='Continuously Watch Template and Output.')
+        parser = argparse.ArgumentParser(description='Continuously Watch Template and Output.')
         parser.add_argument('path', type=str,
                             help='Path to template file')
 
