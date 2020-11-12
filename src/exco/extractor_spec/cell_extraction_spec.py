@@ -49,7 +49,7 @@ class CellExtractionSpec(Generic[T]):
         extra_keys = util.extra_keys(d, cls.allowed_keys)
         if extra_keys:
             raise exception.ExcoBlockContainsExtraKey(
-                f'{extra_keys}\n' f'allowed_keys are {cls.allowed_keys}')
+                f'{extra_keys}\n' + f'allowed_keys are {cls.allowed_keys}')
         return CellExtractionSpec(
             locator=LocatorSpec.from_dict(d.get(st.k_locator, None)),
             apv=APVSpec.from_dict(d, source),
