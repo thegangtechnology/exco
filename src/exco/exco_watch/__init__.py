@@ -1,22 +1,27 @@
 import argparse
+import logging
+import os
 import time
 from datetime import datetime, timedelta
-from os.path import basename, dirname
+from os.path import basename, dirname, join
 from pprint import pprint
 from traceback import print_exc
-
-from watchdog.events import PatternMatchingEventHandler
+from os.path import abspath
+from watchdog.events import PatternMatchingEventHandler, LoggingEventHandler, FileSystemEventHandler
 
 import exco
 from exco.exception import ExcoException
 
 
-class ExcoWatchHandler(PatternMatchingEventHandler):
+class ExcoWatchHandler(FileSystemEventHandler):
     def __init__(self, path: str):
-        pattern = f'*/{basename(path)}'
-        super().__init__(patterns=[pattern])
+        super().__init__()
         self.path = path
-        self.last_modified = datetime.now()
+        self.last_modified = self._last_fmod()  # pattern matching event doesn't work with osx's FSEvent
+        self.last_output = datetime.now()
+
+    def _last_fmod(self):
+        return os.path.getmtime(self.path)
 
     def run_exco(self):
         try:
@@ -30,12 +35,14 @@ class ExcoWatchHandler(PatternMatchingEventHandler):
             print(f'Latest Result At: {current_time}')
 
     def on_modified(self, event):
-        if datetime.now() - self.last_modified < timedelta(seconds=1):
+        if datetime.now() - self.last_output < timedelta(seconds=1):
             return False
         else:
-            self.last_modified = datetime.now()
+            self.last_output = datetime.now()
 
-        self.run_exco()
+        last_fmod = self._last_fmod()  # need this for osx :s
+        if last_fmod > self.last_modified:
+            self.run_exco()
         return True
 
 
@@ -62,14 +69,14 @@ class ExcoWatch:
         from watchdog.observers import Observer
         event_handler = ExcoWatchHandler(path=path)
         observer = Observer()
-        observer.schedule(event_handler, dirname(path), recursive=False)
+        observer.schedule(event_handler, dirname(path), recursive=True)
         event_handler.run_exco()
         observer.start()
 
         try:
             while True:
                 time.sleep(1)
-        except InterruptedError:
+        except (InterruptedError, KeyboardInterrupt):
             print('Quitting...')
         finally:
             observer.stop()
