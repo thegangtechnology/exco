@@ -15,7 +15,8 @@ class ParsingResult(Generic[T]):
         return self.value
 
     @classmethod
-    def bad(cls, fallback: T, msg: str = "", exception: Optional[Exception] = None) -> 'ParsingResult[T]':
+    def bad(cls, fallback: T, msg: str = "",
+            exception: Optional[Exception] = None) -> 'ParsingResult[T]':
         return ParsingResult(
             value=fallback, is_ok=False, msg=msg, exception=exception
         )

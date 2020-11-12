@@ -1,18 +1,17 @@
+import itertools
 import textwrap
 from collections import defaultdict
-from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Sequence, Callable
+from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Callable
 
 import openpyxl
-from exco.cell_full_path import CellFullPath
+import stringcase
 from openpyxl import Workbook
 from openpyxl.cell import Cell
-
 from openpyxl.utils import get_column_letter
-import stringcase
-from exco import setting as st
-import itertools
-
 from openpyxl.worksheet.worksheet import Worksheet
+
+from exco import setting as st
+from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
 
@@ -86,10 +85,12 @@ def extra_keys(d: Dict[str, Any], allowed=Set[str]) -> List[str]:
     return [k for k in d.keys() if k not in allowed]
 
 
-def name_params(d: Dict[str, Any], exclude: Optional[Set[str]] = None) -> Tuple[str, Dict[str, Any]]:
+def name_params(d: Dict[str, Any], exclude: Optional[Set[str]]
+                = None) -> Tuple[str, Dict[str, Any]]:
     exclude = set() if exclude is None else exclude
     name = d[st.k_name]
-    params = {k: v for k, v in d.items() if k != st.k_name and k not in exclude}
+    params = {k: v for k, v in d.items() if k !=
+              st.k_name and k not in exclude}
     return name, params
 
 
@@ -103,13 +104,15 @@ def flattened_len(it: Iterable[Iterable]):
     return sum(1 for _ in flatten(it))
 
 
-def iterate_cells_in_worksheet(sheet: Worksheet) -> Generator[Cell, None, None]:
+def iterate_cells_in_worksheet(
+        sheet: Worksheet) -> Generator[Cell, None, None]:
     for row in sheet.iter_rows():
         for cell in row:
             yield cell
 
 
-def iterate_cells_in_workbook(workbook: Workbook) -> Generator[CellFullPath, None, None]:
+def iterate_cells_in_workbook(
+        workbook: Workbook) -> Generator[CellFullPath, None, None]:
     for sheetname in workbook.sheetnames:
         sheet: Worksheet = workbook[sheetname]
         for cell in iterate_cells_in_worksheet(sheet):

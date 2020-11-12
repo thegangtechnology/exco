@@ -6,7 +6,8 @@ import exco
 
 @pytest.fixture
 def simple_spec():
-    template = exco.ExcoTemplate.from_excel(join(dirname(__file__), '../../sample/test/simple.xlsx'))
+    template = exco.ExcoTemplate.from_excel(
+        join(dirname(__file__), '../../sample/test/simple.xlsx'))
     spec = template.to_excel_extractor_spec()
     return spec
 
@@ -21,6 +22,7 @@ def test_unique_key(simple_spec: exco.ExcelProcessorSpec):
 
 
 def test_not_unique_key(simple_spec: exco.ExcelProcessorSpec):
-    template = exco.ExcoTemplate.from_excel(join(dirname(__file__), '../../sample/test/simple_duplicate_key.xlsx'))
+    template = exco.ExcoTemplate.from_excel(
+        join(dirname(__file__), '../../sample/test/simple_duplicate_key.xlsx'))
     spec = template.to_excel_extractor_spec()
     assert not spec.is_keys_unique()

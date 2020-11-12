@@ -1,5 +1,5 @@
 import abc
-from typing import Any, TypeVar, Type, Dict
+from typing import Any, TypeVar
 
 from exco.cell_full_path import CellFullPath
 from exco.exception import ParsingFailException
@@ -19,8 +19,7 @@ class ValueParser(Parser[T], abc.ABC):
         try:
             return ParsingResult.good(self.parse_value(cfp.cell.value))
         except ParsingFailException as e:
-            return ParsingResult.bad(msg=f'Parsing {cfp.cell.coordinate} fail.\n'
-                                         f'value => "{cfp.cell.value}"\n'
-                                         f'{e.msg}',
-                                     fallback=fallback,
-                                     exception=e)
+            return ParsingResult.bad(
+                msg=f'Parsing {cfp.cell.coordinate} fail.\n'
+                f'value => "{cfp.cell.value}"\n'
+                f'{e.msg}', fallback=fallback, exception=e)

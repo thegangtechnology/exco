@@ -19,7 +19,8 @@ def cfp() -> CellFullPath:
     ws['A2'] = 'the key'
 
     cell = Cell(row=2, column=2, worksheet=wb)
-    cell_full_path = CellFullPath(workbook=wb, sheet=wb.active, cell=cell, sheetname=ws.title)
+    cell_full_path = CellFullPath(
+        workbook=wb, sheet=wb.active, cell=cell, sheetname=ws.title)
     return cell_full_path
 
 
@@ -35,4 +36,5 @@ def test_assumption_result(cfp):
     assert lcm_assumption.assume(cfp=cfp) == AssumptionResult.good()
 
     lcm_assumption = LeftCellMatchAssumption(label='the key 2')
-    assert lcm_assumption.assume(cfp=cfp) == AssumptionResult.bad('Cell to the left of B2 does not match the key 2')
+    assert lcm_assumption.assume(cfp=cfp) == AssumptionResult.bad(
+        'Cell to the left of B2 does not match the key 2')

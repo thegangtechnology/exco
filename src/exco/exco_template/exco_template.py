@@ -70,7 +70,10 @@ class ExcoTemplate:
         """
         return ExcoTemplate(table_blocks=[], column_blocks=[], cell_blocks=[])
 
-    def add_to_block_collections(self, cell_location: CellLocation, block_collection: ExcoBlockCollection) -> None:
+    def add_to_block_collections(
+            self,
+            cell_location: CellLocation,
+            block_collection: ExcoBlockCollection) -> None:
         """Add block collection as if anchor cell is at cell_location.
 
         Args:
@@ -84,9 +87,11 @@ class ExcoTemplate:
         for tb in block_collection.table_blocks:
             self.table_blocks.append(ExcoBlockWithLocation(cell_location, tb))
         for cell_block in block_collection.cell_blocks:
-            self.cell_blocks.append(ExcoBlockWithLocation(cell_location, cell_block))
+            self.cell_blocks.append(
+                ExcoBlockWithLocation(cell_location, cell_block))
         for col_block in block_collection.column_blocks:
-            self.column_blocks.append(ExcoBlockWithLocation(cell_location, col_block))
+            self.column_blocks.append(
+                ExcoBlockWithLocation(cell_location, col_block))
 
     def cell_locations(self) -> List[CellLocation]:
         """
@@ -114,7 +119,8 @@ class ExcoTemplate:
         Returns:
             Total number of ExcoBlocks
         """
-        return len(self.table_blocks) + len(self.column_blocks) + len(self.cell_blocks)
+        return len(self.table_blocks) + \
+            len(self.column_blocks) + len(self.cell_blocks)
 
     @classmethod
     def from_workbook(cls, workbook: opx.Workbook) -> 'ExcoTemplate':
@@ -129,13 +135,16 @@ class ExcoTemplate:
         wb = workbook
         ret = ExcoTemplate.empty()
         for cfp in util.iterate_cells_in_workbook(wb):
-            if not isinstance(cfp.cell, EmptyCell) and cfp.cell.comment is not None:
+            if not isinstance(
+                    cfp.cell, EmptyCell) and cfp.cell.comment is not None:
                 cell_loc = cfp.to_cell_location()
                 try:
-                    ebc = ExcoBlockCollection.from_string(cfp.cell.comment.text)
+                    ebc = ExcoBlockCollection.from_string(
+                        cfp.cell.comment.text)
                     if ebc.n_total_blocks() == 0:
-                        warnings.warn(f"{cell_loc.short_name} has comment but no exco block.",
-                                      CommentWithNoExcoBlockWarning)
+                        warnings.warn(
+                            f"{cell_loc.short_name} has comment but no exco block.",
+                            CommentWithNoExcoBlockWarning)
                     ret.add_to_block_collections(cell_loc, ebc)
                 except ExcoException as e:  # throw error with cell info
                     raise BadTemplateException(  # Todo: maybe be all these should be warning
@@ -154,7 +163,8 @@ class ExcoTemplate:
         """
         return cls.from_workbook(workbook=opx.load_workbook(fname))
 
-    def column_block_dict_by_table_key(self) -> Dict[str, List[ExcoBlockWithLocation]]:
+    def column_block_dict_by_table_key(
+            self) -> Dict[str, List[ExcoBlockWithLocation]]:
         """ Compute column block dicationary grouped by table key
 
         Returns:
@@ -165,11 +175,13 @@ class ExcoTemplate:
             try:
                 return block.exco_block.table_key()
             except ExcoException as e:
-                raise TableKeyNotFound(f'{block.cell_location.short_name}') from e
+                raise TableKeyNotFound(
+                    f'{block.cell_location.short_name}') from e
 
         return util.group_by(get_table_key, self.column_blocks)
 
-    def build_table_specs(self) -> Dict[CellLocation, List[TableExtractionSpec]]:
+    def build_table_specs(
+            self) -> Dict[CellLocation, List[TableExtractionSpec]]:
         """build table spec
 
         Returns:
@@ -201,8 +213,10 @@ class ExcoTemplate:
             ret[table_loc].append(table_spec)
 
         if len(group_columns) != len(used_keys):
-            missing_key = [gc for gc in group_columns.keys() if gc not in used_keys]
-            raise MissingTableBlock(f"{missing_key} has no matching table block.")
+            missing_key = [gc for gc in group_columns.keys()
+                           if gc not in used_keys]
+            raise MissingTableBlock(
+                f"{missing_key} has no matching table block.")
         return dict(ret)
 
     def build_cell_specs(self) -> Dict[CellLocation, List[CellExtractionSpec]]:
@@ -217,7 +231,8 @@ class ExcoTemplate:
         for cb in self.cell_blocks:
             cl = cb.cell_location
             try:
-                ret[cl].append(CellExtractionSpec.from_dict(cb.exco_block.to_dict(), cb))
+                ret[cl].append(CellExtractionSpec.from_dict(
+                    cb.exco_block.to_dict(), cb))
             except ExcoException as e:
                 raise BadTemplateException(cl.short_name) from e
         return dict(ret)

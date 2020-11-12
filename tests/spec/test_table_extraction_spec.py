@@ -5,8 +5,10 @@ from exco.extractor_spec.table_extraction_spec import TableItemDirection, TableE
 
 
 def test_from_value():
-    assert TableItemDirection.from_value('downward') == TableItemDirection.DOWNWARD
-    assert TableItemDirection.from_value('rightward') == TableItemDirection.RIGHTWARD
+    assert TableItemDirection.from_value(
+        'downward') == TableItemDirection.DOWNWARD
+    assert TableItemDirection.from_value(
+        'rightward') == TableItemDirection.RIGHTWARD
     assert TableItemDirection.from_value(None) == TableItemDirection.default()
 
 

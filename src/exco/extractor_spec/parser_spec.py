@@ -22,4 +22,5 @@ class ParserSpec:
                 params=d.get(st.k_params, {})
             )
         except (ExcoException, KeyError) as e:
-            raise ParserSpecCreationException(f'Can\'t create parser from {d}') from e
+            raise ParserSpecCreationException(
+                f'Can\'t create parser from {d}') from e

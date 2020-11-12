@@ -43,12 +43,13 @@ class CellExtractionSpec(Generic[T]):
         return self.apv.fallback
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any], source: SpecSource = None) -> 'CellExtractionSpec':
+    def from_dict(cls, d: Dict[str, Any],
+                  source: SpecSource = None) -> 'CellExtractionSpec':
         source = source if source is not None else UnknownSource()
         extra_keys = util.extra_keys(d, cls.allowed_keys)
         if extra_keys:
-            raise exception.ExcoBlockContainsExtraKey(f'{extra_keys}\n'
-                                                      f'allowed_keys are {cls.allowed_keys}')
+            raise exception.ExcoBlockContainsExtraKey(
+                f'{extra_keys}\n' f'allowed_keys are {cls.allowed_keys}')
         return CellExtractionSpec(
             locator=LocatorSpec.from_dict(d.get(st.k_locator, None)),
             apv=APVSpec.from_dict(d, source),

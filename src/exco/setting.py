@@ -22,4 +22,5 @@ k_item_direction = 'item_direction'
 
 table_infinite_loop_guard = 10000
 
-default_fallback_value = None  # Note should I make another none like singleton for this?
+# Note should I make another none like singleton for this?
+default_fallback_value = None

@@ -28,7 +28,8 @@ class CellLocation(ExcelExtractionScope):
             CellLocation
         """
         row, col = self.row_col
-        return CellLocation(sheet_name=self.sheet_name, coordinate=tuple_to_coordinate(row + offset, col))
+        return CellLocation(sheet_name=self.sheet_name,
+                            coordinate=tuple_to_coordinate(row + offset, col))
 
     def shift_col(self, offset: int) -> 'CellLocation':
         """Shift the cell by given offset in column direction.
@@ -40,7 +41,8 @@ class CellLocation(ExcelExtractionScope):
             CellLocation
         """
         row, col = self.row_col
-        return CellLocation(sheet_name=self.sheet_name, coordinate=tuple_to_coordinate(row, col + offset))
+        return CellLocation(sheet_name=self.sheet_name,
+                            coordinate=tuple_to_coordinate(row, col + offset))
 
     @property
     def short_name(self) -> str:

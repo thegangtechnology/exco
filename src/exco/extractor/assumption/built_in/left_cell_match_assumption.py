@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Dict, Any
 
 from exco.cell_full_path import CellFullPath
 from exco.extractor.assumption.assumption import Assumption
@@ -15,4 +14,5 @@ class LeftCellMatchAssumption(Assumption):
         if cond:
             return AssumptionResult.good()
         else:
-            return AssumptionResult.bad(f'Cell to the left of {cfp.cell.coordinate} does not match {self.label}')
+            return AssumptionResult.bad(
+                f'Cell to the left of {cfp.cell.coordinate} does not match {self.label}')

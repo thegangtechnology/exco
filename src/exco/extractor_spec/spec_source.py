@@ -11,8 +11,8 @@ class SpecSource(abc.ABC):
         """
         raise NotImplementedError()
 
+
 class UnknownSource(SpecSource):
 
     def describe(self) -> str:
         return 'Unknown Source'
-

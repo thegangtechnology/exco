@@ -1,8 +1,9 @@
 from os.path import join, dirname
 
-import exco
 import pytest
-from exco import ExcoTemplate, CellLocation, ExcoBlock, util
+
+import exco
+from exco import ExcoTemplate, ExcoBlock, util
 from exco.exception import BadTemplateException, MissingTableBlock, TableKeyNotFound, TableHasNoColumn
 from exco.exco_template.exco_template import ExcoBlockWithLocation
 

@@ -56,7 +56,8 @@ class TableExtractionSpec:
     key: str
     locator: LocatorSpec  # for corner
     columns: Dict[Offset, APVSpec]  # offset -> APVSpec
-    end_conditions: List[TableEndConditionSpec] = field(default_factory=TableEndConditionSpec.default_conditions)
+    end_conditions: List[TableEndConditionSpec] = field(
+        default_factory=TableEndConditionSpec.default_conditions)
     item_direction: TableItemDirection = TableItemDirection.DOWNWARD
     source: SpecSource = field(default_factory=UnknownSource)
 
@@ -72,13 +73,16 @@ class TableExtractionSpec:
 
         """
         source = source if source is not None else UnknownSource()
-        col_dicts = [ColumnSpecDict(offset, col_spec, UnknownSource()) for offset, col_spec in d[st.k_columns].items()]
+        col_dicts = [ColumnSpecDict(offset, col_spec, UnknownSource())
+                     for offset, col_spec in d[st.k_columns].items()]
         return cls.from_table_and_column_dict(
             d, source, col_dicts
         )
 
     @classmethod
-    def from_table_and_column_dict(cls, d: Dict[str, Any],
+    def from_table_and_column_dict(cls,
+                                   d: Dict[str,
+                                           Any],
                                    source: SpecSource,
                                    column_dicts: List[ColumnSpecDict]) -> 'TableExtractionSpec':
         """
@@ -105,14 +109,17 @@ class TableExtractionSpec:
             for col in column_dicts
         }
         if st.k_end_conditions in d:
-            end_conditions = [TableEndConditionSpec.from_dict(v) for v in d.get(st.k_end_conditions, [])]
+            end_conditions = [TableEndConditionSpec.from_dict(
+                v) for v in d.get(st.k_end_conditions, [])]
         else:
-            end_conditions = TableEndConditionSpec.default_conditions()  # should i have this default??
+            # should i have this default??
+            end_conditions = TableEndConditionSpec.default_conditions()
         return TableExtractionSpec(
             key=d[st.k_key],
             locator=LocatorSpec.from_dict(d.get(st.k_locator, None)),
             columns=columns,
             end_conditions=end_conditions,
-            item_direction=TableItemDirection.from_value(d.get(st.k_item_direction, None)),
+            item_direction=TableItemDirection.from_value(
+                d.get(st.k_item_direction, None)),
             source=source
         )

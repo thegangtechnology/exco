@@ -1,14 +1,9 @@
-from unittest.mock import patch
-
 import pytest
 
 from exco.exception import ParsingFailException
-from exco.extractor import Parser
 from exco.extractor.parser.built_in.float_parser import FloatParser
 from exco.extractor.parser.built_in.int_parser import IntParser
 from exco.extractor.parser.built_in.string_parser import StringParser
-from exco.extractor.parser.built_in.value_parser import ValueParser
-from exco.extractor.parser.parsing_result import ParsingResult
 
 
 def test_parser_parse_float():
