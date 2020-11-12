@@ -40,7 +40,7 @@ class ExcoWatchHandler(FileSystemEventHandler):
         else:
             self.last_output = datetime.now()
 
-        last_fmod = self._last_fmod() # need this for osx :s
+        last_fmod = self._last_fmod()  # need this for osx :s
         if last_fmod > self.last_modified:
             self.run_exco()
         return True
@@ -68,7 +68,7 @@ class ExcoWatch:
         from watchdog.observers import Observer
         event_handler = ExcoWatchHandler(path=path)
         observer = Observer()
-        observer.schedule(event_handler, 'tmp', recursive=True)
+        observer.schedule(event_handler, dirname(path), recursive=True)
         event_handler.run_exco()
         observer.start()
 
