@@ -11,3 +11,4 @@ exclude_lines =
     @abstract
     @abc.abstract
     raise NotImplementedError()
+    if TYPE_CHECKING:
