@@ -1,16 +1,14 @@
 import argparse
-import logging
 import os
 import time
 from datetime import datetime, timedelta
-from os.path import basename, dirname, join
+from os.path import dirname
 from pprint import pprint
 from traceback import print_exc
-from os.path import abspath
-from watchdog.events import PatternMatchingEventHandler, LoggingEventHandler, FileSystemEventHandler
 
 import exco
 from exco.exception import ExcoException
+from watchdog.events import FileSystemEventHandler
 
 
 class ExcoWatchHandler(FileSystemEventHandler):
