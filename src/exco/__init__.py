@@ -12,6 +12,6 @@ from exco.extractor_spec import AssumptionSpec, \
 from exco.extractor import ExcelProcessorFactory, ExcelProcessor
 from exco.shortcut import from_excel
 
-__all__ = [version, util, exception, CellLocation, ExcoTemplate, ExcoBlock,
-           AssumptionSpec, ValidatorSpec, CellExtractionSpec, LocatorSpec, ExcelProcessorSpec,
-           ExcelProcessorFactory, ExcelProcessor, from_excel]
+__all__ = ['version', 'util', 'exception', 'CellLocation', 'ExcoTemplate', 'ExcoBlock',
+           'AssumptionSpec', 'ValidatorSpec', 'CellExtractionSpec', 'LocatorSpec', 'ExcelProcessorSpec',
+           'ExcelProcessorFactory', 'ExcelProcessor', 'from_excel']
