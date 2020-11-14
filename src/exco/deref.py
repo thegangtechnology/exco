@@ -27,21 +27,20 @@ def deref_text(workbook: Workbook, sheet_name: str, parser: Parser[T], text: str
             workbook=workbook
         )
 
-        try:
-            cfp = locating_result.location.get_cell_full_path(workbook)
-        except ValueError:
-            return f'<<{cell_coordinate}>>'
-
+        cfp = locating_result.location.get_cell_full_path(workbook)
         parsing_result = parser.parse(cfp, '')
         return parsing_result.value
 
     def resolve_match(match_obj: re.Match):
-        return resolve_cell_value(match_obj.group(1))
+        try:
+            return resolve_cell_value(match_obj.group(1))
+        except ValueError:
+            return match_obj.group(0)
 
     deref_re = re.compile(DEREF_STYLE)
     if text and isinstance(text, str):
         if len(deref_re.findall(text)) == 1 and deref_re.sub('', text) == '':
-            return resolve_cell_value(deref_re.search(text).group(1))
+            return resolve_match(deref_re.search(text))
 
         parser = StringParser()
         return re.sub(DEREF_STYLE, resolve_match, str(text))
