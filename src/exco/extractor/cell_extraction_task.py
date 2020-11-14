@@ -4,7 +4,7 @@ from typing import Generic, Dict, TypeVar
 from openpyxl import Workbook
 
 from exco.cell_location import CellLocation
-from exco.deref import deref_text
+from exco.deref import DerefCell
 from exco.extractor.assumption.assumption import Assumption
 from exco.extractor.assumption.assumption_result import AssumptionResult
 from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
@@ -47,8 +47,8 @@ class CellExtractionTaskResult(Generic[T]):
             True if it pass assumption, parsing, and validation.
         """
         return all(ar.is_ok for ar in self.assumption_results.values()) and \
-            self.parsing_result.is_ok and \
-            all(vr.is_ok for vr in self.validation_results.values())
+               self.parsing_result.is_ok and \
+               all(vr.is_ok for vr in self.validation_results.values())
 
     @classmethod
     def fail_locating(cls, key: str, locating_result: LocatingResult,
@@ -102,10 +102,11 @@ class CellExtractionTask(Generic[T]):
             workbook=workbook
         )
 
-        self.fallback = deref_text(workbook=workbook,
-                                   sheet_name=anchor_cell_location.sheet_name,
-                                   parser=self.parser,
-                                   text=self.fallback)
+        dc = DerefCell(workbook=workbook,
+                       sheet_name=anchor_cell_location.sheet_name)
+
+        self.key = dc.deref_text(self.key)
+        self.fallback = dc.deref_text(self.fallback, parser=self.parser)
 
         if not locating_result.is_ok:
             return CellExtractionTaskResult.fail_locating(
