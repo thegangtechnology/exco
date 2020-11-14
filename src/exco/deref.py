@@ -22,10 +22,11 @@ def deref_text(workbook: Workbook, sheet_name: str, text: str) -> str:
             workbook=workbook
         )
 
-        if not locating_result.is_ok:
-            raise KeyError()
+        try:
+            cfp = locating_result.location.get_cell_full_path(workbook)
+        except ValueError:
+            return f'<<{match_obj.group(1)}>>'
 
-        cfp = locating_result.location.get_cell_full_path(workbook)
         parsing_result = StringParser().parse(cfp, '')
         return parsing_result.value
 

@@ -4,6 +4,7 @@ from typing import Generic, Dict, TypeVar
 from openpyxl import Workbook
 
 from exco.cell_location import CellLocation
+from exco.deref import deref_text
 from exco.extractor.assumption.assumption import Assumption
 from exco.extractor.assumption.assumption_result import AssumptionResult
 from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
@@ -100,6 +101,11 @@ class CellExtractionTask(Generic[T]):
             anchor_cell_location=anchor_cell_location,
             workbook=workbook
         )
+
+        self.fallback = deref_text(workbook=workbook,
+                                   sheet_name=anchor_cell_location.sheet_name,
+                                   text=self.fallback)
+
         if not locating_result.is_ok:
             return CellExtractionTaskResult.fail_locating(
                 key=self.key, locating_result=locating_result, fallback=self.fallback)
