@@ -46,9 +46,8 @@ class CellExtractionTaskResult(Generic[T]):
         Returns:
             True if it pass assumption, parsing, and validation.
         """
-        return all(ar.is_ok for ar in self.assumption_results.values()) and \
-               self.parsing_result.is_ok and \
-               all(vr.is_ok for vr in self.validation_results.values())
+        return all(ar.is_ok for ar in self.assumption_results.values()) and self.parsing_result.is_ok and \
+            all(vr.is_ok for vr in self.validation_results.values())
 
     @classmethod
     def fail_locating(cls, key: str, locating_result: LocatingResult,

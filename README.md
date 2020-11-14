@@ -120,6 +120,21 @@ constructor.
 Optional. List of Dictionary. Each dictionary must have `key` for the validation key and `name`,
 validator's class name, specified. Other parameters to be passed to the validator constructor can be flattened and specified in this dictionary as well.
 
+## Dereference 
+For the following properties, you can reference value by using <<CELL_NUM>> 
+- `key`
+- `fallback`
+- `locator<right_of>`
+
+For example,
+```
+{{--
+key: <<A1>>_sum_val
+parser: int
+locator: {name: right_of, label: <<A2>>}
+--}}
+```
+
 ## Table Block
 A table block is for specifying the properties of the table. The table block is surrounded by
 `{{--table` and `--}}`. The simplest table block is
@@ -241,3 +256,5 @@ equal to `n`.
 #### Parameters
 - `n` number of row
 - `inclusive` Optional. Default True. Whether to include the row in which it evaluates to true.
+
+
