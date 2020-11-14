@@ -4,25 +4,34 @@ import openpyxl
 
 from exco import ExcelProcessorFactory
 from exco.deref import deref_text
+from exco.extractor.parser.built_in.int_parser import IntParser
+from exco.extractor.parser.built_in.string_parser import StringParser
 
 
 def test_deref_text():
     sheet_name = "TestSheet"
     workbook = openpyxl.load_workbook(join(dirname(__file__), '../../sample/test/deref/deref_template.xlsx'))
     text = "<<A2>> and <<B2>>"
-    result = deref_text(sheet_name=sheet_name, workbook=workbook, text=text)
+    parser = StringParser()
+    result = deref_text(sheet_name=sheet_name, workbook=workbook, parser=parser, text=text)
     assert result == "sum_val and 20"
 
     text = "{{A2}} and <<B2>> and <<a1>>"
-    result = deref_text(sheet_name=sheet_name, workbook=workbook, text=text)
+    result = deref_text(sheet_name=sheet_name, workbook=workbook, parser=parser, text=text)
     assert result == "{{A2}} and 20 and <<a1>>"
+
+    text = "<<B2>>"
+    parser = IntParser()
+    result = deref_text(sheet_name=sheet_name, workbook=workbook, parser=parser, text=text)
+    assert result == 20
 
 
 def test_deref_failed():
     sheet_name = "TestSheet"
     workbook = openpyxl.load_workbook(join(dirname(__file__), '../../sample/test/deref/deref_template.xlsx'))
     text = "<<ZZZ000>>"
-    result = deref_text(sheet_name=sheet_name, workbook=workbook, text=text)
+    parser = StringParser()
+    result = deref_text(sheet_name=sheet_name, workbook=workbook, parser=parser, text=text)
     assert result == text
 
 
@@ -33,4 +42,4 @@ def test_deref_fallback():
     another_file = join(dirname(__file__),
                         '../../sample/test/deref/deref_fallback.xlsx')
     result = processor.process_excel(another_file)
-    assert result.to_dict() == {'sum_val': '500'}
+    assert result.to_dict() == {'sum_val': 500}

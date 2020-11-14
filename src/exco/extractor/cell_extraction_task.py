@@ -104,6 +104,7 @@ class CellExtractionTask(Generic[T]):
 
         self.fallback = deref_text(workbook=workbook,
                                    sheet_name=anchor_cell_location.sheet_name,
+                                   parser=self.parser,
                                    text=self.fallback)
 
         if not locating_result.is_ok:
