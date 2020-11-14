@@ -37,7 +37,7 @@ class DerefCell:
         except ValueError:
             return match_obj.group(0)
 
-    def deref_text(self, text: str, parser: Parser[T] = StringParser()) -> str:
+    def deref_text(self, text: str, parser: Parser[T] = StringParser()) -> T:
         self.parser = parser
         if text and isinstance(text, str):
             if len(self.deref_re.findall(text)) == 1 and self.deref_re.sub('', text) == '':
