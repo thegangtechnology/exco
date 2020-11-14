@@ -7,16 +7,19 @@ from openpyxl.cell.read_only import EmptyCell
 from openpyxl.worksheet.worksheet import Worksheet
 
 if TYPE_CHECKING:
-    from exco.cell_location\
+    from exco.cell_location \
         import CellLocation
 
 
 @dataclass
 class CellFullPath:
     workbook: Workbook
-    sheetname: str  # todo: make sheetname a property from sheet.title
     sheet: Worksheet
     cell: Cell
+
+    @property
+    def sheetname(self) -> str:
+        return self.sheet.title
 
     def is_blank(self):
         """
@@ -40,7 +43,6 @@ class CellFullPath:
         cell = self.sheet.cell(row=r + row, column=c + col)
         return CellFullPath(
             workbook=self.workbook,
-            sheetname=self.sheetname,
             sheet=self.sheet,
             cell=cell
         )
