@@ -94,7 +94,6 @@ class CellLocation(ExcelExtractionScope):
         sheet: Worksheet = wb[self.sheet_name]
         return CellFullPath(
             workbook=wb,
-            sheetname=self.sheet_name,
             sheet=sheet,
             cell=sheet[self.coordinate]
         )

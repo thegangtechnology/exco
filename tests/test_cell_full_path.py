@@ -9,7 +9,7 @@ def test_cell_shift():
 
     cell = Cell(row=1, column=2, worksheet=wb)
     cell_full_path = CellFullPath(
-        workbook=wb, sheetname='', sheet=wb.active, cell=cell)
+        workbook=wb, sheet=wb.active, cell=cell)
     cell_full_path = cell_full_path.shift(3, 5)
     assert cell_full_path.cell.row == 4
     assert cell_full_path.cell.column == 7

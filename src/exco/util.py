@@ -118,7 +118,6 @@ def iterate_cells_in_workbook(
         for cell in iterate_cells_in_worksheet(sheet):
             yield CellFullPath(
                 workbook=workbook,
-                sheetname=sheetname,
                 sheet=sheet,
                 cell=cell)
 

@@ -20,7 +20,7 @@ def cfp() -> CellFullPath:
 
     cell = Cell(row=2, column=2, worksheet=wb)
     cell_full_path = CellFullPath(
-        workbook=wb, sheet=wb.active, cell=cell, sheetname=ws.title)
+        workbook=wb, sheet=wb.active, cell=cell)
     return cell_full_path
 
 
