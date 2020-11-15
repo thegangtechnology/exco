@@ -11,4 +11,4 @@ class NoDeref(Deref):
     def run_deref(self, cell_extraction_task: CellExtractionTask,
                   workbook: Workbook,
                   sheet_name: str) -> CellExtractionTask:
-        pass
+        pass  # We don't want to run any deref
