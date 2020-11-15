@@ -9,6 +9,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 if TYPE_CHECKING:
     from exco.cell_location \
         import CellLocation
+    from exco.util import CellValue
 
 
 @dataclass
@@ -56,7 +57,7 @@ class CellFullPath:
         return CellLocation(sheet_name=self.sheetname,
                             coordinate=self.cell.coordinate)
 
-    def deref(self, coordinate: str) -> CellValue:
+    def deref(self, coordinate: str) -> 'CellValue':
         """Dereference the value at given coordinate
         Args:
             cooridnate

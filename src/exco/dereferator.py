@@ -1,32 +1,83 @@
 import re
 from dataclasses import dataclass
 from datetime import date
-from re import Pattern
-from typing import ClassVar, Union
+
+from typing import ClassVar, Union, Pattern
 
 from openpyxl import Workbook
 
-from exco import CellLocation
+from exco import CellLocation, setting
 from exco.util import CellValue
 
 
 @dataclass
 class Dereferator:
-    deref_re: ClassVar[Pattern[str]] = re.compile(r'<<([A-Z]{1,3}\d+)>>')
+    deref_re: Pattern
     workbook: Workbook
     anchor: CellLocation
 
-    def resolve_match(self, coordinate: str) -> CellValue:
+    def resolve_coordinate(self, coordinate: str) -> CellValue:
+        """Resolve string coordinate ex: A1 to cell value
+
+        Args:
+            coordinate (str): cell's coordinate
+
+        Returns:
+            CellValue
+        """
         new_loc = self.anchor.new_one_at(coordinate=coordinate)
         cfp = new_loc.get_cell_full_path(self.workbook)
         return cfp.cell.value
 
+    def resolve_match(self, match_obj: re.Match) -> CellValue:
+        """Resolve value from regex MatchObject
+
+        Args:
+            match_obj (re.Match):
+
+        Returns:
+            CellValue
+        """
+        try:
+            return self.resolve_coordinate(match_obj.group(1))
+        except ValueError:
+            return match_obj.group(0)
+
     def deref_text(self, text: str) -> CellValue:
+        """Deref Text.
+        If the type is string and it contains fully the pattern (pure match), then the return type
+        is exactly the cell.value. Ex: '<<A1>>' -> 1
+        If string contains any other string then the return value is a string substitution.
+        Ex: 'the value is <<A1>>' -> 'the value is 1
+        Args:
+            text (str): text
+
+        Returns:
+            CellValue
+        """
         if text and isinstance(text, str):
             # single match return the whole value
-            if len(self.deref_re.findall(text)) == 1 and self.deref_re.sub('', text) == '':
+            pure_match = len(self.deref_re.findall(text)) == 1 and self.deref_re.sub('', text) == ''
+            if pure_match:
                 return self.resolve_match(self.deref_re.search(text))
-
-            return self.deref_re.sub(self.resolve_match, str(text))
+            else:
+                f = lambda x: str(self.resolve_match(x))
+                return self.deref_re.sub(f, str(text))
         else:
             return text
+
+    @classmethod
+    def post_spec(cls, workbook: Workbook, anchor: CellLocation):
+        return Dereferator(
+            deref_re=setting.post_spec_re,
+            workbook=workbook,
+            anchor=anchor
+        )
+
+    @classmethod
+    def pre_spec(cls, workbook: Workbook, anchor: CellLocation):
+        return Dereferator(
+            deref_re=setting.pre_spec_re,
+            workbook=workbook,
+            anchor=anchor
+        )
