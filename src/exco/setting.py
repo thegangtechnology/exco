@@ -28,5 +28,5 @@ table_infinite_loop_guard = 10000
 default_fallback_value = None
 
 # deref pattern
-post_spec_re = re.compile(r'<<([A-Z]{1,3}\d+)>>')
-pre_spec_re = re.compile(r'{{([A-Z]{1,3}\d+)}}')
+spec_to_extractor_deref_re = re.compile(r'<<([A-Z]{1,3}\d+)>>')
+template_to_spec_deref_re = re.compile(r'{{([A-Z]{1,3}\d+)}}')

@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
+from exco.dereferator import Dereferator
 from openpyxl import Workbook
 
 from exco import setting as st
@@ -24,7 +25,7 @@ class CellExtractionSpec(Generic[T]):
     consumed_keys: ClassVar[Set[str]] = {st.k_locator, st.k_fallback}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | APVSpec.allowed_keys
 
-    def deref(self, workbook: Workbook) -> 'CellExtractionSpec':
+    def deref(self, dereferator: Dereferator) -> 'CellExtractionSpec':
         """Create a new copy with <<A1>> and such dereffed with value in the workbook
         Args:
             workbook(Workbook): deref source workbook
@@ -32,8 +33,8 @@ class CellExtractionSpec(Generic[T]):
             A new copy of cell extraction spec.
         """
         return CellExtractionSpec(
-            apv=self.apv.deref(workbook),
-            locator=self.locator.deref(workbook),
+            apv=self.apv.deref(dereferator),
+            locator=self.locator.deref(dereferator),
             source=self.source
         )
 

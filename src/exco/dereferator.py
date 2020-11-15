@@ -67,17 +67,17 @@ class Dereferator:
             return text
 
     @classmethod
-    def post_spec(cls, workbook: Workbook, anchor: CellLocation):
+    def template_to_spec(cls, workbook: Workbook, anchor: CellLocation):
         return Dereferator(
-            deref_re=setting.post_spec_re,
+            deref_re=setting.template_to_spec_deref_re,
             workbook=workbook,
             anchor=anchor
         )
 
     @classmethod
-    def pre_spec(cls, workbook: Workbook, anchor: CellLocation):
+    def spec_to_extractor(cls, workbook: Workbook, anchor: CellLocation):
         return Dereferator(
-            deref_re=setting.pre_spec_re,
+            deref_re=setting.spec_to_extractor_deref_re,
             workbook=workbook,
             anchor=anchor
         )

@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set
 
+from exco.dereferator import Dereferator
 from exco.exception import ExcoException, ParserSpecCreationException
 from exco.extractor_spec.type import SpecParam
 
-from exco import setting as st
+from exco import setting as st, CellLocation
 
 
 @dataclass
@@ -13,6 +14,12 @@ class ParserSpec:
     params: SpecParam = field(default_factory=dict)
 
     allowed_keys: ClassVar[Set[str]] = {st.k_parser, st.k_params}
+
+    def deref(self, dereferator: Dereferator) -> 'ParserSpec':
+        return ParserSpec(
+            name=dereferator.deref_text(self.name),
+            params={k: dereferator.deref_text(v) for k, v in self.params.items()}
+        )
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]):

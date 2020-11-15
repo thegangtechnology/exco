@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
+from exco.dereferator import Dereferator
 from openpyxl import Workbook
 
 from exco import setting as st
@@ -25,12 +26,16 @@ class APVSpec(Generic[T]):  # Assume Parse Validate
         st.k_key, st.k_validations, st.k_assumptions}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | ParserSpec.allowed_keys
 
-    def deref(self, workbook: Workbook) -> 'APVSpec[T]':
+    # TODO: separate derefed spec and spec
+    def deref(self, dereferator: Dereferator) -> 'APVSpec[T]':
         return APVSpec(
-            key=self.key
+            key=dereferator.deref_text(self.key),
+            parser=self.parser.deref(dereferator),
+            fallback=dereferator.deref_text(self.fallback),
+            validations={k: dereferator.deref_text(v) for k, v in self.validations.items()},
+            assumptions={k: dereferator.deref_text(v) for k, v in self.assumptions.items()},
+            source=self.source
         )
-
-
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any], source: source) -> 'APVSpec':
