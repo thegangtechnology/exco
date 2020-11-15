@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from typing import Dict, Any, Optional
 
 from exco import setting
-from exco.util import name_params
 
 
 @dataclass
@@ -21,5 +20,4 @@ class DerefSpec:
         elif isinstance(d, bool) and d is False:
             return DerefSpec(name='no')
         else:
-            name, params = name_params(d)
-            return DerefSpec(name=name, params=params)
+            return DerefSpec(name=d)
