@@ -1,14 +1,16 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
+from openpyxl import Workbook
+
+from exco import setting as st
 from exco import util, exception
-from exco.extractor_spec.validator_spec import ValidatorSpec
 from exco.extractor_spec.apv_spec import APVSpec
+from exco.extractor_spec.assumption_spec import AssumptionSpec
 from exco.extractor_spec.locator_spec import LocatorSpec
 from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor_spec.spec_source import SpecSource, UnknownSource
-from exco import setting as st
-from exco.extractor_spec.assumption_spec import AssumptionSpec
+from exco.extractor_spec.validator_spec import ValidatorSpec
 
 T = TypeVar('T')
 
@@ -21,6 +23,19 @@ class CellExtractionSpec(Generic[T]):
 
     consumed_keys: ClassVar[Set[str]] = {st.k_locator, st.k_fallback}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | APVSpec.allowed_keys
+
+    def deref(self, workbook: Workbook) -> 'CellExtractionSpec':
+        """Create a new copy with <<A1>> and such dereffed with value in the workbook
+        Args:
+            workbook(Workbook): deref source workbook
+        Returns:
+            A new copy of cell extraction spec.
+        """
+        return CellExtractionSpec(
+            apv=self.apv.deref(workbook),
+            locator=self.locator.deref(workbook),
+            source=self.source
+        )
 
     @property
     def key(self) -> str:

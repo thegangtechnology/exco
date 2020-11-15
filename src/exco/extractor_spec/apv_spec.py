@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
+from openpyxl import Workbook
+
 from exco import setting as st
 from exco.extractor_spec.assumption_spec import AssumptionSpec
 from exco.extractor_spec.parser_spec import ParserSpec
@@ -22,6 +24,13 @@ class APVSpec(Generic[T]):  # Assume Parse Validate
     consumed_keys: ClassVar[Set[str]] = {
         st.k_key, st.k_validations, st.k_assumptions}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | ParserSpec.allowed_keys
+
+    def deref(self, workbook: Workbook) -> 'APVSpec[T]':
+        return APVSpec(
+            key=self.key
+        )
+
+
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any], source: source) -> 'APVSpec':

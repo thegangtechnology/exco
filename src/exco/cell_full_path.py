@@ -55,3 +55,12 @@ class CellFullPath:
         from exco.cell_location import CellLocation
         return CellLocation(sheet_name=self.sheetname,
                             coordinate=self.cell.coordinate)
+
+    def deref(self, coordinate: str) -> CellValue:
+        """Dereference the value at given coordinate
+        Args:
+            cooridnate
+        Returns:
+            value at the coordinate
+        """
+        return self.sheet[coordinate].value

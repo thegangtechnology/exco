@@ -1,7 +1,8 @@
 import itertools
 import textwrap
 from collections import defaultdict
-from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Callable
+from datetime import date
+from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Callable, Union
 
 import openpyxl
 import stringcase
@@ -14,6 +15,7 @@ from exco import setting as st
 from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
+CellValue = Union[str, int, date, None]
 
 
 def long_string(s: str) -> str:
@@ -86,7 +88,7 @@ def extra_keys(d: Dict[str, Any], allowed=Set[str]) -> List[str]:
 
 
 def name_params(d: Dict[str, Any], exclude: Optional[Set[str]]
-                = None) -> Tuple[str, Dict[str, Any]]:
+= None) -> Tuple[str, Dict[str, Any]]:
     exclude = set() if exclude is None else exclude
     name = d[st.k_name]
     params = {k: v for k, v in d.items() if k !=
