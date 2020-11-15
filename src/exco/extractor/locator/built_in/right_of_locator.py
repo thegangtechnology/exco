@@ -4,7 +4,6 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from exco import CellLocation, util
-from exco.deref import DerefCell
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.locator.locator import Locator
 
@@ -16,9 +15,6 @@ class RightOfLocator(Locator):  # TODO: Add search scope
     def locate(self, anchor_cell_location: CellLocation,
                workbook: Workbook) -> LocatingResult:
         sheet: Worksheet = workbook[anchor_cell_location.sheet_name]
-
-        dc = DerefCell(workbook=workbook, sheet_name=anchor_cell_location.sheet_name)
-        self.label = dc.deref_text(self.label)
 
         for row in sheet.iter_rows():
             for cell in row:

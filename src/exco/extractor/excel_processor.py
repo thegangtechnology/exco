@@ -7,6 +7,7 @@ from exco.exception import ExcoException, ExtractionTaskCreationException, Table
 from exco.exco_template import ExcoTemplate
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
+from exco.extractor.deref.deref_factory import DerefFactory
 from exco.extractor.locator.locator_factory import LocatorFactory
 from exco.extractor.parser.parser_factory import ParserFactory
 from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
@@ -115,6 +116,7 @@ class ExcelProcessorFactory:
     parser_factory: ParserFactory
     validator_factory: ValidatorFactory
     table_end_condition_factory: TableEndConditionFactory
+    deref_factory: DerefFactory
 
     @classmethod
     def default(cls):
@@ -123,7 +125,8 @@ class ExcelProcessorFactory:
             assumption_factory=AssumptionFactory.default(),
             parser_factory=ParserFactory.default(),
             validator_factory=ValidatorFactory.default(),
-            table_end_condition_factory=TableEndConditionFactory.default()
+            table_end_condition_factory=TableEndConditionFactory.default(),
+            deref_factory=DerefFactory.default()
         )
 
     def create_extraction_task(
@@ -141,7 +144,8 @@ class ExcelProcessorFactory:
                 validators={
                     k: self.validator_factory.create_from_spec(sp) for k,
                     sp in spec.validations.items()},
-                fallback=spec.fallback)
+                fallback=spec.fallback,
+                deref=self.deref_factory.create_from_spec(spec=spec.deref))
         except ExcoException as e:
             raise ExtractionTaskCreationException(
                 f'Unable to create ExtractionTask for {spec.key} cf {spec.source.describe()}') from e

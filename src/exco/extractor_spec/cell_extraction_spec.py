@@ -1,14 +1,15 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
+from exco import setting as st
 from exco import util, exception
-from exco.extractor_spec.validator_spec import ValidatorSpec
 from exco.extractor_spec.apv_spec import APVSpec
+from exco.extractor_spec.assumption_spec import AssumptionSpec
+from exco.extractor_spec.deref_spec import DerefSpec
 from exco.extractor_spec.locator_spec import LocatorSpec
 from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor_spec.spec_source import SpecSource, UnknownSource
-from exco import setting as st
-from exco.extractor_spec.assumption_spec import AssumptionSpec
+from exco.extractor_spec.validator_spec import ValidatorSpec
 
 T = TypeVar('T')
 
@@ -18,8 +19,9 @@ class CellExtractionSpec(Generic[T]):
     apv: APVSpec
     locator: LocatorSpec = field(default_factory=LocatorSpec.default)
     source: SpecSource = field(default_factory=UnknownSource)
+    deref: DerefSpec = field(default_factory=DerefSpec.default)
 
-    consumed_keys: ClassVar[Set[str]] = {st.k_locator, st.k_fallback}
+    consumed_keys: ClassVar[Set[str]] = {st.k_locator, st.k_fallback, st.k_deref}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | APVSpec.allowed_keys
 
     @property
@@ -52,6 +54,7 @@ class CellExtractionSpec(Generic[T]):
                 f'{extra_keys}\n' + f'allowed_keys are {cls.allowed_keys}')
         return CellExtractionSpec(
             locator=LocatorSpec.from_dict(d.get(st.k_locator, None)),
+            deref=DerefSpec.from_dict(d.get(st.k_deref, None)),
             apv=APVSpec.from_dict(d, source),
             source=source,
         )

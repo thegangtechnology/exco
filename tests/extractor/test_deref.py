@@ -3,8 +3,8 @@ from os.path import join, dirname
 import openpyxl
 import pytest
 
-from exco import ExcelProcessorFactory
-from exco.deref import DerefCell
+from exco import ExcelProcessorFactory, ExcelProcessor
+from exco.extractor.deref.deref_cell import DerefCell
 from exco.extractor.parser.built_in.int_parser import IntParser
 
 
@@ -37,21 +37,43 @@ def test_deref_failed(dc_1: DerefCell):
     assert result == text
 
 
-def test_deref_key_and_fallback():
+@pytest.fixture
+def template1() -> ExcelProcessor:
     fname = join(dirname(__file__), '../../sample/test/deref/deref_template.xlsx')
     processor = ExcelProcessorFactory.default().create_from_template_excel(fname)
-
-    another_file = join(dirname(__file__),
-                        '../../sample/test/deref/deref_test_1.xlsx')
-    result = processor.process_excel(another_file)
-    assert result.to_dict() == {'sum_val': 500, 'awesome_wealth': 200}
+    return processor
 
 
-def test_deref_locator():
+@pytest.fixture
+def template2() -> ExcelProcessor:
     fname = join(dirname(__file__), '../../sample/test/deref/deref_template_2.xlsx')
     processor = ExcelProcessorFactory.default().create_from_template_excel(fname)
+    return processor
 
+
+@pytest.fixture
+def template3() -> ExcelProcessor:
+    fname = join(dirname(__file__), '../../sample/test/deref/deref_template_3.xlsx')
+    processor = ExcelProcessorFactory.default().create_from_template_excel(fname)
+    return processor
+
+
+def test_deref_key_and_fallback(template1: ExcelProcessor):
+    another_file = join(dirname(__file__),
+                        '../../sample/test/deref/deref_test_1.xlsx')
+    result = template1.process_excel(another_file)
+    assert result.to_dict() == {'sum_val': 500, 'awesome_wealth': 200, '<<A4>>': 50}
+
+
+def test_deref_locator(template2: ExcelProcessor):
     another_file = join(dirname(__file__),
                         '../../sample/test/deref/deref_test_2.xlsx')
-    result = processor.process_excel(another_file)
+    result = template2.process_excel(another_file)
     assert result.to_dict() == {'sum_val': 150}
+
+
+def test_deref_recursive(template3: ExcelProcessor):
+    another_file = join(dirname(__file__),
+                        '../../sample/test/deref/deref_test_3.xlsx')
+    result = template3.process_excel(another_file)
+    assert result.to_dict() == {'<<A1>>': 23}

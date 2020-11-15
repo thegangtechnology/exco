@@ -4,6 +4,7 @@ start_col_marker = '{{--col'
 end_marker = '--}}'
 
 default_locator = 'at_comment_cell'
+default_deref = 'everything'
 
 # keys:
 
@@ -12,6 +13,7 @@ k_name = 'name'
 k_parser = 'parser'
 k_params = 'params'
 k_locator = 'locator'
+k_deref = 'deref'
 k_validations = 'validations'
 k_assumptions = 'assumptions'
 k_fallback = 'fallback'

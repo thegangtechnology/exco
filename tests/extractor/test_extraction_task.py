@@ -49,7 +49,8 @@ def test_extraction_task_locating_failed(wb: Workbook):
         parser=IntParser(),
         validators={},
         assumptions={},
-        fallback='fallback'
+        fallback='fallback',
+        deref=None
     )
 
     result = et.process(anchor_cell_location=CellLocation(sheet_name="Sheet",
@@ -66,7 +67,8 @@ def test_extraction_task_assumption(wb: Workbook):
         parser=IntParser(),
         validators={},
         assumptions={"B2": LeftCellMatchAssumption(label="the koi")},
-        fallback='fallback'
+        fallback='fallback',
+        deref=None
     )
 
     result = et.process(anchor_cell_location=CellLocation(sheet_name="Sheet",

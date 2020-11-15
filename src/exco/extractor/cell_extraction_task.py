@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Generic, Dict, TypeVar
+from typing import Generic, Dict, TypeVar, Optional
 
 from openpyxl import Workbook
 
 from exco.cell_location import CellLocation
-from exco.deref import DerefCell
 from exco.extractor.assumption.assumption import Assumption
 from exco.extractor.assumption.assumption_result import AssumptionResult
+from exco.extractor.deref.deref import Deref
 from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.locator.locator import Locator
@@ -83,6 +83,7 @@ class CellExtractionTask(Generic[T]):
     validators: Dict[str, Validator[T]]
     assumptions: Dict[str, Assumption]
     fallback: T
+    deref: Optional[Deref]
 
     def __str__(self):
         s = long_string(f"""
@@ -91,21 +92,24 @@ class CellExtractionTask(Generic[T]):
         parser: {self.parser}
         validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
         assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}
-        fallback: {self.fallback}""")
+        fallback: {self.fallback}
+        deref: {self.deref}
+        """)
         return s
 
     def process(self, anchor_cell_location: CellLocation,
                 workbook: Workbook) -> CellExtractionTaskResult[T]:
+        if self.deref:
+            self.deref.run_deref(
+                cell_extraction_task=self,
+                workbook=workbook,
+                sheet_name=anchor_cell_location.sheet_name
+            )
+
         locating_result = self.locator.locate(
             anchor_cell_location=anchor_cell_location,
             workbook=workbook
         )
-
-        dc = DerefCell(workbook=workbook,
-                       sheet_name=anchor_cell_location.sheet_name)
-
-        self.key = dc.deref_text(self.key)
-        self.fallback = dc.deref_text(self.fallback, parser=self.parser)
 
         if not locating_result.is_ok:
             return CellExtractionTaskResult.fail_locating(
@@ -149,5 +153,6 @@ class CellExtractionTask(Generic[T]):
             parser=parser,
             validators={},
             assumptions={},
-            fallback=None
+            fallback=None,
+            deref=None
         )
