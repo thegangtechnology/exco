@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, TYPE_CHECKING
 
 from exco.cell_location import CellLocation
 from exco import util
@@ -8,7 +8,7 @@ from exco.extractor_spec.cell_extraction_spec import CellExtractionSpec
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec
 from itertools import chain
 
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 
 @dataclass
@@ -67,3 +67,30 @@ class ExcelProcessorSpec:
         return util.is_unique(
             spec.key for spec in it
         )
+
+    @classmethod
+    def from_workbook_template(cls, workbook: Workbook) -> 'ExcelProcessorSpec':
+        """Create and deref spec from workbook template
+
+        Args:
+            workbook (Workbook): workbook
+
+        Returns:
+            ExcelProcessorSpec
+        """
+        from exco.exco_template import ExcoTemplate
+        et = ExcoTemplate.from_workbook(workbook)
+        raw_spec = et.to_raw_excel_processor_spec()
+        return raw_spec.template_to_spec_deref(workbook)
+
+    @classmethod
+    def from_excel_template(cls, fname: str) -> 'ExcelProcessorSpec':
+        """Create and deref spec from workbook template
+
+        Args:
+            fname (str): file name
+
+        Returns:
+            ExcelProcessorSpec
+        """
+        return cls.from_workbook_template(load_workbook(fname))

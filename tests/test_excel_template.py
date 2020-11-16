@@ -48,7 +48,7 @@ def test_bad_cell_template():
         ]
     )
     with pytest.raises(BadTemplateException):
-        template.to_excel_extractor_spec()
+        template.to_raw_excel_processor_spec()
 
 
 def test_missing_col_has_no_matching_table_template():
@@ -62,7 +62,7 @@ def test_missing_col_has_no_matching_table_template():
         cell_blocks=[]
     )
     with pytest.raises(MissingTableBlock):
-        template.to_excel_extractor_spec()
+        template.to_raw_excel_processor_spec()
 
 
 def test_missing_col_has_no_table_key_template():
@@ -76,7 +76,7 @@ def test_missing_col_has_no_table_key_template():
         cell_blocks=[]
     )
     with pytest.raises(TableKeyNotFound):
-        template.to_excel_extractor_spec()
+        template.to_raw_excel_processor_spec()
 
 
 def test_table_has_no_column():
@@ -90,7 +90,7 @@ def test_table_has_no_column():
         cell_blocks=[]
     )
     with pytest.raises(TableHasNoColumn):
-        template.to_excel_extractor_spec()
+        template.to_raw_excel_processor_spec()
 
 
 def test_describe():

@@ -42,7 +42,7 @@ class ExcelProcessingResult:
     @property
     def is_ok(self):
         return all(cr.is_ok for crs in self.cell_results.values() for cr in crs) and \
-            all(tr.is_ok for trs in self.table_results.values() for tr in trs)
+               all(tr.is_ok for trs in self.table_results.values() for tr in trs)
 
     def _lookup_for_key(self,
                         d: Dict[CellLocation,
@@ -135,12 +135,12 @@ class ExcelProcessorFactory:
                     spec=spec.locator),
                 assumptions={
                     k: self.assumption_factory.create_from_spec(sp) for k,
-                    sp in spec.assumptions.items()},
+                                                                        sp in spec.assumptions.items()},
                 parser=self.parser_factory.create_from_spec(
                     spec=spec.parser),
                 validators={
                     k: self.validator_factory.create_from_spec(sp) for k,
-                    sp in spec.validations.items()},
+                                                                       sp in spec.validations.items()},
                 fallback=spec.fallback)
         except ExcoException as e:
             raise ExtractionTaskCreationException(
@@ -184,6 +184,5 @@ class ExcelProcessorFactory:
 
     def create_from_template_workbook(
             self, workbook: Workbook) -> ExcelProcessor:
-        template = ExcoTemplate.from_workbook(workbook)
-        spec = template.to_excel_extractor_spec()
+        spec = ExcelProcessorSpec.from_workbook_template(workbook)
         return self.create_from_spec(spec)

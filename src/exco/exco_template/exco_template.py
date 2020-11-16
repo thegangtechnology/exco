@@ -237,7 +237,7 @@ class ExcoTemplate:
                 raise BadTemplateException(cl.short_name) from e
         return dict(ret)
 
-    def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
+    def to_raw_excel_processor_spec(self) -> ExcelProcessorSpec:
         """compute excel extractor spec
 
         Returns:

@@ -29,7 +29,7 @@ def test_everything():
 
 def test_everything_spec():
     template = ExcoTemplate.from_excel(fname)
-    spec = template.to_excel_extractor_spec()
+    spec = template.to_raw_excel_processor_spec()
 
     assert spec.n_table_spec() == 2
     assert spec.n_cell_spec() == 4

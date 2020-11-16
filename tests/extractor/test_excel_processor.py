@@ -34,7 +34,7 @@ def test_excel_processor():
 def test_fail_extraction_creation():
     fname = join(dirname(__file__), '../../sample/test/simple.xlsx')
     template = ExcoTemplate.from_excel(fname)
-    spec = template.to_excel_extractor_spec()
+    spec = template.to_raw_excel_processor_spec()
     spec.cell_specs[CellLocation(sheet_name='TestSheet', coordinate='Z1')] = [CellExtractionSpec(
         locator=LocatorSpec(name="right_of"),
         apv=APVSpec(
