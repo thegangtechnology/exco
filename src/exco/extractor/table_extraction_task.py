@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Any
 
 from exco import CellLocation
-from exco.exception import TooManyRowRead, NoEndConditonError
+from exco.exception import TooManyRowRead, NoEndConditionError
 from exco.extractor.locator.locator import Locator
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locating_result import LocatingResult
@@ -50,8 +50,8 @@ class EndConditionCollectionResult:
 
 @dataclass
 class EndConditionCollection:
-    """Collection of End Condtition.
-    When it's tested all the endcondition are applied sequentially.
+    """Collection of End Condition.
+    When it's tested all the end condition are applied sequentially.
     """
     end_conditions: List[TableEndCondition]
 
@@ -69,7 +69,7 @@ class EndConditionCollection:
             specs: List[TableEndConditionSpec],
             factory: TableEndConditionFactory) -> 'EndConditionCollection':
         if not specs:
-            raise NoEndConditonError()
+            raise NoEndConditionError()
         ecs = [factory.create_from_spec(spec) for spec in specs]
 
         return EndConditionCollection(end_conditions=ecs)
@@ -115,6 +115,7 @@ class TableExtractionTaskResult:
         """TableExtractionTaskResult when it fails locating the cell
 
         Args:
+            key ():
             locating_result (LocatingResult):
 
         Returns:

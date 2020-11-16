@@ -4,7 +4,6 @@ from typing import TypeVar, Dict, Any, List, Optional, Generic
 import openpyxl
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException, TableExtractionTaskCreationException
-from exco.exco_template import ExcoTemplate
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locator_factory import LocatorFactory
@@ -44,8 +43,8 @@ class ExcelProcessingResult:
         return all(cr.is_ok for crs in self.cell_results.values() for cr in crs) and \
                all(tr.is_ok for trs in self.table_results.values() for tr in trs)
 
-    def _lookup_for_key(self,
-                        d: Dict[CellLocation,
+    @staticmethod
+    def _lookup_for_key(d: Dict[CellLocation,
                                 List[T]],
                         key: str) -> Optional[LookupResult[T]]:
         for cl, results in d.items():
@@ -134,13 +133,11 @@ class ExcelProcessorFactory:
                 locator=self.locator_factory.create_from_spec(
                     spec=spec.locator),
                 assumptions={
-                    k: self.assumption_factory.create_from_spec(sp) for k,
-                                                                        sp in spec.assumptions.items()},
+                    k: self.assumption_factory.create_from_spec(sp) for k, sp in spec.assumptions.items()},
                 parser=self.parser_factory.create_from_spec(
                     spec=spec.parser),
                 validators={
-                    k: self.validator_factory.create_from_spec(sp) for k,
-                                                                       sp in spec.validations.items()},
+                    k: self.validator_factory.create_from_spec(sp) for k, sp in spec.validations.items()},
                 fallback=spec.fallback)
         except ExcoException as e:
             raise ExtractionTaskCreationException(

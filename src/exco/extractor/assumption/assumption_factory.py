@@ -16,6 +16,6 @@ class AssumptionFactory(BaseFactory[Assumption, AssumptionSpec]):
 
     @classmethod
     def default(cls) -> 'AssumptionFactory':
-        return cls(cls.build_class_dict([
+        return cls(class_map=cls.build_class_dict([
             LeftCellMatchAssumption
         ]))

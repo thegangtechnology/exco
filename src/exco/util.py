@@ -73,8 +73,8 @@ def default_key(clz: Type[Any], suffix):
     """Return snake case with suffix removed. This is used as default key for class.
 
     Args:
-        s (str):
-        suffix (str):
+        clz (Type[Any]): class
+        suffix (str): suffix to remove
 
     Returns:
         default key name: Ex: IntParser -> int
@@ -87,8 +87,8 @@ def extra_keys(d: Dict[str, Any], allowed=Set[str]) -> List[str]:
     return [k for k in d.keys() if k not in allowed]
 
 
-def name_params(d: Dict[str, Any], exclude: Optional[Set[str]]
-= None) -> Tuple[str, Dict[str, Any]]:
+def name_params(d: Dict[str, Any],
+                exclude: Optional[Set[str]] = None) -> Tuple[str, Dict[str, Any]]:
     exclude = set() if exclude is None else exclude
     name = d[st.k_name]
     params = {k: v for k, v in d.items() if k !=

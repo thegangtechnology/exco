@@ -1,13 +1,12 @@
 from dataclasses import dataclass
-from typing import Dict, List, Callable, TYPE_CHECKING
+from itertools import chain
+from typing import Dict, List, Callable
 
-from exco.cell_location import CellLocation
 from exco import util
+from exco.cell_location import CellLocation
 from exco.dereferator import Dereferator
 from exco.extractor_spec.cell_extraction_spec import CellExtractionSpec
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec
-from itertools import chain
-
 from openpyxl import Workbook, load_workbook
 
 

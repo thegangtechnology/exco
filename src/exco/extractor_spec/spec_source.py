@@ -7,7 +7,7 @@ class SpecSource(abc.ABC):
         """
 
         Returns:
-            str to print incase there is an error constructing extractor for tracing back
+            str to print in case there is an error constructing extractor for tracing back
         """
         raise NotImplementedError()
 

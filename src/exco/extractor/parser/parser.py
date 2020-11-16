@@ -6,7 +6,7 @@ from exco.extractor.actor import Actor
 
 from exco.extractor.parser.parsing_result import ParsingResult
 
-PARSERCLASS_SUFFIX = 'Parser'
+PARSER_CLASS_SUFFIX = 'Parser'
 T = TypeVar('T')
 
 

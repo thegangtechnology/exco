@@ -165,7 +165,7 @@ class ExcoTemplate:
 
     def column_block_dict_by_table_key(
             self) -> Dict[str, List[ExcoBlockWithLocation]]:
-        """ Compute column block dicationary grouped by table key
+        """ Compute column block dictionary grouped by table key
 
         Returns:
             Dict[str, List[ExcoBlockWithLocation]]. TableKey -> [Column's ExcoBlock]

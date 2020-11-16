@@ -5,7 +5,7 @@ from typing import Optional
 @dataclass
 class TableEndConditionResult:
     """
-    Table End Conditon Result
+    Table End Condition Result
     """
     should_terminate: bool
     # should the row that end condition evaluates to true be included in the

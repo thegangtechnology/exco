@@ -60,7 +60,7 @@ class CellFullPath:
     def deref(self, coordinate: str) -> 'CellValue':
         """Dereference the value at given coordinate
         Args:
-            cooridnate
+            coordinate(str): cell coordinate
         Returns:
             value at the coordinate
         """

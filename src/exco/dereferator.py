@@ -1,13 +1,10 @@
 import re
 from dataclasses import dataclass
-from datetime import date
-
-from typing import ClassVar, Union, Pattern
-
-from openpyxl import Workbook
+from typing import Pattern
 
 from exco import CellLocation, setting
 from exco.util import CellValue
+from openpyxl import Workbook
 
 
 @dataclass
@@ -61,8 +58,9 @@ class Dereferator:
             if pure_match:
                 return self.resolve_match(self.deref_re.search(text))
             else:
-                f = lambda x: str(self.resolve_match(x))
-                return self.deref_re.sub(f, str(text))
+                def str_resolve(x):
+                    return str(self.resolve_match(x))
+                return self.deref_re.sub(str_resolve, str(text))
         else:
             return text
 

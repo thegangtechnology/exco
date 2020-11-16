@@ -118,8 +118,7 @@ class ExcoBlockCollection:
         Returns:
             total number of blocks.
         """
-        return len(self.table_blocks) + len(self.cell_blocks) + \
-            len(self.column_blocks)
+        return len(self.table_blocks) + len(self.cell_blocks) + len(self.column_blocks)
 
     @classmethod
     def from_string(cls, block: str):
@@ -214,6 +213,7 @@ class ExcoBlockParser:
             S.INSIDE_COL: []
         }
         current_collector = None
+        i = None
         try:
             for i, line in enumerate(lines, start=1):
                 ns = cls.compute_next_state(cs, line)

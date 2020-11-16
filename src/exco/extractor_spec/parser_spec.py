@@ -1,11 +1,10 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set
 
+from exco import setting as st
 from exco.dereferator import Dereferator
 from exco.exception import ExcoException, ParserSpecCreationException
 from exco.extractor_spec.type import SpecParam
-
-from exco import setting as st, CellLocation
 
 
 @dataclass

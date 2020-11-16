@@ -1,10 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any, ClassVar, Set, TypeVar, Generic
 
-from exco.dereferator import Dereferator
-from openpyxl import Workbook
-
 from exco import setting as st
+from exco.dereferator import Dereferator
 from exco.extractor_spec.assumption_spec import AssumptionSpec
 from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor_spec.spec_source import SpecSource, UnknownSource
@@ -32,8 +30,8 @@ class APVSpec(Generic[T]):  # Assume Parse Validate
             key=dereferator.deref_text(self.key),
             parser=self.parser.deref(dereferator),
             fallback=dereferator.deref_text(self.fallback),
-            validations={k: dereferator.deref_text(v) for k, v in self.validations.items()},
-            assumptions={k: dereferator.deref_text(v) for k, v in self.assumptions.items()},
+            validations={k: v.deref(dereferator) for k, v in self.validations.items()},
+            assumptions={k: v.deref(dereferator) for k, v in self.assumptions.items()},
             source=self.source
         )
 
