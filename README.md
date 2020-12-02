@@ -124,7 +124,7 @@ validator's class name, specified. Other parameters to be passed to the validato
 A table block is for specifying the properties of the table. The table block is surrounded by
 `{{--table` and `--}}`. The simplest table block is
 ```
-{{--
+{{--table
 key: some_table
 --}}
 ```
