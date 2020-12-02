@@ -77,7 +77,7 @@ class ExcelProcessingResult:
 
 
 @dataclass
-class ExcelProcessor:
+class ExcelDerefedProcessor:
     cell_processors: Dict[CellLocation, List[CellExtractionTask]]
     table_processors: Dict[CellLocation, List[TableExtractionTask]]
 
@@ -105,6 +105,30 @@ class ExcelProcessor:
             tmp.append(header + task_str)
         ret = ("#" * 20 + '\n').join(tmp)
         return ret
+
+
+@dataclass
+class ExcelProcessor:
+    spec: ExcelProcessorSpec  # raw spec
+    factory: 'ExcelProcessorFactory'
+
+    def deref(self, workbook: Optional[Workbook]) -> ExcelDerefedProcessor:
+        if workbook is not None:
+            derefed_spec = self.spec.spec_to_extractor_deref(workbook)
+            return self.factory.create_derefed_processor_from_spec(derefed_spec)
+        else:
+            return self.factory.create_derefed_processor_from_spec(self.spec)
+
+    def process_workbook(self, workbook: Workbook) -> ExcelProcessingResult:
+        return self.deref(workbook).process_workbook(workbook)
+
+    def process_excel(self, fname: str) -> ExcelProcessingResult:
+        wb = openpyxl.load_workbook(fname)
+        return self.process_workbook(wb)
+
+    def __str__(self) -> str:
+        processor = self.deref(None)
+        return str(processor)
 
 
 @dataclass
@@ -161,7 +185,8 @@ class ExcelProcessorFactory:
             raise TableExtractionTaskCreationException(
                 f'Unable to create TableExtractionTask for {spec.key} cf\n {spec.source.describe()}') from e
 
-    def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
+    def create_derefed_processor_from_spec(self,
+                                           spec: ExcelProcessorSpec) -> ExcelDerefedProcessor:
         cell_tasks = {}
         for cl, specs in spec.cell_specs.items():
             cell_tasks[cl] = [
@@ -172,14 +197,19 @@ class ExcelProcessorFactory:
             table_tasks[cl] = [
                 self.create_table_extraction_task(spec) for spec in specs]
 
-        return ExcelProcessor(cell_processors=cell_tasks,
-                              table_processors=table_tasks)
+        return ExcelDerefedProcessor(cell_processors=cell_tasks,
+                                     table_processors=table_tasks)
 
-    def create_from_template_excel(self, fname: str) -> ExcelProcessor:
+    def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
+        return ExcelProcessor(spec=spec, factory=self)
+
+    def create_from_template_excel(self,
+                                   fname: str) -> ExcelProcessor:
         workbook = openpyxl.load_workbook(fname)
         return self.create_from_template_workbook(workbook)
 
     def create_from_template_workbook(
-            self, workbook: Workbook) -> ExcelProcessor:
+            self,
+            workbook: Workbook) -> ExcelProcessor:
         spec = ExcelProcessorSpec.from_workbook_template(workbook)
         return self.create_from_spec(spec)

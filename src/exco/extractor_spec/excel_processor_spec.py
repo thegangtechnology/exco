@@ -36,30 +36,52 @@ class ExcelProcessorSpec:
         )
 
     def template_to_spec_deref(self, workbook: Workbook) -> 'ExcelProcessorSpec':
+        """Transform raw spec to dereffed spec with template.
+        Args:
+            workbook(Workbook): Template workbook.
+        Returns:
+            Derefed ExcelProcessorSpec
+        """
         return self._deref(workbook, Dereferator.template_to_spec)
 
     def spec_to_extractor_deref(self, workbook: Workbook) -> 'ExcelProcessorSpec':
+        """Transform raw spec to derefed spec with to-be-extracted workbook.
+        Args:
+            workbook(Workbook): to-be-extracted workbook.
+        Returns:
+            Derefed ExcelProcessorSpec
+        """
         return self._deref(workbook, Dereferator.spec_to_extractor)
 
     def n_total_spec(self) -> int:
+        """total number of spec"""
         return self.n_table_spec() + self.n_cell_spec()
 
     def n_total_location(self) -> int:
+        """total number of location with spec"""
         return len(set(self.cell_specs.keys()) | set(self.table_specs.keys()))
 
     def n_table_spec(self) -> int:
+        """total number of table specs"""
         return util.flattened_len(self.table_specs.values())
 
     def n_cell_spec(self) -> int:
+        """total number of cell specs"""
         return util.flattened_len(self.cell_specs.values())
 
     def n_cell_location(self) -> int:
+        """total number of location with cell specs"""
         return len(self.cell_specs)
 
     def n_table_location(self) -> int:
+        """total number of location with table spec"""
         return len(self.table_specs)
 
     def is_keys_unique(self) -> bool:
+        """Check if keys are uniques
+        Returns:
+            bool. True if the keys are unique
+        """
         it = chain(
             util.flatten(self.cell_specs.values()),
             util.flatten(self.table_specs.values()))

@@ -12,6 +12,12 @@ def simple_spec():
     return spec
 
 
+def test_from_excel_template():
+    template = exco.ExcelProcessorSpec.from_excel_template(
+        join(dirname(__file__), '../../sample/test/simple.xlsx'))
+    assert template is not None
+
+
 def test_spec(simple_spec: exco.ExcelProcessorSpec):
     assert simple_spec.n_cell_spec() == 3
     assert simple_spec.n_cell_location() == 2

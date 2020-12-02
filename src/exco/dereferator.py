@@ -35,10 +35,7 @@ class Dereferator:
         Returns:
             CellValue
         """
-        try:
-            return self.resolve_coordinate(match_obj.group(1))
-        except ValueError:
-            return match_obj.group(0)
+        return self.resolve_coordinate(match_obj.group(1))
 
     def deref_text(self, text: str) -> CellValue:
         """Deref Text.
@@ -57,9 +54,10 @@ class Dereferator:
             pure_match = len(self.deref_re.findall(text)) == 1 and self.deref_re.sub('', text) == ''
             if pure_match:
                 return self.resolve_match(self.deref_re.search(text))
-            else:
+            else:  # otherwise do simple string interpolation
                 def str_resolve(x):
                     return str(self.resolve_match(x))
+
                 return self.deref_re.sub(str_resolve, str(text))
         else:
             return text
