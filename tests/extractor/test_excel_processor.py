@@ -50,7 +50,6 @@ def test_fail_extraction_creation():
         ExcelProcessorFactory.default().create_from_spec(spec=spec).process_workbook(None)
 
 
-
 def test_fail_table_creation():
     cl = CellLocation('S', 'A1')
     bad_spec = ExcelProcessorSpec(
@@ -69,8 +68,8 @@ def test_fail_table_creation():
     with pytest.raises(TableExtractionTaskCreationException):
         ExcelProcessorFactory.default().create_from_spec(spec=bad_spec).process_workbook(None)
 
+
 def test_derefed_processor_process_excel():
     fname = join(dirname(__file__), '../../sample/test/simple.xlsx')
     processor = ExcelProcessorFactory.default().create_from_template_excel(fname)
     assert processor.deref(None).process_excel(fname) is not None
-

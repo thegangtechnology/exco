@@ -1,5 +1,4 @@
 import pytest
-from exco import util
 from openpyxl import Workbook
 from openpyxl.comments import Comment
 
