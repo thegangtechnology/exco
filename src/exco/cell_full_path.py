@@ -9,7 +9,6 @@ from openpyxl.worksheet.worksheet import Worksheet
 if TYPE_CHECKING:
     from exco.cell_location \
         import CellLocation
-    from exco.util import CellValue
 
 
 @dataclass
