@@ -62,7 +62,7 @@ Other advance features like, fallback, locator, assumptions, validator are optio
 The full specification is shown below.
 
 ```
-{--
+{{--
 key: some_value
 # Optional default at_comment_cell
 locator: {name: at_comment_cell} 
@@ -75,7 +75,7 @@ fallback: 7
 params: {} 
 validators: # Optional
     - {key: between, name: between, low: 5, high: 10 }
---}
+--}}
 ```
 
 ### Processing Flow.
@@ -251,11 +251,11 @@ to the value at A1 of the extracted file.
 
 Here is an example
 ```
-{--
+{{--
 key: ==D2==
 assumptions: # Optional
     - {key: right_of, name: right_of, label: <<A1>>}
 parser: int
 fallback: ==D3== 
---}
+--}}
 ```
