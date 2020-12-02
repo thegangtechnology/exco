@@ -114,6 +114,7 @@ class ExcelProcessor:
 
     def deref(self, workbook: Optional[Workbook]) -> ExcelDerefedProcessor:
         if workbook is not None:
+            print(self.spec)
             derefed_spec = self.spec.spec_to_extractor_deref(workbook)
             return self.factory.create_derefed_processor_from_spec(derefed_spec)
         else:

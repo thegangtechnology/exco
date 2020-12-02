@@ -15,7 +15,7 @@ def test_assumption_spec():
 
 def test_assumption_spec_deref():
     assumption = {
-        "name": "{{A1}}",
+        "name": "<<A1>>",
         "label": "something"
     }
     workbook = openpyxl.Workbook()
