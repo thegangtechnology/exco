@@ -1,7 +1,7 @@
 import openpyxl
 import pytest
 from exco import CellLocation
-from exco.exception import NoEndConditonError, TooManyRowRead
+from exco.exception import NoEndConditionError, TooManyRowRead
 from exco.extractor.cell_extraction_task import CellExtractionTask
 from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCellLocator
 from exco.extractor.locator.built_in.right_of_locator import RightOfLocator
@@ -14,7 +14,7 @@ from openpyxl import Workbook
 
 
 def test_end_condition_collection():
-    with pytest.raises(NoEndConditonError):
+    with pytest.raises(NoEndConditionError):
         EndConditionCollection.from_spec(
             [],
             TableEndConditionFactory.default()

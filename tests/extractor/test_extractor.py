@@ -15,7 +15,7 @@ from exco.extractor.parser.parser_factory import ParserFactory
 def test_simple():
     fname = join(dirname(__file__), '../../sample/test/simple.xlsx')
     template = ExcoTemplate.from_excel(fname)
-    spec = template.to_excel_extractor_spec()
+    spec = template.to_raw_excel_processor_spec()
     fac = ExcelProcessorFactory.default()
     processor = fac.create_from_spec(spec)
 

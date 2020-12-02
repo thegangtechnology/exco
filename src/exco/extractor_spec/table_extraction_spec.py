@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Dict, Any, List, Optional
 
 from exco import setting as st
+from exco.dereferator import Dereferator
 from exco.extractor_spec.apv_spec import APVSpec
 from exco.extractor_spec.locator_spec import LocatorSpec
 from exco.extractor_spec.spec_source import UnknownSource, SpecSource
@@ -34,6 +35,12 @@ class TableEndConditionSpec:
     name: str
     params: SpecParam = field(default_factory=dict)
 
+    def deref(self, dereferator: Dereferator) -> 'TableEndConditionSpec':
+        return TableEndConditionSpec(
+            name=dereferator.deref_text(self.name),
+            params={k: dereferator.deref_text(v) for k, v in self.params.items()}
+        )
+
     @classmethod
     def default_conditions(cls) -> List['TableEndConditionSpec']:
         return [TableEndConditionSpec(name='all_blank', params={})]
@@ -60,6 +67,16 @@ class TableExtractionSpec:
         default_factory=TableEndConditionSpec.default_conditions)
     item_direction: TableItemDirection = TableItemDirection.DOWNWARD
     source: SpecSource = field(default_factory=UnknownSource)
+
+    def deref(self, dereferator: Dereferator) -> 'TableExtractionSpec':
+        return TableExtractionSpec(
+            key=dereferator.deref_text(self.key),
+            locator=self.locator.deref(dereferator),
+            columns={k: v.deref(dereferator) for k, v in self.columns.items()},
+            end_conditions=[tec.deref(dereferator) for tec in self.end_conditions],
+            item_direction=self.item_direction,
+            source=self.source
+        )
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any], source: SpecSource = None):

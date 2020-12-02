@@ -1,7 +1,8 @@
 import itertools
 import textwrap
 from collections import defaultdict
-from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Callable
+from datetime import date
+from typing import TypeVar, Iterable, Any, Dict, List, Tuple, Type, Set, Optional, Generator, Callable, Union
 
 import openpyxl
 import stringcase
@@ -14,6 +15,7 @@ from exco import setting as st
 from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
+CellValue = Union[str, int, date, None]
 
 
 def long_string(s: str) -> str:
@@ -71,8 +73,8 @@ def default_key(clz: Type[Any], suffix):
     """Return snake case with suffix removed. This is used as default key for class.
 
     Args:
-        s (str):
-        suffix (str):
+        clz (Type[Any]): class
+        suffix (str): suffix to remove
 
     Returns:
         default key name: Ex: IntParser -> int
@@ -85,8 +87,8 @@ def extra_keys(d: Dict[str, Any], allowed=Set[str]) -> List[str]:
     return [k for k in d.keys() if k not in allowed]
 
 
-def name_params(d: Dict[str, Any], exclude: Optional[Set[str]]
-                = None) -> Tuple[str, Dict[str, Any]]:
+def name_params(d: Dict[str, Any],
+                exclude: Optional[Set[str]] = None) -> Tuple[str, Dict[str, Any]]:
     exclude = set() if exclude is None else exclude
     name = d[st.k_name]
     params = {k: v for k, v in d.items() if k !=

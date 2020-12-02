@@ -38,7 +38,7 @@ class BaseFactory(abc.ABC, Generic[ActorType, SpecType]):
 
     @classmethod
     def build_class_dict(
-            cls, classes: List[ActorType]) -> Dict[str, Type[ActorType]]:
+            cls, classes: List[Type[ActorType]]) -> Dict[str, Type[ActorType]]:
         """Build class dictionary.
         The key is by default the class name with the suffix removed and then snake case.
         Ex: AllBlankTableEndCondition -> all_blank (suffix is specified in suffix())

@@ -241,3 +241,21 @@ equal to `n`.
 #### Parameters
 - `n` number of row
 - `inclusive` Optional. Default True. Whether to include the row in which it evaluates to true.
+
+# Dereferencing
+There are two types of dereferencing
+- Spec Creation time dereferencing. The string similar to ``<<A1>>`` will be resolved 
+to the value at A1 of the template file.
+- Extraction time dereferencing. This string similar to ``==A1==`` will be resolved
+to the value at A1 of the extracted file.
+
+Here is an example
+```
+{--
+key: ==D2==
+assumptions: # Optional
+    - {key: right_of, name: right_of, label: <<A1>>}
+parser: int
+fallback: ==D3== 
+--}
+```

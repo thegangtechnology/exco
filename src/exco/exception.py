@@ -76,7 +76,7 @@ class TableExtractionTaskCreationException(ExcoException):
     pass
 
 
-class NoEndConditonError(ExcoException):
+class NoEndConditionError(ExcoException):
     pass
 
 

@@ -16,7 +16,7 @@ def test_with_defaults():
         --}}
     """), 'author')
 
-    spec = ExcoTemplate.from_workbook(wb).to_excel_extractor_spec()
+    spec = ExcoTemplate.from_workbook(wb).to_raw_excel_processor_spec()
     print(spec)
     ep = ExcelProcessorFactory.default().create_from_spec(spec)
 

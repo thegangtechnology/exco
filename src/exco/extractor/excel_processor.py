@@ -4,7 +4,6 @@ from typing import TypeVar, Dict, Any, List, Optional, Generic
 import openpyxl
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException, TableExtractionTaskCreationException
-from exco.exco_template import ExcoTemplate
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
 from exco.extractor.locator.locator_factory import LocatorFactory
@@ -42,10 +41,10 @@ class ExcelProcessingResult:
     @property
     def is_ok(self):
         return all(cr.is_ok for crs in self.cell_results.values() for cr in crs) and \
-            all(tr.is_ok for trs in self.table_results.values() for tr in trs)
+               all(tr.is_ok for trs in self.table_results.values() for tr in trs)
 
-    def _lookup_for_key(self,
-                        d: Dict[CellLocation,
+    @staticmethod
+    def _lookup_for_key(d: Dict[CellLocation,
                                 List[T]],
                         key: str) -> Optional[LookupResult[T]]:
         for cl, results in d.items():
@@ -78,7 +77,7 @@ class ExcelProcessingResult:
 
 
 @dataclass
-class ExcelProcessor:
+class ExcelDerefedProcessor:
     cell_processors: Dict[CellLocation, List[CellExtractionTask]]
     table_processors: Dict[CellLocation, List[TableExtractionTask]]
 
@@ -109,6 +108,31 @@ class ExcelProcessor:
 
 
 @dataclass
+class ExcelProcessor:
+    spec: ExcelProcessorSpec  # raw spec
+    factory: 'ExcelProcessorFactory'
+
+    def deref(self, workbook: Optional[Workbook]) -> ExcelDerefedProcessor:
+        if workbook is not None:
+            print(self.spec)
+            derefed_spec = self.spec.spec_to_extractor_deref(workbook)
+            return self.factory.create_derefed_processor_from_spec(derefed_spec)
+        else:
+            return self.factory.create_derefed_processor_from_spec(self.spec)
+
+    def process_workbook(self, workbook: Workbook) -> ExcelProcessingResult:
+        return self.deref(workbook).process_workbook(workbook)
+
+    def process_excel(self, fname: str) -> ExcelProcessingResult:
+        wb = openpyxl.load_workbook(fname)
+        return self.process_workbook(wb)
+
+    def __str__(self) -> str:
+        processor = self.deref(None)
+        return str(processor)
+
+
+@dataclass
 class ExcelProcessorFactory:
     locator_factory: LocatorFactory
     assumption_factory: AssumptionFactory
@@ -134,13 +158,11 @@ class ExcelProcessorFactory:
                 locator=self.locator_factory.create_from_spec(
                     spec=spec.locator),
                 assumptions={
-                    k: self.assumption_factory.create_from_spec(sp) for k,
-                    sp in spec.assumptions.items()},
+                    k: self.assumption_factory.create_from_spec(sp) for k, sp in spec.assumptions.items()},
                 parser=self.parser_factory.create_from_spec(
                     spec=spec.parser),
                 validators={
-                    k: self.validator_factory.create_from_spec(sp) for k,
-                    sp in spec.validations.items()},
+                    k: self.validator_factory.create_from_spec(sp) for k, sp in spec.validations.items()},
                 fallback=spec.fallback)
         except ExcoException as e:
             raise ExtractionTaskCreationException(
@@ -164,7 +186,8 @@ class ExcelProcessorFactory:
             raise TableExtractionTaskCreationException(
                 f'Unable to create TableExtractionTask for {spec.key} cf\n {spec.source.describe()}') from e
 
-    def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
+    def create_derefed_processor_from_spec(self,
+                                           spec: ExcelProcessorSpec) -> ExcelDerefedProcessor:
         cell_tasks = {}
         for cl, specs in spec.cell_specs.items():
             cell_tasks[cl] = [
@@ -175,15 +198,19 @@ class ExcelProcessorFactory:
             table_tasks[cl] = [
                 self.create_table_extraction_task(spec) for spec in specs]
 
-        return ExcelProcessor(cell_processors=cell_tasks,
-                              table_processors=table_tasks)
+        return ExcelDerefedProcessor(cell_processors=cell_tasks,
+                                     table_processors=table_tasks)
 
-    def create_from_template_excel(self, fname: str) -> ExcelProcessor:
+    def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
+        return ExcelProcessor(spec=spec, factory=self)
+
+    def create_from_template_excel(self,
+                                   fname: str) -> ExcelProcessor:
         workbook = openpyxl.load_workbook(fname)
         return self.create_from_template_workbook(workbook)
 
     def create_from_template_workbook(
-            self, workbook: Workbook) -> ExcelProcessor:
-        template = ExcoTemplate.from_workbook(workbook)
-        spec = template.to_excel_extractor_spec()
+            self,
+            workbook: Workbook) -> ExcelProcessor:
+        spec = ExcelProcessorSpec.from_workbook_template(workbook)
         return self.create_from_spec(spec)

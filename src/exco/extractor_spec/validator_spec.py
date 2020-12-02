@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Any
 
+from exco.dereferator import Dereferator
 from exco.extractor_spec.type import SpecParam
 from exco.setting import k_key
 from exco.util import name_params
@@ -15,6 +16,12 @@ class ValidatorSpec:
     """
     name: str
     params: SpecParam = field(default_factory=dict)
+
+    def deref(self, dereferator: Dereferator) -> 'ValidatorSpec':
+        return ValidatorSpec(
+            name=dereferator.deref_text(self.name),
+            params={k: dereferator.deref_text(v) for k, v in self.params.items()}
+        )
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> 'ValidatorSpec':

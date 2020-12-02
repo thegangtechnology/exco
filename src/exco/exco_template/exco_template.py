@@ -165,7 +165,7 @@ class ExcoTemplate:
 
     def column_block_dict_by_table_key(
             self) -> Dict[str, List[ExcoBlockWithLocation]]:
-        """ Compute column block dicationary grouped by table key
+        """ Compute column block dictionary grouped by table key
 
         Returns:
             Dict[str, List[ExcoBlockWithLocation]]. TableKey -> [Column's ExcoBlock]
@@ -237,7 +237,7 @@ class ExcoTemplate:
                 raise BadTemplateException(cl.short_name) from e
         return dict(ret)
 
-    def to_excel_extractor_spec(self) -> ExcelProcessorSpec:
+    def to_raw_excel_processor_spec(self) -> ExcelProcessorSpec:
         """compute excel extractor spec
 
         Returns:

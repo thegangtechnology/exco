@@ -15,7 +15,7 @@ class ExcoWatchHandler(FileSystemEventHandler):
     def __init__(self, path: str):
         super().__init__()
         self.path = path
-        self.last_modified = self._last_fmod()  # pattern matching event doesn't work with osx's FSEvent
+        self.last_modified = self._last_fmod()  # pattern matching event doesn't work with OSX's FSEvent
         self.last_output = datetime.now()
 
     def _last_fmod(self):

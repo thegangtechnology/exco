@@ -31,9 +31,6 @@ class CellExtractionTaskResult(Generic[T]):
     def get_value(self) -> T:
         """Get Python equivalent value
 
-        Args:
-            default (T):
-
         Returns:
             T. Python equivalent value.
         """
