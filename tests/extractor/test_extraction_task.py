@@ -1,3 +1,6 @@
+from os.path import join, dirname
+
+import exco
 import pytest
 from openpyxl import Workbook
 
@@ -25,7 +28,8 @@ def test_extraction_task_result_failed():
     ctr = CellExtractionTaskResult.fail_locating(key="something",
                                                  locating_result=LocatingResult(location=None,
                                                                                 is_ok=False),
-                                                 fallback='funny')
+                                                 fallback='funny',
+                                                 metadata={})
     assert not ctr.is_ok
     assert ctr.get_value() == 'funny'
 
@@ -37,7 +41,8 @@ def test_extraction_task_assumption_failed():
                                                     assumption_results={
                                                         "a": AssumptionResult.bad(msg="failed")
                                                     },
-                                                    fallback='fallback')
+                                                    fallback='fallback',
+                                                    metadata={})
     assert not ctr.is_ok
     assert ctr.get_value() == 'fallback'
 
@@ -49,7 +54,8 @@ def test_extraction_task_locating_failed(wb: Workbook):
         parser=IntParser(),
         validators={},
         assumptions={},
-        fallback='fallback'
+        fallback='fallback',
+        metadata={}
     )
 
     result = et.process(anchor_cell_location=CellLocation(sheet_name="Sheet",
@@ -66,7 +72,8 @@ def test_extraction_task_assumption(wb: Workbook):
         parser=IntParser(),
         validators={},
         assumptions={"B2": LeftCellMatchAssumption(label="the koi")},
-        fallback='fallback'
+        fallback='fallback',
+        metadata={}
     )
 
     result = et.process(anchor_cell_location=CellLocation(sheet_name="Sheet",
@@ -74,3 +81,11 @@ def test_extraction_task_assumption(wb: Workbook):
                         workbook=wb)
     assert not result.is_ok
     assert result.get_value() == 'fallback'
+
+
+def test_extraction_with_metadata():
+    fname = join(dirname(__file__), '../../sample/test/simple_with_meta.xlsx')
+    processor = exco.from_excel(fname)
+
+    result = processor.process_excel(fname)
+    assert result.cell_result_for_key('distance').result.metadata['unit'] == 'km'

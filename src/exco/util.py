@@ -91,8 +91,7 @@ def name_params(d: Dict[str, Any],
                 exclude: Optional[Set[str]] = None) -> Tuple[str, Dict[str, Any]]:
     exclude = set() if exclude is None else exclude
     name = d[st.k_name]
-    params = {k: v for k, v in d.items() if k !=
-              st.k_name and k not in exclude}
+    params = {k: v for k, v in d.items() if k != st.k_name and k not in exclude}
     return name, params
 
 

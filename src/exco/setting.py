@@ -19,6 +19,7 @@ k_assumptions = 'assumptions'
 k_fallback = 'fallback'
 k_table_key = 'table_key'
 k_columns = 'columns'
+k_metadata = 'metadata'
 k_end_conditions = 'end_conditions'
 k_item_direction = 'item_direction'
 
