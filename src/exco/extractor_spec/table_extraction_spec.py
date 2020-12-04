@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Dict, Any, List, Optional
 
 from exco import setting as st
+from exco.cell_location import CellOffset
 from exco.dereferator import Dereferator
 from exco.extractor_spec.apv_spec import APVSpec
 from exco.extractor_spec.locator_spec import LocatorSpec
@@ -25,9 +26,6 @@ class TableItemDirection(Enum):
             return cls.default()
         else:
             return TableItemDirection(v)
-
-
-Offset = int
 
 
 @dataclass
@@ -53,7 +51,7 @@ class TableEndConditionSpec:
 
 @dataclass
 class ColumnSpecDict:
-    offset: int
+    offset: CellOffset
     dict: Dict[str, Any]
     source: SpecSource
 
@@ -62,7 +60,7 @@ class ColumnSpecDict:
 class TableExtractionSpec:
     key: str
     locator: LocatorSpec  # for corner
-    columns: Dict[Offset, APVSpec]  # offset -> APVSpec
+    columns: Dict[CellOffset, APVSpec]  # offset -> APVSpec
     end_conditions: List[TableEndConditionSpec] = field(
         default_factory=TableEndConditionSpec.default_conditions)
     item_direction: TableItemDirection = TableItemDirection.DOWNWARD
@@ -79,7 +77,7 @@ class TableExtractionSpec:
         )
 
     @classmethod
-    def from_dict(cls, d: Dict[str, Any], source: SpecSource = None):
+    def from_dict(cls, d: Dict[str, Any], source: SpecSource = None) -> 'TableExtractionSpec':
         """Construct form dict
 
         Args:

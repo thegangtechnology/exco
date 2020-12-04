@@ -198,10 +198,10 @@ class ExcoTemplate:
                 column_blocks = group_columns[table_key]
             except LookupError as e:
                 raise TableHasNoColumn(table_key) from e
-            # TODO: Support other orientation by allowing tuple
+
             columns_dicts = []
             for cb in column_blocks:
-                offset = tb.cell_location.offset_to(cb.cell_location)[1]
+                offset = tb.cell_location.offset_to(cb.cell_location)
                 columns_dicts.append(ColumnSpecDict(
                     offset=offset, dict=cb.exco_block.to_dict(), source=cb
                 ))

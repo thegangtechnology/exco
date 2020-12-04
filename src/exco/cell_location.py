@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple, Optional
 
+from exco import util
 from openpyxl import Workbook
 from openpyxl.utils import coordinate_to_tuple
 from openpyxl.worksheet.worksheet import Worksheet
@@ -8,6 +9,15 @@ from openpyxl.worksheet.worksheet import Worksheet
 from exco.cell_full_path import CellFullPath
 from exco.excel_extraction_scope import ExcelExtractionScope
 from exco.util import tuple_to_coordinate
+
+
+@dataclass(frozen=True)
+class CellOffset:
+    row: int
+    col: int
+
+    def __hash__(self):
+        return hash((self.row, self.col))
 
 
 @dataclass(frozen=True)
@@ -113,7 +123,7 @@ class CellLocation(ExcelExtractionScope):
             cell=sheet[self.coordinate]
         )
 
-    def offset_to(self, other: 'CellLocation') -> Tuple[int, int]:
+    def offset_to(self, other: 'CellLocation') -> CellOffset:
         """Compute offset to another cell
             The offset returned is such that  # our + offset = other
         Args:
@@ -124,4 +134,10 @@ class CellLocation(ExcelExtractionScope):
         """
         our_r, our_c = self.row_col
         other_r, other_c = other.row_col
-        return other_r - our_r, other_c - our_c
+        return CellOffset(other_r - our_r, other_c - our_c)
+
+    def shift(self, offset: CellOffset) -> 'CellLocation':
+        return CellLocation(
+            sheet_name=self.sheet_name,
+            coordinate=util.tuple_to_coordinate(self.row + offset.row, self.col + offset.col)
+        )
