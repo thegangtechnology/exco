@@ -47,35 +47,33 @@ class CellExtractionTaskResult(Generic[T]):
                all(ar.is_ok for ar in self.assumption_results.values()) and \
                all(vr.is_ok for vr in self.validation_results.values())
 
+    @classmethod
+    def fail_locating(cls, key: str, locating_result: LocatingResult,
+                      fallback: T, metadata: Dict[str, Any]) -> 'CellExtractionTaskResult[T]':
+        msg = "Fail Locating"
+        assert not locating_result.is_ok
+        return CellExtractionTaskResult(
+            key=key,
+            locating_result=locating_result,
+            parsing_result=ParsingResult[T].bad(msg=msg, fallback=fallback),
+            metadata=metadata
+        )
 
-@classmethod
-def fail_locating(cls, key: str, locating_result: LocatingResult,
-                  fallback: T, metadata: Dict[str, Any]) -> 'CellExtractionTaskResult[T]':
-    msg = "Fail Locating"
-    assert not locating_result.is_ok
-    return CellExtractionTaskResult(
-        key=key,
-        locating_result=locating_result,
-        parsing_result=ParsingResult[T].bad(msg=msg, fallback=fallback),
-        metadata=metadata
-    )
-
-
-@classmethod
-def fail_assumptions(cls, key: str,
-                     locating_result: LocatingResult,
-                     assumption_results: Dict[str, AssumptionResult],
-                     fallback: T,
-                     metadata: Dict[str, Any]) -> 'CellExtractionTaskResult[T]':
-    msg = "Fail Assumption"
-    assert any(not ar.is_ok for ar in assumption_results.values())
-    return CellExtractionTaskResult(
-        key=key,
-        locating_result=locating_result,
-        assumption_results=assumption_results,
-        parsing_result=ParsingResult.bad(msg=msg, fallback=fallback),
-        metadata=metadata
-    )
+    @classmethod
+    def fail_assumptions(cls, key: str,
+                         locating_result: LocatingResult,
+                         assumption_results: Dict[str, AssumptionResult],
+                         fallback: T,
+                         metadata: Dict[str, Any]) -> 'CellExtractionTaskResult[T]':
+        msg = "Fail Assumption"
+        assert any(not ar.is_ok for ar in assumption_results.values())
+        return CellExtractionTaskResult(
+            key=key,
+            locating_result=locating_result,
+            assumption_results=assumption_results,
+            parsing_result=ParsingResult.bad(msg=msg, fallback=fallback),
+            metadata=metadata
+        )
 
 
 @dataclass
