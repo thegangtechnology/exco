@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from typing import Pattern
+from typing import Pattern, Any
 
 from exco import CellLocation, setting
 from exco.util import CellValue
@@ -36,6 +36,22 @@ class Dereferator:
             CellValue
         """
         return self.resolve_coordinate(match_obj.group(1))
+
+    def deref(self, obj: Any) -> Any:
+        """Recursively deref list/dictionary and others.
+
+        Args:
+            obj (List, Dict, Value):
+
+        Returns:
+            Derefed object.
+        """
+        if isinstance(obj, list):
+            return [self.deref(x) for x in obj]
+        elif isinstance(obj, dict):
+            return {k: self.deref(v) for k, v in obj.items()}  # should I deref key?
+        else:
+            return self.deref_text(obj)
 
     def deref_text(self, text: str) -> CellValue:
         """Deref Text.

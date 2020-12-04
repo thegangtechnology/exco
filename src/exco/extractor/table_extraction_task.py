@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Any
 
 from exco import CellLocation
+from exco.cell_location import CellOffset
 from exco.exception import TooManyRowRead, NoEndConditionError
 from exco.extractor.locator.locator import Locator
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
@@ -136,7 +137,7 @@ class TableExtractionTaskResult:
 class TableExtractionTask:
     key: str
     locator: Locator
-    columns: Dict[int, CellExtractionTask]  # offset -> APVSpec
+    columns: Dict[CellOffset, CellExtractionTask]  # offset -> APVSpec
     end_condition: EndConditionCollection  # there is inclusive and exclusive
     item_direction: TableItemDirection = TableItemDirection.DOWNWARD
 
@@ -183,8 +184,7 @@ class TableExtractionTask:
         Returns:
             Dict[str, CellLocation]. column key -> CellLocation
         """
-        return {cet.key: self.shift_column_direction(
-            key_cell, offset) for offset, cet in self.columns.items()}
+        return {cet.key: key_cell.shift(offset) for offset, cet in self.columns.items()}
 
     def process(self, anchor_cell_location: CellLocation,
                 workbook: Workbook) -> TableExtractionTaskResult:
@@ -226,7 +226,7 @@ class TableExtractionTask:
             # parse
             cell_results = []
             for offset, cet in self.columns.items():
-                cell_cl = self.shift_column_direction(key_cell, offset)
+                cell_cl = key_cell.shift(offset)
                 cell_results.append(cet.process(cell_cl, workbook))
             row_results.append(RowExtractionTaskResult(
                 {cr.key: cr for cr in cell_results}

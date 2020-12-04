@@ -163,7 +163,8 @@ class ExcelProcessorFactory:
                     spec=spec.parser),
                 validators={
                     k: self.validator_factory.create_from_spec(sp) for k, sp in spec.validations.items()},
-                fallback=spec.fallback)
+                fallback=spec.fallback,
+                metadata=spec.apv.metadata)
         except ExcoException as e:
             raise ExtractionTaskCreationException(
                 f'Unable to create ExtractionTask for {spec.key} cf {spec.source.describe()}') from e

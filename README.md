@@ -151,7 +151,7 @@ where the key in the dictionaries is the column name specified in column blocks.
 Optional. Default at_comment_cell. Locator for the table anchor cell. Same as a cell block.
 
 #### `item_direction`
-Optional Direction for items in the table. Default downward.
+Optional Direction for items in the table. Default downward. (rightward or downward)
 
 #### `end_conditions`
 A list of dictionary specifying each termination condition. The dictionary contains `name` and flattened

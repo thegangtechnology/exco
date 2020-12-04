@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Generic, Dict, TypeVar
+from typing import Generic, Dict, TypeVar, Any
 
 from openpyxl import Workbook
 
@@ -23,6 +23,7 @@ class CellExtractionTaskResult(Generic[T]):
     key: str
     locating_result: LocatingResult
     parsing_result: ParsingResult[T]
+    metadata: Dict[str, Any]
     validation_results: Dict[str, ValidationResult] = field(
         default_factory=dict)
     assumption_results: Dict[str, AssumptionResult] = field(
@@ -42,33 +43,36 @@ class CellExtractionTaskResult(Generic[T]):
         Returns:
             True if it pass assumption, parsing, and validation.
         """
-        return all(ar.is_ok for ar in self.assumption_results.values()) and \
-            self.parsing_result.is_ok and \
-            all(vr.is_ok for vr in self.validation_results.values())
+        return self.parsing_result.is_ok and \
+               all(ar.is_ok for ar in self.assumption_results.values()) and \
+               all(vr.is_ok for vr in self.validation_results.values())
 
     @classmethod
     def fail_locating(cls, key: str, locating_result: LocatingResult,
-                      fallback: T) -> 'CellExtractionTaskResult[T]':
+                      fallback: T, metadata: Dict[str, Any]) -> 'CellExtractionTaskResult[T]':
         msg = "Fail Locating"
         assert not locating_result.is_ok
         return CellExtractionTaskResult(
             key=key,
             locating_result=locating_result,
-            parsing_result=ParsingResult[T].bad(msg=msg, fallback=fallback)
+            parsing_result=ParsingResult[T].bad(msg=msg, fallback=fallback),
+            metadata=metadata
         )
 
     @classmethod
     def fail_assumptions(cls, key: str,
                          locating_result: LocatingResult,
                          assumption_results: Dict[str, AssumptionResult],
-                         fallback: T) -> 'CellExtractionTaskResult[T]':
+                         fallback: T,
+                         metadata: Dict[str, Any]) -> 'CellExtractionTaskResult[T]':
         msg = "Fail Assumption"
         assert any(not ar.is_ok for ar in assumption_results.values())
         return CellExtractionTaskResult(
             key=key,
             locating_result=locating_result,
             assumption_results=assumption_results,
-            parsing_result=ParsingResult.bad(msg=msg, fallback=fallback)
+            parsing_result=ParsingResult.bad(msg=msg, fallback=fallback),
+            metadata=metadata
         )
 
 
@@ -80,6 +84,7 @@ class CellExtractionTask(Generic[T]):
     validators: Dict[str, Validator[T]]
     assumptions: Dict[str, Assumption]
     fallback: T
+    metadata: Dict[str, Any]
 
     def __str__(self):
         s = long_string(f"""
@@ -88,6 +93,7 @@ class CellExtractionTask(Generic[T]):
         parser: {self.parser}
         validators: {[dict(key=key, v=v) for key, v in self.validators.items()]}
         assumptions: {[dict(key=key, a=a) for key, a in self.assumptions.items()]}
+        metadata: {self.metadata}
         fallback: {self.fallback}""")
         return s
 
@@ -99,7 +105,10 @@ class CellExtractionTask(Generic[T]):
         )
         if not locating_result.is_ok:
             return CellExtractionTaskResult.fail_locating(
-                key=self.key, locating_result=locating_result, fallback=self.fallback)
+                key=self.key,
+                locating_result=locating_result,
+                fallback=self.fallback,
+                metadata=self.metadata)
         cfp = locating_result.location.get_cell_full_path(workbook)
 
         assumption_results = {k: assumption.assume(
@@ -109,7 +118,8 @@ class CellExtractionTask(Generic[T]):
                 key=self.key,
                 locating_result=locating_result,
                 assumption_results=assumption_results,
-                fallback=self.fallback
+                fallback=self.fallback,
+                metadata=self.metadata
             )
 
         parsing_result = self.parser.parse(cfp, self.fallback)
@@ -118,7 +128,8 @@ class CellExtractionTask(Generic[T]):
                 key=self.key,
                 locating_result=locating_result,
                 assumption_results=assumption_results,
-                parsing_result=parsing_result
+                parsing_result=parsing_result,
+                metadata=self.metadata
             )
 
         validation_results = {k: vt.validate(
@@ -128,7 +139,8 @@ class CellExtractionTask(Generic[T]):
             locating_result=locating_result,
             assumption_results=assumption_results,
             parsing_result=parsing_result,
-            validation_results=validation_results
+            validation_results=validation_results,
+            metadata=self.metadata
         )
 
     @classmethod
@@ -139,5 +151,6 @@ class CellExtractionTask(Generic[T]):
             parser=parser,
             validators={},
             assumptions={},
-            fallback=None
+            fallback=None,
+            metadata={}
         )
