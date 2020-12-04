@@ -75,6 +75,7 @@ fallback: 7
 params: {} 
 validators: # Optional
     - {key: between, name: between, low: 5, high: 10 }
+metadata: {unit: km}
 --}}
 ```
 
@@ -119,6 +120,9 @@ constructor.
 #### `validations`
 Optional. List of Dictionary. Each dictionary must have `key` for the validation key and `name`,
 validator's class name, specified. Other parameters to be passed to the validator constructor can be flattened and specified in this dictionary as well.
+
+### `metadata`
+Optional. Metadata. Dictionary of any object can be put here. The object will be parsed on to the result.
 
 ## Table Block
 A table block is for specifying the properties of the table. The table block is surrounded by
