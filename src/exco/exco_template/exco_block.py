@@ -181,13 +181,14 @@ class ExcoBlockParser:
             ExcoBlockParserState. Next state.
         """
         cs = current_state
-        if line == setting.start_table_marker:
+        trimmed_line = line.strip()  # remove leading and trailing spaces
+        if trimmed_line == setting.start_table_marker:
             return cls.enter_block(cs, line, S.INSIDE_TABLE)
-        elif line == setting.start_cell_marker:
+        elif trimmed_line == setting.start_cell_marker:
             return cls.enter_block(cs, line, S.INSIDE_CELL)
-        elif line == setting.start_col_marker:
+        elif trimmed_line == setting.start_col_marker:
             return cls.enter_block(cs, line, S.INSIDE_COL)
-        elif line == setting.end_marker:
+        elif trimmed_line == setting.end_marker:
             if current_state.is_inside():
                 return S.OUTSIDE
             else:
