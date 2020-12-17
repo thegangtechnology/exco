@@ -93,7 +93,7 @@ class ExcelDerefedProcessor:
             cell_results=cell_result, table_results=table_result)
 
     def process_excel(self, fname: str) -> ExcelProcessingResult:
-        wb = openpyxl.load_workbook(fname)
+        wb = openpyxl.load_workbook(fname, data_only=True)
         return self.process_workbook(wb)
 
     def __str__(self):
@@ -124,7 +124,7 @@ class ExcelProcessor:
         return self.deref(workbook).process_workbook(workbook)
 
     def process_excel(self, fname: str) -> ExcelProcessingResult:
-        wb = openpyxl.load_workbook(fname)
+        wb = openpyxl.load_workbook(fname, data_only=True)
         return self.process_workbook(wb)
 
     def __str__(self) -> str:
@@ -207,7 +207,7 @@ class ExcelProcessorFactory:
 
     def create_from_template_excel(self,
                                    fname: str) -> ExcelProcessor:
-        workbook = openpyxl.load_workbook(fname)
+        workbook = openpyxl.load_workbook(fname, data_only=True)
         return self.create_from_template_workbook(workbook)
 
     def create_from_template_workbook(
