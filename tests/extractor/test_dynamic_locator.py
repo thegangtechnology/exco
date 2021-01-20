@@ -9,4 +9,4 @@ def test_dynamic_locator():
         __file__), '../../sample/test/dynamic_location/dynamic_location_data.xlsx')
 
     result = processor.process_excel(datafile)
-    assert result.to_dict() == {'marker_value': 2}
+    assert result.to_dict() == {'marker_value': 2, 'below_marker_value': 'below_marker'}
