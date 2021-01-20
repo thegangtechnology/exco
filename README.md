@@ -201,6 +201,12 @@ Locate the cell to the right of the cell with a regex match.
 Parameters:
 - `regex` string for the regular expression.
 
+### `below_of`
+Locate the cell below of the cell with the given label.
+
+Parameters:
+- `label` label to match.
+
 ## Assumption
 
 ### `left_cell_match`
