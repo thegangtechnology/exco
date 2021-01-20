@@ -198,7 +198,10 @@ class TableExtractionTask:
 
         """
         locating_result = self.locator.locate(anchor_cell_location, workbook)
-        if not locating_result.is_ok:
+
+        if locating_result.is_ok:
+            anchor_cell_location = locating_result.location
+        else:
             return TableExtractionTaskResult.fail_locating_result(
                 key=self.key, locating_result=locating_result)
 
