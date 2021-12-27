@@ -1,5 +1,6 @@
 from typing import Dict, Type
 
+from exco.extractor.parser.built_in.link_parser import LinkParser
 from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor.base_factory import BaseFactory
 from exco.extractor.parser.built_in.date_parser import DateParser
@@ -23,5 +24,6 @@ class ParserFactory(BaseFactory[Parser, ParserSpec]):
             IntParser,
             StringParser,
             FloatParser,
-            DateParser
+            DateParser,
+            LinkParser
         ]))
