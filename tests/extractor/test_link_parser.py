@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from os.path import join, dirname
 
 import pytest
@@ -16,7 +17,7 @@ def template():
 def test_good_link(template):
     fname = join(dirname(__file__), '../../sample/test/link/good_link.xlsx')
     result = template.process_excel(fname)
-    assert result.to_dict() == {'link': LinkResult(display="This is the link", link="https://www.google.com/")}
+    assert result.to_dict() == {'link': asdict(LinkResult(display="This is the link", link="https://www.google.com/"))}
 
 
 def test_bad_link(template):
