@@ -1,6 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from datetime import date
-from typing import Any, TypeVar
+from typing import Any, TypeVar, Dict
 
 from exco.cell_full_path import CellFullPath
 from exco.exception import ParsingFailException
@@ -19,12 +19,12 @@ class LinkResult:
 @dataclass
 class LinkParser(ValueParser[date]):
 
-    def parse_value(self, v: Any) -> LinkResult:
+    def parse_value(self, v: Any) -> Dict[str, str]:
         if v.hyperlink:
-            return LinkResult(
+            return asdict(LinkResult(
                 display=v.value,
                 link=v.hyperlink.target
-            )
+            ))
         else:
             raise ParsingFailException(
                 msg=f"{v.coordinate} is not hyperlink"
