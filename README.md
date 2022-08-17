@@ -269,3 +269,23 @@ parser: int
 fallback: ==D3== 
 --}}
 ```
+
+# Handle Identical Sheet with Different Names
+
+When an excel file to be extracted has a different sheet name than the one in the template file,
+use ``sheet_name_checkers`` parameter in ``exco.from_excel()`` to create ``ExcelProcessor`` 
+with sheet name alias checker.
+
+For example, when the sheet name in the template file is 'Test 1/1/2021', 
+but sheet names can be varied in the extracting files, i.e., 'Test 2/2/2022, 'Test 3/3/2023', etc.
+```
+import exco
+
+SheetName = str
+SheetNameAliasChecker = Callable[[SheetName], bool]
+test_sheet_checker: SheetNameAliasChecker = lambda sheetname: 'Test' in sheetname
+checkers: Dict[SheetName, SheetNameAliasChecker] = {'Test 1/1/2021': test_sheet_checker}
+processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers)
+
+```
+
