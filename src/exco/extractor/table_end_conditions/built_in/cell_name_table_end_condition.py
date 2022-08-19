@@ -18,5 +18,3 @@ class CellNameTableEndCondition(TableEndCondition):
             should_terminate=is_cell_name,
             is_inclusive=False
         )
-
-
