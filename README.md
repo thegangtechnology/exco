@@ -206,6 +206,7 @@ Locate the cell below of the cell with the given label.
 
 Parameters:
 - `label` label to match.
+- `empty` Optional. Default False. Whether to account for empty cells beneath label cell.
 
 ## Assumption
 
@@ -252,6 +253,11 @@ equal to `n`.
 - `n` number of row
 - `inclusive` Optional. Default True. Whether to include the row in which it evaluates to true.
 
+### `cell_name`
+Evaluate to true if row (cell) contains matching `end_label`. Terminates the row before.
+
+#### Parameters
+- `end_label` label to end the row before.
 # Dereferencing
 There are two types of dereferencing
 - Spec Creation time dereferencing. The string similar to ``<<A1>>`` will be resolved 

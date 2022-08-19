@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from openpyxl import Workbook
 
 from exco import CellLocation, util
+from exco.dereferator import Dereferator as df
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.locator.locator import Locator
 from openpyxl.worksheet.worksheet import Worksheet
@@ -12,6 +13,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 class BelowOfLocator(Locator):
     """Resolve to the cell below the anchored cell"""
     label: str
+    empty: bool = False
 
     def locate(self, anchor_cell_location: CellLocation,
                workbook: Workbook) -> LocatingResult:
@@ -23,6 +25,13 @@ class BelowOfLocator(Locator):
                         sheet_name=anchor_cell_location.sheet_name,
                         coordinate=util.shift_coord(cell.coordinate, (1, 0))
                     )
+                    if self.empty:
+                        while sheet[cell_loc.coordinate].value is None:
+                            cell_loc = CellLocation(
+                                sheet_name=anchor_cell_location.sheet_name,
+                                coordinate=util.shift_coord(cell_loc.coordinate, (1, 0))
+                            )
+                        return LocatingResult.good(cell_loc)
                     return LocatingResult.good(cell_loc)
         return LocatingResult.bad(
             msg=f"Unable to find cell below of {self.label}")
