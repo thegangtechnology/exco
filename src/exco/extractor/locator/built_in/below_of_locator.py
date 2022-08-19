@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from openpyxl import Workbook
 
 from exco import CellLocation, util
-from exco.dereferator import Dereferator as df
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.locator.locator import Locator
 from openpyxl.worksheet.worksheet import Worksheet
