@@ -9,7 +9,7 @@ from exco.extractor.locator.built_in.right_of_locator import RightOfLocator
 from exco.extractor.parser.built_in.string_parser import StringParser
 from exco.extractor.table_end_conditions.built_in.all_blank_table_end_condition import AllBlankTableEndCondition
 from exco.extractor.table_end_conditions.built_in.max_row_table_end_condition import MaxRowTableEndCondition
-from exco.extractor.table_end_conditions.built_in.cell_name_table_end_condition import CellNameTableEndCondition
+from exco.extractor.table_end_conditions.built_in.cell_value_table_end_condition import CellValueTableEndCondition
 from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
 from exco.extractor.table_extraction_task import EndConditionCollection, TableExtractionTask
 from exco.extractor_spec.table_extraction_spec import TableItemDirection
@@ -75,13 +75,13 @@ def test_table_extraction_task(workbook, cell_loc):
     assert len(result.row_results) == 3
 
 
-def test_end_cell_table_extraction_task(workbook, cell_loc):
+def test_cell_value_table_extraction_task(workbook, cell_loc):
     tt = TableExtractionTask(
         key="some_table",
         locator=AtCommentCellLocator(),
         columns={CellOffset(row=0, col=0): CellExtractionTask.simple(
             key='some_key', parser=StringParser())},
-        end_condition=EndConditionCollection([CellNameTableEndCondition(end_label="end")]),
+        end_condition=EndConditionCollection([CellValueTableEndCondition(cell_value="end")]),
         item_direction=TableItemDirection.DOWNWARD
     )
 

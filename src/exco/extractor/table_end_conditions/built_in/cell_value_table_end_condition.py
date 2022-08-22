@@ -6,15 +6,19 @@ from exco.extractor.table_end_conditions.table_end_condition import TableEndCond
 
 
 @dataclass
-class CellNameTableEndCondition(TableEndCondition):
-    end_label: str
+class CellValueTableEndCondition(TableEndCondition):
+    cell_value: str
 
     def test(self, param: TableEndConditionParam) -> TableEndConditionResult:
-        for _, cfp in param.cfps.items():
-            is_cell_name = cfp.cell.value == self.end_label
-            if is_cell_name:
-                break
+        matching_cell_value = self._check_matching_cell_value(param)
         return TableEndConditionResult.good(
-            should_terminate=is_cell_name,
+            should_terminate=matching_cell_value,
             is_inclusive=False
         )
+
+    def _check_matching_cell_value(self, param: TableEndConditionParam) -> bool:
+        for _, cfp in param.cfps.items():
+            matching_cell_value = cfp.cell.value == self.cell_value
+            if matching_cell_value:
+                break
+        return matching_cell_value

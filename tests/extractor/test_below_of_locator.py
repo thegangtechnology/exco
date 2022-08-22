@@ -29,7 +29,7 @@ def test_below_of_locator_fail(wb: Workbook):
 
 
 def test_below_of_locator_empty(wb: Workbook):
-    rol = BelowOfLocator(label='the key 1', empty=True)
+    rol = BelowOfLocator(label='the key 1', max_row=2)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
