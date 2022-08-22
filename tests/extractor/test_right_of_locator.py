@@ -18,6 +18,11 @@ def wb() -> CellFullPath:
 
     ws['C4'] = 50
     ws['B4'] = 'the key 1'
+
+    ws.merge_cells('E4:H4')
+    ws['I4'] = 20
+    ws['E4'] = 'right of merged'
+
     return wb
 
 
@@ -29,6 +34,19 @@ def test_right_of_locator_fail(wb: Workbook):
     ), workbook=wb)
     assert result == LocatingResult.bad(
         msg='Unable to find cell to the right of the key')
+
+
+def test_right_of_locator_merged_cell(wb: Workbook):
+    rol = RightOfLocator(label='right of merged')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="I4"
+    )
+    assert result == LocatingResult.good(cell_loc)
 
 
 def test_right_of_locator_regex(wb: Workbook):
