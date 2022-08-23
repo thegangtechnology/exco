@@ -21,8 +21,7 @@ class RightOfLocator(Locator):  # TODO: Add search scope
                     if util.is_merged_cell(sheet, cell.coordinate):
                         right_most_column = util.get_rightmost_column(sheet, cell.coordinate)
                         if right_most_column is None:
-                            return LocatingResult.bad(
-                                msg=f"Merged cell {self.label} error, cant find right most column")
+                            break
                         coord = (cell.row,
                                  right_most_column)
                         cell_loc = CellLocation(
