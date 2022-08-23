@@ -149,7 +149,6 @@ def is_merged_cell(sheet: Worksheet, coordinates: str) -> bool:
 def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> Optional[TupleCellLocation]:
     if not is_merged_cell(sheet=sheet, coordinates=cell.coordinate):
         return coordinate_to_tuple(cell.coordinate)
-    coordinates = cell.coordinate
     for merged_cell in sheet.merged_cells.ranges:
-        if coordinates in merged_cell:
+        if cell.coordinate in merged_cell:
             return cell.row, merged_cell.max_col
