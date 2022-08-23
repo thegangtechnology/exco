@@ -43,6 +43,18 @@ def test_right_of_locator_fail(wb: Workbook):
     assert result == LocatingResult.bad(
         msg='Unable to find cell to the right of the key')
 
+def test_right_of_locator(wb: Workbook):
+    rol = RightOfLocator(label='right of')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="B3"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
 
 def test_right_of_locator_horizontal_merged_cell(wb: Workbook):
     rol = RightOfLocator(label='right of horizontal merged cell')
