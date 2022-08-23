@@ -9,6 +9,7 @@ import stringcase
 from openpyxl import Workbook
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.merge import MergedCellRange
 from openpyxl.worksheet.worksheet import Worksheet
 
 from exco import setting as st
@@ -139,16 +140,22 @@ def group_by(f: Callable[[T], T2], xs: List[T]) -> Dict[T2, List[T]]:
     return dict(ret)
 
 
-def is_merged_cell(sheet: Worksheet, coordinates: str) -> bool:
+def get_merged_cell(sheet: Worksheet, coordinates: str) -> Optional[MergedCellRange]:
     for merged_cell in sheet.merged_cells.ranges:
         if coordinates in merged_cell:
-            return True
-    return False
+            return merged_cell
+    return None
 
 
-def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> Optional[TupleCellLocation]:
-    if not is_merged_cell(sheet=sheet, coordinates=cell.coordinate):
+def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> TupleCellLocation:
+    merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
+    if merged_cell is None:
         return coordinate_to_tuple(cell.coordinate)
-    for merged_cell in sheet.merged_cells.ranges:
-        if cell.coordinate in merged_cell:
-            return cell.row, merged_cell.max_col
+    return cell.row, merged_cell.max_col
+
+
+def get_bottommost_coordinate(sheet: Worksheet, cell: Cell) -> TupleCellLocation:
+    merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
+    if merged_cell is None:
+        return coordinate_to_tuple(cell.coordinate)
+    return merged_cell.max_row, cell.column
