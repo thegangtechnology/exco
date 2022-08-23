@@ -16,6 +16,7 @@ from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
 CellValue = Union[str, int, date, None]
+TupleCellLocation = tuple[int, int]
 
 
 def long_string(s: str) -> str:
@@ -145,8 +146,11 @@ def is_merged_cell(sheet: Worksheet, coordinates: str) -> bool:
     return False
 
 
-def get_rightmost_column(sheet: Worksheet, coordinates: str) -> Optional[int]:
+def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> Optional[TupleCellLocation]:
+    if not is_merged_cell(sheet=sheet, coordinates=cell.coordinate):
+        return coordinate_to_tuple(cell.coordinate)
+    coordinates = cell.coordinate
     for merged_cell in sheet.merged_cells.ranges:
         if coordinates in merged_cell:
-            return merged_cell.max_col
+            return cell.row, merged_cell.max_col
     return None
