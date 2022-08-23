@@ -139,7 +139,7 @@ def group_by(f: Callable[[T], T2], xs: List[T]) -> Dict[T2, List[T]]:
 
 
 def is_merged_cell(sheet: Worksheet, coordinates: str) -> bool:
-    for merged_cell in sheet.merged_cell_ranges:
+    for merged_cell in sheet.merged_cells.ranges:
         if coordinates in merged_cell:
             return True
     return False
