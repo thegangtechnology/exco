@@ -16,7 +16,7 @@ from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
 CellValue = Union[str, int, date, None]
-TupleCellLocation = tuple[int, int]
+TupleCellLocation = Tuple[int, int]
 
 
 def long_string(s: str) -> str:
