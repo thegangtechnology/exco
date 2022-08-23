@@ -29,7 +29,7 @@ class RightOfLocator(Locator):  # TODO: Add search scope
                     else:
                         cell_loc = CellLocation(
                             sheet_name=anchor_cell_location.sheet_name,
-                            coordinate=util.shift_coord(cell.coordinate,(0, 1))
+                            coordinate=util.shift_coord(cell.coordinate, (0, 1))
                         )
                     return LocatingResult.good(cell_loc)
         return LocatingResult.bad(
