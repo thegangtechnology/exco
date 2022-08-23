@@ -153,4 +153,3 @@ def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> Optional[TupleCell
     for merged_cell in sheet.merged_cells.ranges:
         if coordinates in merged_cell:
             return cell.row, merged_cell.max_col
-    return None
