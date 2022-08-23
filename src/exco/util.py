@@ -11,7 +11,7 @@ from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
-from exco import setting as st, CellLocation
+from exco import setting as st
 from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
@@ -138,14 +138,14 @@ def group_by(f: Callable[[T], T2], xs: List[T]) -> Dict[T2, List[T]]:
     return dict(ret)
 
 
-def is_merged_cell(sheet: Worksheet, coordinates: CellLocation) -> bool:
+def is_merged_cell(sheet: Worksheet, coordinates: str) -> bool:
     for merged_cell in sheet.merged_cell_ranges:
         if coordinates in merged_cell:
             return True
     return False
 
 
-def get_rightmost_column(sheet: Worksheet, coordinates: CellLocation) -> int:
+def get_rightmost_column(sheet: Worksheet, coordinates: str) -> int:
     for merged_cell in sheet.merged_cell_ranges:
         if coordinates in merged_cell:
             return merged_cell.max_col
