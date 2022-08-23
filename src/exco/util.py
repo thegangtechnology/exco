@@ -145,7 +145,8 @@ def is_merged_cell(sheet: Worksheet, coordinates: str) -> bool:
     return False
 
 
-def get_rightmost_column(sheet: Worksheet, coordinates: str) -> int:
+def get_rightmost_column(sheet: Worksheet, coordinates: str) -> Optional[int]:
     for merged_cell in sheet.merged_cells.ranges:
         if coordinates in merged_cell:
             return merged_cell.max_col
+    return None
