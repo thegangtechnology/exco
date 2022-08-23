@@ -11,7 +11,6 @@ from exco.extractor.locator.locator import Locator
 @dataclass
 class RightOfLocator(Locator):  # TODO: Add search scope
     label: str
-    maximum_column = int
 
     def locate(self, anchor_cell_location: CellLocation,
                workbook: Workbook) -> LocatingResult:
