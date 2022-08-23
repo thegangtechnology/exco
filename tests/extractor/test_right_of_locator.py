@@ -43,6 +43,7 @@ def test_right_of_locator_fail(wb: Workbook):
     assert result == LocatingResult.bad(
         msg='Unable to find cell to the right of the key')
 
+
 def test_right_of_locator(wb: Workbook):
     rol = RightOfLocator(label='right of')
     result = rol.locate(anchor_cell_location=CellLocation(
