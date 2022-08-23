@@ -31,7 +31,6 @@ def wb() -> CellFullPath:
     ws['C6'] = 123
     ws['B6'] = 'right of vertical merged cell'
 
-
     return wb
 
 
@@ -57,6 +56,7 @@ def test_right_of_locator_horizontal_merged_cell(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
+
 def test_right_of_locator_vertical_merged_cell(wb: Workbook):
     rol = RightOfLocator(label='right of vertical merged cell')
     result = rol.locate(anchor_cell_location=CellLocation(
@@ -68,6 +68,7 @@ def test_right_of_locator_vertical_merged_cell(wb: Workbook):
         coordinate="C6"
     )
     assert result == LocatingResult.good(cell_loc)
+
 
 def test_right_of_locator_boxed_merged_cell(wb: Workbook):
     rol = RightOfLocator(label='right of boxed merged cell')
