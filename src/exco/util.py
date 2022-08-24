@@ -12,7 +12,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.merge import MergedCellRange
 from openpyxl.worksheet.worksheet import Worksheet
 
-from exco import setting as st, CellLocation
+from exco import setting as st
 from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
@@ -156,6 +156,7 @@ def get_merged_cell(sheet: Worksheet, coordinates: str) -> Optional[MergedCellRa
 
 
 def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> 'CellLocation':
+    from exco import CellLocation
     merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
     if merged_cell is None:
         return CellLocation(
@@ -169,6 +170,7 @@ def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> 'CellLocation':
 
 
 def get_bottommost_coordinate(sheet: Worksheet, cell: Cell) -> 'CellLocation':
+    from exco import CellLocation
     merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
     if merged_cell is None:
         return CellLocation(
