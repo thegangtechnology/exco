@@ -12,7 +12,7 @@ def wb() -> CellFullPath:
     wb = Workbook()
 
     ws = wb.active
-    ws['A5'] = 40
+    ws['A6'] = 40
     ws['A3'] = 'the key 1'
 
     return wb
@@ -29,9 +29,19 @@ def test_below_of_locator_fail(wb: Workbook):
 
 
 def test_below_of_locator_empty(wb: Workbook):
+    rol = BelowOfLocator(label='the key 1', max_empty_row_search=3)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    assert result.location.coordinate == "A6"
+
+
+def test_below_of_locator_empty_fail(wb: Workbook):
     rol = BelowOfLocator(label='the key 1', max_empty_row_search=2)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
     ), workbook=wb)
-    assert result.location.coordinate == "A5"
+    assert result == LocatingResult.bad(
+        msg='Unable to find cell below of the key 1')
