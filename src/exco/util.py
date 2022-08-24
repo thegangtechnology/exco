@@ -17,7 +17,8 @@ from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
 CellValue = Union[str, int, date, None]
-CellLocation = 'CellLocation'
+CellLocation = 'CellLocation'  # to avoid flake8 code smell
+
 
 def long_string(s: str) -> str:
     """left strip and dedent the string
