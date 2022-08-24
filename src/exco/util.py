@@ -9,6 +9,7 @@ import stringcase
 from openpyxl import Workbook
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.merge import MergedCellRange
 from openpyxl.worksheet.worksheet import Worksheet
 
 from exco import setting as st
@@ -16,6 +17,7 @@ from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
 CellValue = Union[str, int, date, None]
+CellLocation = 'CellLocation'  # to avoid flake8 code smell
 
 
 def long_string(s: str) -> str:
@@ -136,3 +138,47 @@ def group_by(f: Callable[[T], T2], xs: List[T]) -> Dict[T2, List[T]]:
         key = f(x)
         ret[key].append(x)
     return dict(ret)
+
+
+def get_merged_cell(sheet: Worksheet, coordinates: str) -> Optional[MergedCellRange]:
+    """Find the merge cell in the whole sheet that contains coordinates
+
+    Args:
+        sheet (Worksheet): worksheet
+        coordinates (str): coordinates of cell
+
+    Returns:
+        MergedCellRange if cell is a part of a merged cell, None if cell is not a merged cell
+    """
+    for merged_cell in sheet.merged_cells.ranges:
+        if coordinates in merged_cell:
+            return merged_cell
+    return None
+
+
+def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> CellLocation:
+    from exco import CellLocation
+    merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
+    if merged_cell is None:
+        return CellLocation(
+            coordinate=cell.coordinate,
+            sheet_name=sheet.title
+        )
+    return CellLocation(
+        coordinate=tuple_to_coordinate(cell.row, merged_cell.max_col),
+        sheet_name=sheet.title
+    )
+
+
+def get_bottommost_coordinate(sheet: Worksheet, cell: Cell) -> CellLocation:
+    from exco import CellLocation
+    merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
+    if merged_cell is None:
+        return CellLocation(
+            coordinate=cell.coordinate,
+            sheet_name=sheet.title
+        )
+    return CellLocation(
+        coordinate=tuple_to_coordinate(merged_cell.max_row, cell.column),
+        sheet_name=sheet.title
+    )
