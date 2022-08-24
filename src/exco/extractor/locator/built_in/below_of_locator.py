@@ -33,7 +33,7 @@ class BelowOfLocator(Locator):
 
     def _empty_row_search(self, cell_cor: str, sheet: Worksheet,
                           anchor_cell_location: CellLocation) -> LocatingResult:
-        for i in range(0, self.max_empty_row_search-1):
+        for i in range(0, self.max_empty_row_search - 1):
             cell_cor = util.shift_coord(cell_cor, (1, 0))
             if sheet[cell_cor].value is not None:
                 cell_loc = CellLocation(
