@@ -206,7 +206,7 @@ Locate the cell below of the cell with the given label.
 
 Parameters:
 - `label` label to match.
-- `max_row` Optional. Default value is 1. Indicate the number of rows below of label.
+- `max_empty_row_search` Optional. Default value is 0. Indicates the number of rows to search for non-empty cell below of label.
 
 ## Assumption
 
@@ -243,7 +243,7 @@ valid if the value is between(inclusively) `high` and `low`
 ## TableEndCondition
 
 ### `all_blank`
-Evaluate to true of all columns are blank.
+Evaluate to true if all columns are blank.
 
 ### `max_row`
 Evaluate to true if the row number(start from 1) including the parsing row is greater than or
@@ -254,10 +254,10 @@ equal to `n`.
 - `inclusive` Optional. Default True. Whether to include the row in which it evaluates to true.
 
 ### `cell_value`
-Evaluate to true if row (cell) contains matching `cell_value`. Terminates the row before.
+Evaluate to true if any column in row contains matching `cell_value`. Table terminates the row before.
 
 #### Parameters
-- `cell_value` cell value to end the row before.
+- `cell_value` cell value to match.
 # Dereferencing
 There are two types of dereferencing
 - Spec Creation time dereferencing. The string similar to ``<<A1>>`` will be resolved 
