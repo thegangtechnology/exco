@@ -17,7 +17,7 @@ from exco.cell_full_path import CellFullPath
 
 T = TypeVar('T')
 CellValue = Union[str, int, date, None]
-
+CellLocation = 'CellLocation'
 
 def long_string(s: str) -> str:
     """left strip and dedent the string
@@ -155,7 +155,7 @@ def get_merged_cell(sheet: Worksheet, coordinates: str) -> Optional[MergedCellRa
     return None
 
 
-def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> 'CellLocation':
+def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> CellLocation:
     from exco import CellLocation
     merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
     if merged_cell is None:
@@ -169,7 +169,7 @@ def get_rightmost_coordinate(sheet: Worksheet, cell: Cell) -> 'CellLocation':
     )
 
 
-def get_bottommost_coordinate(sheet: Worksheet, cell: Cell) -> 'CellLocation':
+def get_bottommost_coordinate(sheet: Worksheet, cell: Cell) -> CellLocation:
     from exco import CellLocation
     merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
     if merged_cell is None:
