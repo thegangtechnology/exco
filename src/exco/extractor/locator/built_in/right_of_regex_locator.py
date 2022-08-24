@@ -22,7 +22,7 @@ class RightOfRegexLocator(Locator):
                     coord = util.get_rightmost_coordinate(sheet=sheet, cell=cell)
                     cell_loc = CellLocation(
                         sheet_name=anchor_cell_location.sheet_name,
-                        coordinate=util.shift_coord(util.tuple_to_coordinate(coord[0], coord[1]), (0, 1))
+                        coordinate=util.shift_coord(coord.coordinate, (0, 1))
                     )
                     return LocatingResult.good(cell_loc)
         return LocatingResult.bad(
