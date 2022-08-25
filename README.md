@@ -194,7 +194,14 @@ Locate the cell to the right of the cell with the given label.
 
 Parameters:
 - `label` label to match.
+- `n` Optional. Default value is 1. Indicates the number of columns to move from label cell to located cell.
 
+### `search_right_of`
+Searches for non-empty cell right of the cell with the given value.
+
+Parameters:
+- `label` label to match.
+- `max_empty_col_search` Indicates the maximum number of columns to search for non-empty cell right of label.
 ### `right_of_regex`
 Locate the cell to the right of the cell with a regex match.
 
@@ -206,7 +213,14 @@ Locate the cell below of the cell with the given label.
 
 Parameters:
 - `label` label to match.
-- `max_empty_row_search` Optional. Default value is 0. Indicates the number of rows to search for non-empty cell below of label.
+- `n` Optional. Default value is 1. Indicates the number of rows to skip from label cell to located cell.
+
+### `search_below_of`
+Searches for non-empty cell below of the cell with the given label.
+
+Parameters:
+- `label` label to match.
+- `max_empty_row_search` Indicates the maximum number of rows to search for non-empty cell below of label.
 
 ## Assumption
 
