@@ -100,4 +100,3 @@ def test_below_of_locator_boxed_merged_cell(wb: Workbook):
         coordinate="E12"
     )
     assert result == LocatingResult.good(cell_loc)
-
