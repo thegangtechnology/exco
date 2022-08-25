@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Tuple, Optional
 
-from exco import util
 from openpyxl import Workbook
 from openpyxl.utils import coordinate_to_tuple
 from openpyxl.worksheet.worksheet import Worksheet
@@ -139,5 +138,5 @@ class CellLocation(ExcelExtractionScope):
     def shift(self, offset: CellOffset) -> 'CellLocation':
         return CellLocation(
             sheet_name=self.sheet_name,
-            coordinate=util.tuple_to_coordinate(self.row + offset.row, self.col + offset.col)
+            coordinate=tuple_to_coordinate(self.row + offset.row, self.col + offset.col)
         )

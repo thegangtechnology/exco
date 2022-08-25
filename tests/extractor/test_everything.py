@@ -7,6 +7,9 @@ from exco import ExcoTemplate
 fname = join(dirname(__file__),
              '../../sample/test/everything/everything_template.xlsx')
 
+fname_with_diff_sheet_name = join(dirname(__file__),
+                                  '../../sample/test/everything/everything_diff_sheet_name.xlsx')
+
 
 def test_everything():
     template = exco.from_excel(fname)
@@ -23,6 +26,12 @@ def test_everything():
            'some_int': 1,
            'some_string': 'string'}
 
+    assert result.to_dict() == exp
+    assert result.is_ok
+
+    sheet_name_checkers = {'TestSheet': lambda name: 'test' in name.lower()}
+    template = exco.from_excel(fname, sheet_name_checkers=sheet_name_checkers)
+    result = template.process_excel(fname_with_diff_sheet_name)
     assert result.to_dict() == exp
     assert result.is_ok
 
