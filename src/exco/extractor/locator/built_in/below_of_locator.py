@@ -20,7 +20,8 @@ class BelowOfLocator(Locator):
         for row in sheet.iter_rows():
             for cell in row:
                 if cell.value == self.label:
-                    cell_cor = util.shift_coord(cell.coordinate, (1, 0))
+                    coord = util.get_bottommost_coordinate(sheet=sheet, cell=cell)
+                    cell_cor = util.shift_coord(coord.coordinate, (1, 0))
                     if self.max_empty_row_search != 0:
                         return self._empty_row_search(cell_cor, sheet, anchor_cell_location)
                     cell_loc = CellLocation(

@@ -18,9 +18,10 @@ class RightOfLocator(Locator):  # TODO: Add search scope
         for row in sheet.iter_rows():
             for cell in row:
                 if cell.value == self.label:
+                    coord = util.get_rightmost_coordinate(sheet=sheet, cell=cell)
                     cell_loc = CellLocation(
                         sheet_name=anchor_cell_location.sheet_name,
-                        coordinate=util.shift_coord(cell.coordinate, (0, 1))
+                        coordinate=util.shift_coord(coord.coordinate, (0, 1))
                     )
                     return LocatingResult.good(cell_loc)
         return LocatingResult.bad(

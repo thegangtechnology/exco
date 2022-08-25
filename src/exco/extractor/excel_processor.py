@@ -13,6 +13,7 @@ from exco.extractor.table_extraction_task import TableExtractionTask, EndConditi
 from exco.extractor.validator.validator_factory import ValidatorFactory
 from exco.extractor_spec import CellExtractionSpec, ExcelProcessorSpec
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec
+from exco.sheet_name_alias import SheetName, SheetNameAliasCheckers
 from openpyxl import Workbook
 
 T = TypeVar('T')
@@ -111,6 +112,7 @@ class ExcelDerefedProcessor:
 class ExcelProcessor:
     spec: ExcelProcessorSpec  # raw spec
     factory: 'ExcelProcessorFactory'
+    sheet_name_checkers: SheetNameAliasCheckers
 
     def deref(self, workbook: Optional[Workbook]) -> ExcelDerefedProcessor:
         if workbook is not None:
@@ -120,7 +122,23 @@ class ExcelProcessor:
             return self.factory.create_derefed_processor_from_spec(self.spec)
 
     def process_workbook(self, workbook: Workbook) -> ExcelProcessingResult:
+        workbook = self.normalize_workbook_sheet_names(workbook)
         return self.deref(workbook).process_workbook(workbook)
+
+    def normalize_workbook_sheet_names(self, workbook: Workbook) -> Workbook:
+        if not self.sheet_name_checkers:
+            return workbook
+
+        name_mapping: Dict[SheetName, SheetName] = {}
+        for sheet_name in workbook.sheetnames:
+            for template_sheet_name, checker in self.sheet_name_checkers.items():
+                if checker(sheet_name):
+                    name_mapping[sheet_name] = template_sheet_name
+                    break
+        for sheet_name, template_sheet_name in name_mapping.items():
+            workbook[sheet_name].title = template_sheet_name
+
+        return workbook
 
     def process_excel(self, fname: str) -> ExcelProcessingResult:
         wb = openpyxl.load_workbook(fname, data_only=True)
@@ -201,16 +219,21 @@ class ExcelProcessorFactory:
         return ExcelDerefedProcessor(cell_processors=cell_tasks,
                                      table_processors=table_tasks)
 
-    def create_from_spec(self, spec: ExcelProcessorSpec) -> ExcelProcessor:
-        return ExcelProcessor(spec=spec, factory=self)
+    def create_from_spec(self, spec: ExcelProcessorSpec,
+                         sheet_name_checkers: Optional[SheetNameAliasCheckers] = None) -> ExcelProcessor:
+        return ExcelProcessor(spec=spec, factory=self, sheet_name_checkers=sheet_name_checkers)
 
     def create_from_template_excel(self,
-                                   fname: str) -> ExcelProcessor:
+                                   fname: str,
+                                   sheet_name_checkers: Optional[SheetNameAliasCheckers] = None
+                                   ) -> ExcelProcessor:
         workbook = openpyxl.load_workbook(fname, data_only=True)
-        return self.create_from_template_workbook(workbook)
+        return self.create_from_template_workbook(workbook, sheet_name_checkers=sheet_name_checkers)
 
     def create_from_template_workbook(
             self,
-            workbook: Workbook) -> ExcelProcessor:
+            workbook: Workbook,
+            sheet_name_checkers: Optional[SheetNameAliasCheckers] = None
+    ) -> ExcelProcessor:
         spec = ExcelProcessorSpec.from_workbook_template(workbook)
-        return self.create_from_spec(spec)
+        return self.create_from_spec(spec, sheet_name_checkers=sheet_name_checkers)
