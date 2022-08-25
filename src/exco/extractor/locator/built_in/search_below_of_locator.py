@@ -9,10 +9,9 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 
 @dataclass
-class BelowOfLocator(Locator):
-    """Resolve to the cell below the anchored cell"""
+class SearchBelowOfLocator(Locator):
     label: str
-    n: int = 1
+    max_empty_row_search: int
 
     def locate(self, anchor_cell_location: CellLocation,
                workbook: Workbook) -> LocatingResult:
@@ -21,10 +20,18 @@ class BelowOfLocator(Locator):
             for cell in row:
                 if cell.value == self.label:
                     coord = util.get_bottommost_coordinate(sheet=sheet, cell=cell)
+                    cell_cor = self._search_empty_row(coord.coordinate, sheet)
                     cell_loc = CellLocation(
-                        sheet_name=anchor_cell_location.sheet_name,
-                        coordinate=util.shift_coord(coord.coordinate, (self.n, 0))
-                    )
+                                sheet_name=anchor_cell_location.sheet_name,
+                                coordinate=cell_cor
+                            )
                     return LocatingResult.good(cell_loc)
         return LocatingResult.bad(
             msg=f"Unable to find cell below of {self.label}")
+
+    def _search_empty_row(self, cell_cor: str, sheet: Worksheet) -> str:
+        for i in range(0, self.max_empty_row_search):
+            cell_cor = util.shift_coord(cell_cor, (1, 0))
+            if sheet[cell_cor].value is not None:
+                return cell_cor
+        return cell_cor

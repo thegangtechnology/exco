@@ -196,7 +196,14 @@ topmost row of the merged cell togo to the right of.
 
 Parameters:
 - `label` label to match.
+- `n` Optional. Default value is 1. Indicates the number of columns to move from label cell to located cell.
 
+### `search_right_of`
+Searches for non-empty cell right of the cell with the given value.
+
+Parameters:
+- `label` label to match.
+- `max_empty_col_search` Indicates the maximum number of columns to search for non-empty cell right of label.
 ### `right_of_regex`
 Locate the cell to the right of the cell with a regex match.
 Similarly, in the case of a merged cell, right_of_regex will 
@@ -214,6 +221,14 @@ to the bottom of.
 
 Parameters:
 - `label` label to match.
+- `n` Optional. Default value is 1. Indicates the number of rows to skip from label cell to located cell.
+
+### `search_below_of`
+Searches for non-empty cell below of the cell with the given label.
+
+Parameters:
+- `label` label to match.
+- `max_empty_row_search` Indicates the maximum number of rows to search for non-empty cell below of label.
 
 ## Assumption
 
@@ -250,7 +265,7 @@ valid if the value is between(inclusively) `high` and `low`
 ## TableEndCondition
 
 ### `all_blank`
-Evaluate to true of all columns are blank.
+Evaluate to true if all columns are blank.
 
 ### `max_row`
 Evaluate to true if the row number(start from 1) including the parsing row is greater than or
@@ -260,6 +275,11 @@ equal to `n`.
 - `n` number of row
 - `inclusive` Optional. Default True. Whether to include the row in which it evaluates to true.
 
+### `cell_value`
+Evaluate to true if any column in row contains matching `cell_value`. Table terminates the row before.
+
+#### Parameters
+- `cell_value` cell value to match.
 # Dereferencing
 There are two types of dereferencing
 - Spec Creation time dereferencing. The string similar to ``<<A1>>`` will be resolved 

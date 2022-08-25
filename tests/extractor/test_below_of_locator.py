@@ -12,7 +12,7 @@ def wb() -> CellFullPath:
     wb = Workbook()
 
     ws = wb.active
-    ws['A4'] = 40
+    ws['A6'] = 40
     ws['A3'] = 'the key 1'
 
     ws.merge_cells('E4:H4')

@@ -6,6 +6,8 @@ from exco.extractor.locator.built_in.at_comment_cell_locator import AtCommentCel
 from exco.extractor.locator.built_in.right_of_locator import RightOfLocator
 from exco.extractor.locator.built_in.right_of_regex_locator import RightOfRegexLocator
 from exco.extractor.locator.built_in.below_of_locator import BelowOfLocator
+from exco.extractor.locator.built_in.search_right_of_locator import SearchRightOfLocator
+from exco.extractor.locator.built_in.search_below_of_locator import SearchBelowOfLocator
 from exco.extractor.locator.locator import Locator
 
 
@@ -23,5 +25,7 @@ class LocatorFactory(BaseFactory[Locator, LocatorSpec]):
             AtCommentCellLocator,
             RightOfLocator,
             RightOfRegexLocator,
-            BelowOfLocator
+            BelowOfLocator,
+            SearchRightOfLocator,
+            SearchBelowOfLocator
         ]))
