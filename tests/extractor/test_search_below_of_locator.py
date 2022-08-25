@@ -51,4 +51,4 @@ def test_search_right_of_locator_fail(wb: Workbook):
         coordinate="A3"
     ), workbook=wb)
     assert result == LocatingResult.bad(
-            msg=f"Unable to find cell below of the key")
+            msg='Unable to find cell below of the key')
