@@ -10,7 +10,6 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 @dataclass
 class SearchBelowOfLocator(Locator):
-    """Resolve to the cell below the anchored cell"""
     label: str
     max_empty_row_search: int
 
