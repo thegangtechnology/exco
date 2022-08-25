@@ -190,19 +190,27 @@ The position of the column cell when extracting value is computed from the relat
 Locate the cell right at the comment cell's coordinate in the template.
 
 ### `right_of`
-Locate the cell to the right of the cell with the given label.
+Locate the cell to the right of the cell or merged cell with the given label.
+In the case of a merged cell, right_of will pick the rightmost column and 
+topmost row of the merged cell togo to the right of.
 
 Parameters:
 - `label` label to match.
 
 ### `right_of_regex`
 Locate the cell to the right of the cell with a regex match.
+Similarly, in the case of a merged cell, right_of_regex will 
+pick the rightmost column and topmost row of the merged cell 
+togo to the right of.
 
 Parameters:
 - `regex` string for the regular expression.
 
 ### `below_of`
 Locate the cell below of the cell with the given label.
+In the case of a merged cell, below_of will pick the 
+bottommost row and leftmost column of the merged cell togo 
+to the bottom of.
 
 Parameters:
 - `label` label to match.
