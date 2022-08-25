@@ -35,4 +35,3 @@ class SearchBelowOfLocator(Locator):
             if sheet[cell_cor].value is not None:
                 return cell_cor
         return cell_cor
-        
