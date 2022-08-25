@@ -42,3 +42,13 @@ def test_search_right_of_locator_max(wb: Workbook):
         coordinate="C3"
     )
     assert result == LocatingResult.good(cell_loc)
+
+
+def test_search_right_of_locator_fail(wb: Workbook):
+    rol = SearchRightOfLocator(label='the key', max_empty_col_search=2)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    assert result == LocatingResult.bad(
+        msg='Unable to find cell to the right of the key')

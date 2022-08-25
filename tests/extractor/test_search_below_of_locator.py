@@ -42,3 +42,13 @@ def test_search_below_of_locator_max(wb: Workbook):
         coordinate="A5"
     )
     assert result == LocatingResult.good(cell_loc)
+
+
+def test_search_right_of_locator_fail(wb: Workbook):
+    rol = SearchBelowOfLocator(label='the key', max_empty_row_search=2)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    assert result == LocatingResult.bad(
+            msg=f"Unable to find cell below of the key")
