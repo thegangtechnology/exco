@@ -38,9 +38,9 @@ class WithinLocator(Locator):
     def _search_for_cell(self, sheet: Worksheet, cell: Cell) -> LocatingResult:
         found_cell = None
         if self.direction == "right_of":
-            found_cell = self._right_of_scope(sheet=sheet, cell=cell)
+            found_cell = util.search_right_of_scope(sheet=sheet, cell=cell, label=self.find)
         elif self.direction == "below_of":
-            found_cell = self._below_of_scope(sheet=sheet, cell=cell)
+            found_cell = util.search_below_of_scope(sheet=sheet, cell=cell, label=self.find)
         if found_cell is None:
             return LocatingResult.bad(
                 msg=f"Unable to find cell {self.find} to the {self.direction.replace('_', ' ')} {self.label}")
@@ -60,17 +60,3 @@ class WithinLocator(Locator):
                 sheet_name=sheet.title,
                 coordinate=util.shift_coord(coord.coordinate, (1, 0))
             )
-
-    def _right_of_scope(self, sheet: Worksheet, cell: Cell) -> Optional[Cell]:
-        for row in util.iter_rows_between(sheet=sheet, cell=cell):
-            for cell in row:
-                if cell.value == self.find:
-                    return cell
-        return None
-
-    def _below_of_scope(self, sheet: Worksheet, cell: Cell) -> Optional[Cell]:
-        for col in util.iter_cols_between(sheet=sheet, cell=cell):
-            for cell in col:
-                if cell.value == self.find:
-                    return cell
-        return None

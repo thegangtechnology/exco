@@ -236,3 +236,41 @@ def iter_cols_between(sheet: Worksheet, cell: Cell) -> Generator[Cell, None, Non
     for row in range(min_row + 1, max_row + 1):
         cells = (sheet.cell(row=row, column=column) for column in range(min_col, max_col + 1))
         yield tuple(cells)
+
+
+def search_right_of_scope(sheet: Worksheet, cell: Cell, label: str) -> Optional[Cell]:
+    """Loop over the cells to the right of the rows between cell (inclusive) and
+    find the cell with the specified label.
+
+    Args:
+        sheet (Worksheet): worksheet
+        cell (Cell): Cell
+        label (str): cell name to find
+
+    Returns:
+        Generator of Cells
+    """
+    for row in iter_rows_between(sheet=sheet, cell=cell):
+        for cell in row:
+            if cell.value == label:
+                return cell
+    return None
+
+
+def search_below_of_scope(sheet: Worksheet, cell: Cell, label: str) -> Optional[Cell]:
+    """Loop over the cells beneath the columns between cell (inclusive) and
+    find the cell with the specified label.
+
+    Args:
+        sheet (Worksheet): worksheet
+        cell (Cell): Cell
+        label (str): cell name to find
+
+    Returns:
+        Generator of Cells
+    """
+    for col in iter_cols_between(sheet=sheet, cell=cell):
+        for cell in col:
+            if cell.value == label:
+                return cell
+    return None
