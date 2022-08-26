@@ -12,6 +12,7 @@ unable_to_find = 'unable to find me'
 test_table_2 = 'test table 2'
 below_of_name = 'below of'
 single_cell_name = 'single cell'
+non_existent_cell = 'non existent'
 
 
 @pytest.fixture
@@ -123,30 +124,13 @@ def test_within_right_of_single_cell(wb: Workbook):
     assert result == LocatingResult.good(cell_loc)
 
 
-def test_within_below_of_single_cell(wb: Workbook):
-    rol = WithinLocator(type='below_of', label=single_cell_name, find='below of')
+def test_within_right_of_single_cell_fail(wb: Workbook):
+    rol = WithinLocator(type='right_of', label=single_cell_name, find=non_existent_cell)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
     ), workbook=wb)
-    cell_loc = CellLocation(
-        sheet_name="Sheet",
-        coordinate="K11"
-    )
-    assert result == LocatingResult.good(cell_loc)
-
-
-def test_within_below_of_boundary_single_cell(wb: Workbook):
-    rol = WithinLocator(type='below_of', label=single_cell_name, find='single cell')
-    result = rol.locate(anchor_cell_location=CellLocation(
-        sheet_name="Sheet",
-        coordinate="Z1"
-    ), workbook=wb)
-    cell_loc = CellLocation(
-        sheet_name="Sheet",
-        coordinate="K4"
-    )
-    assert result == LocatingResult.good(cell_loc)
+    assert result == LocatingResult.bad(msg="Unable to find cell non existent to the right of single cell")
 
 
 def test_within_right_of_boundary_single_cell(wb: Workbook):
@@ -214,6 +198,41 @@ def test_within_same_find_right_of(wb: Workbook):
 
 
 # below OF
+def test_within_below_of_single_cell_fail(wb: Workbook):
+    rol = WithinLocator(type='below_of', label=single_cell_name, find=non_existent_cell)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    assert result == LocatingResult.bad(msg="Unable to find cell non existent to the below of single cell")
+
+
+def test_within_below_of_single_cell(wb: Workbook):
+    rol = WithinLocator(type='below_of', label=single_cell_name, find='below of')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="K11"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
+def test_within_below_of_boundary_single_cell(wb: Workbook):
+    rol = WithinLocator(type='below_of', label=single_cell_name, find='single cell')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="K4"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
 def test_within_below_of(wb: Workbook):
     rol = WithinLocator(type='below_of', label=test_table_name, find=below_of_name)
     result = rol.locate(anchor_cell_location=CellLocation(
