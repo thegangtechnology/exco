@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 
 from exco.extractor.base_factory import BaseFactory
 from exco.extractor.table_end_conditions.built_in.all_blank_table_end_condition import AllBlankTableEndCondition
@@ -19,14 +19,19 @@ class TableEndConditionFactory(
         return 'TableEndCondition'
 
     @classmethod
-    def default(cls) -> 'TableEndConditionFactory':
-        """
+    def default(cls, extras: Optional[Dict[str, Type[TableEndCondition]]] = None) -> 'TableEndConditionFactory':
+        """TableEndConditionFactor with builtin.
+
+        Args:
+            extras(Optional[Dict[str, Type[TableEndCondition]]]): Optional. Default None. Extra class map.
 
         Returns:
-            Default TableEncConditionFactory.
+            Default TableEndConditionFactory.
         """
-        return cls(cls.build_class_dict([
+        defaults = cls.build_class_dict([
             AllBlankTableEndCondition,
             MaxRowTableEndCondition,
             CellValueTableEndCondition
-        ]))
+        ])
+        extras = {} if extras is None else extras
+        return cls({**defaults, **extras})

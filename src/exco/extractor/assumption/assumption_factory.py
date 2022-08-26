@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 
 from exco import AssumptionSpec
 from exco.extractor.assumption.assumption import Assumption
@@ -15,7 +15,9 @@ class AssumptionFactory(BaseFactory[Assumption, AssumptionSpec]):
         return 'Assumption'
 
     @classmethod
-    def default(cls) -> 'AssumptionFactory':
-        return cls(class_map=cls.build_class_dict([
+    def default(cls, extras: Optional[Dict[str, Type[Assumption]]] = None) -> 'AssumptionFactory':
+        defaults = cls.build_class_dict([
             LeftCellMatchAssumption
-        ]))
+        ])
+        extras = {} if extras is None else extras
+        return cls({**defaults, **extras})

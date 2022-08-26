@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 
 from exco import LocatorSpec
 from exco.extractor.base_factory import BaseFactory
@@ -20,12 +20,14 @@ class LocatorFactory(BaseFactory[Locator, LocatorSpec]):
         return 'Locator'
 
     @classmethod
-    def default(cls) -> 'LocatorFactory':
-        return cls(cls.build_class_dict([
+    def default(cls, extras: Optional[Dict[str, Type[Locator]]] = None) -> 'LocatorFactory':
+        defaults = cls.build_class_dict([
             AtCommentCellLocator,
             RightOfLocator,
             RightOfRegexLocator,
             BelowOfLocator,
             SearchRightOfLocator,
             SearchBelowOfLocator
-        ]))
+        ])
+        extras = {} if extras is None else extras
+        return cls({**defaults, **extras})

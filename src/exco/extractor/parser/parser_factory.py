@@ -1,13 +1,13 @@
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 
-from exco.extractor.parser.built_in.link_parser import LinkParser
-from exco.extractor_spec.parser_spec import ParserSpec
 from exco.extractor.base_factory import BaseFactory
 from exco.extractor.parser.built_in.date_parser import DateParser
-from exco.extractor.parser.parser import Parser
-from exco.extractor.parser.built_in.string_parser import StringParser
-from exco.extractor.parser.built_in.int_parser import IntParser
 from exco.extractor.parser.built_in.float_parser import FloatParser
+from exco.extractor.parser.built_in.int_parser import IntParser
+from exco.extractor.parser.built_in.link_parser import LinkParser
+from exco.extractor.parser.built_in.string_parser import StringParser
+from exco.extractor.parser.parser import Parser
+from exco.extractor_spec.parser_spec import ParserSpec
 
 
 class ParserFactory(BaseFactory[Parser, ParserSpec]):
@@ -19,11 +19,13 @@ class ParserFactory(BaseFactory[Parser, ParserSpec]):
         return 'Parser'
 
     @classmethod
-    def default(cls) -> 'ParserFactory':
-        return cls(cls.build_class_dict([
+    def default(cls, extras: Optional[Dict[str, Type[Parser]]] = None) -> 'ParserFactory':
+        defaults = cls.build_class_dict([
             IntParser,
             StringParser,
             FloatParser,
             DateParser,
             LinkParser
-        ]))
+        ])
+        extras = {} if extras is None else extras
+        return cls({**defaults, **extras})
