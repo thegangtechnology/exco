@@ -65,6 +65,24 @@ def wb() -> CellFullPath:
     return wb
 
 
+def test_within_locator_no_such_label_on_table_fail(wb: Workbook):
+    rol = WithinLocator(type='right_of', label='fake table', find=same_name_here)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    assert result == LocatingResult.bad(msg="Unable to find cell with label fake table")
+
+
+def test_within_locator_no_such_type_fail(wb: Workbook):
+    rol = WithinLocator(type='top_of', label=test_table_name, find=same_name_here)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="A3"
+    ), workbook=wb)
+    assert result == LocatingResult.bad(msg="Incorrect type, must be one of the following ['right_of', 'below_of']")
+
+
 # RIGHT OF
 def test_within_right_of(wb: Workbook):
     rol = WithinLocator(type='right_of', label=test_table_name, find=same_name_here)
