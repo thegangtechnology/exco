@@ -202,10 +202,10 @@ def iter_rows_between(sheet: Worksheet, cell: Cell) -> Generator[Cell, None, Non
         max_col = sheet.max_column
         max_row = cell_range.max_row
     else:
-        min_col = cell_range.col
-        min_row = cell_range.row
+        min_col = cell_range[1]
+        min_row = cell_range[0]
         max_col = sheet.max_column
-        max_row = cell_range.row
+        max_row = cell_range[0]
     for row in range(min_row, max_row + 1):
         cells = (sheet.cell(row=row, column=column) for column in range(min_col, max_col + 1))
         yield tuple(cells)
@@ -229,9 +229,9 @@ def iter_cols_between(sheet: Worksheet, cell: Cell) -> Generator[Cell, None, Non
         max_col = cell_range.max_col
         max_row = sheet.max_row
     else:
-        min_col = cell_range.col
-        min_row = cell_range.row
-        max_col = cell_range.col
+        min_col = cell_range[1]
+        min_row = cell_range[0]
+        max_col = cell_range[1]
         max_row = sheet.max_row
     for row in range(min_row + 1, max_row + 1):
         cells = (sheet.cell(row=row, column=column) for column in range(min_col, max_col + 1))

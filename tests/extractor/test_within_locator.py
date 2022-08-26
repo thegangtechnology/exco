@@ -11,6 +11,7 @@ same_name_here = 'same name here'
 unable_to_find = 'unable to find me'
 test_table_2 = 'test table 2'
 below_of_name = 'below of'
+single_cell_name = 'single cell'
 
 
 @pytest.fixture
@@ -19,6 +20,18 @@ def wb() -> CellFullPath:
 
     ws = wb.active
 
+    # Single Cell Checks
+    ws['K2'] = 'single cell'
+    ws['K10'] = 'below of'
+    ws['K11'] = 10
+    ws['P2'] = 'right of'
+    ws['Q2'] = 14
+    ws['L2'] = 'single cell'
+    ws['M2'] = 1
+    ws['K3'] = 'single cell'
+    ws['K4'] = 7
+
+    # Merged Cells Check
     ws['D2'] = 'top part, should be able to find'
 
     ws.merge_cells('C3:E19')
@@ -93,6 +106,58 @@ def test_within_right_of(wb: Workbook):
     cell_loc = CellLocation(
         sheet_name="Sheet",
         coordinate="H6"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
+def test_within_right_of_single_cell(wb: Workbook):
+    rol = WithinLocator(type='right_of', label=single_cell_name, find='right of')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="Q2"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
+def test_within_below_of_single_cell(wb: Workbook):
+    rol = WithinLocator(type='below_of', label=single_cell_name, find='below of')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="K11"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
+def test_within_below_of_boundary_single_cell(wb: Workbook):
+    rol = WithinLocator(type='below_of', label=single_cell_name, find='single cell')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="K4"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
+def test_within_right_of_boundary_single_cell(wb: Workbook):
+    rol = WithinLocator(type='right_of', label=single_cell_name, find='single cell')
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="Z1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="L2"
     )
     assert result == LocatingResult.good(cell_loc)
 
