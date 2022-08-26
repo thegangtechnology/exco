@@ -1,20 +1,26 @@
 from dataclasses import dataclass
-from typing import TypeVar, Dict, Any, List, Optional, Generic
+from typing import TypeVar, Dict, Any, List, Optional, Generic, Type
 
 import openpyxl
+from openpyxl import Workbook
+
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException, TableExtractionTaskCreationException
+from exco.extractor.assumption.assumption import Assumption
 from exco.extractor.assumption.assumption_factory import AssumptionFactory
 from exco.extractor.cell_extraction_task import CellExtractionTaskResult, CellExtractionTask
+from exco.extractor.locator.locator import Locator
 from exco.extractor.locator.locator_factory import LocatorFactory
+from exco.extractor.parser.parser import Parser
 from exco.extractor.parser.parser_factory import ParserFactory
+from exco.extractor.table_end_conditions.table_end_condition import TableEndCondition
 from exco.extractor.table_end_conditions.table_end_condition_factory import TableEndConditionFactory
 from exco.extractor.table_extraction_task import TableExtractionTask, EndConditionCollection, TableExtractionTaskResult
+from exco.extractor.validator.validator import Validator
 from exco.extractor.validator.validator_factory import ValidatorFactory
 from exco.extractor_spec import CellExtractionSpec, ExcelProcessorSpec
 from exco.extractor_spec.table_extraction_spec import TableExtractionSpec
 from exco.sheet_name_alias import SheetName, SheetNameAliasCheckers
-from openpyxl import Workbook
 
 T = TypeVar('T')
 
@@ -158,13 +164,19 @@ class ExcelProcessorFactory:
     table_end_condition_factory: TableEndConditionFactory
 
     @classmethod
-    def default(cls):
+    def default(cls,
+                extra_locators: Optional[Dict[str, Type[Locator]]] = None,
+                extra_assumptions: Optional[Dict[str, Type[Assumption]]] = None,
+                extra_parsers: Optional[Dict[str, Type[Parser]]] = None,
+                extra_validators: Optional[Dict[str, Type[Validator]]] = None,
+                extra_table_end_conditions: Optional[Dict[str, Type[TableEndCondition]]] = None
+                ):
         return ExcelProcessorFactory(
-            locator_factory=LocatorFactory.default(),
-            assumption_factory=AssumptionFactory.default(),
-            parser_factory=ParserFactory.default(),
-            validator_factory=ValidatorFactory.default(),
-            table_end_condition_factory=TableEndConditionFactory.default()
+            locator_factory=LocatorFactory.default(extras=extra_locators),
+            assumption_factory=AssumptionFactory.default(extras=extra_assumptions),
+            parser_factory=ParserFactory.default(extras=extra_parsers),
+            validator_factory=ValidatorFactory.default(extras=extra_validators),
+            table_end_condition_factory=TableEndConditionFactory.default(extras=extra_table_end_conditions)
         )
 
     def create_extraction_task(

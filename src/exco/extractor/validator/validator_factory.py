@@ -1,4 +1,4 @@
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 
 from exco import ValidatorSpec
 from exco.extractor.base_factory import BaseFactory
@@ -16,8 +16,10 @@ class ValidatorFactory(BaseFactory[Validator, ValidatorSpec]):
         return 'Validator'
 
     @classmethod
-    def default(cls) -> 'ValidatorFactory':
-        return cls(cls.build_class_dict([
+    def default(cls, extras: Optional[Dict[str, Type[Validator]]] = None) -> 'ValidatorFactory':
+        defaults = cls.build_class_dict([
             IsNotBlankValidator,
             BetweenValidator
-        ]))
+        ])
+        extras = {} if extras is None else extras
+        return cls({**defaults, **extras})
