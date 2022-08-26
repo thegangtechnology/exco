@@ -223,6 +223,22 @@ Parameters:
 - `label` label to match.
 - `n` Optional. Default value is 1. Indicates the number of rows to skip from label cell to located cell.
 
+### `within`
+Locate the cell between a cell with the given label.
+This function searches to the right of or below of the
+cell with the given label. If it is to the right of, the function
+searches row by row while staying in between the column ranges
+of the cell with the given label. If it is below of, similarly,
+we search row by row while staying in between the row ranges of
+the cell with the given label.
+
+Parameters:
+- `label` label of cell you want to search in between
+- `find` the name of the cell you want to find in between the cell with that label's range
+- `type` type of direction you want your value to come from, choices are:
+  - `right_of` once you find the cell with the name in find, pick the value right of it
+  - `below_of` once you find the cell with the name in find, pick the value beneath it
+
 ### `search_below_of`
 Searches for non-empty cell below of the cell with the given label.
 
