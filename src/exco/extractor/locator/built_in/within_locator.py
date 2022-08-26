@@ -12,8 +12,8 @@ from exco.extractor.locator.locator import Locator
 
 @dataclass
 class WithinLocator(Locator):
-    label: str
     type: str
+    label: str
     find: str
 
     valid_types = ["right_of", "below_of"]
@@ -65,4 +65,4 @@ class WithinLocator(Locator):
             for cell in col:
                 if cell.value == self.find:
                     return cell
-        raise None
+        return None
