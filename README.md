@@ -314,6 +314,12 @@ SheetNameAliasChecker = Callable[[SheetName], bool]
 test_sheet_checker: SheetNameAliasChecker = lambda sheetname: 'Test' in sheetname
 checkers: Dict[SheetName, SheetNameAliasChecker] = {'Test 1/1/2021': test_sheet_checker}
 processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers)
-
 ```
 
+# Custom Locator/Parser Etc.
+
+See [Advance Features Notebook](notebooks/quickstart/1%20Advance%20Features.ipynb). But, in essence,
+```python
+processor = exco.from_excel('./custom_locator/custom_locator_template.xlsx',
+                            extra_locators={'diagonal_of': DiagonalOfLocator})
+```
