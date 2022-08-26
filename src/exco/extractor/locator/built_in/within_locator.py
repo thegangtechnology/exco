@@ -23,8 +23,11 @@ class WithinLocator(Locator):
                workbook: Workbook) -> LocatingResult:
         sheet: Worksheet = workbook[anchor_cell_location.sheet_name]
         if self.direction not in self.valid_directions:
-            return LocatingResult.bad(  # might be a better error to throw here
+            return LocatingResult.bad(
                 msg=f"Incorrect direction, must be one of the following {self.valid_directions}")
+        if self.perform not in self.valid_directions:  # might be a better errors to throw here
+            return LocatingResult.bad(
+                msg=f"Incorrect perform, must be one of the following {self.valid_directions}")
         for row in sheet.iter_rows():
             for cell in row:
                 if cell.value == self.label:
