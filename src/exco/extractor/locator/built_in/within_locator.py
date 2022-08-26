@@ -6,7 +6,6 @@ from openpyxl.cell import Cell
 from openpyxl.worksheet.worksheet import Worksheet
 
 from exco import CellLocation, util
-from exco.exception import TableKeyNotFound
 from exco.extractor.locator.locating_result import LocatingResult
 from exco.extractor.locator.locator import Locator
 
