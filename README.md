@@ -241,8 +241,8 @@ Parameters:
   - `right_of` this will search the right of the cell between the columns row wise
   - `below_of` this will search the beneath the cell between the rows row wise
 - `perform` the action you want to perform to fetch your data, your options are:
-  - `right_of` fetch the value to the right of the cell labeled `find`
-  - `below_of` fetch the value to beneath of the cell labeled`find`
+  - `right_of` fetch the value to the right of the cell labeled in `find`
+  - `below_of` fetch the value to beneath of the cell labeled in `find`
 
 ### `search_below_of`
 Searches for non-empty cell below of the cell with the given label.
