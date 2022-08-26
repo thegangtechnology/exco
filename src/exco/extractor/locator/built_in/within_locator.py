@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from openpyxl import Workbook
 from openpyxl.cell import Cell
