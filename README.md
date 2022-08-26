@@ -230,14 +230,19 @@ cell with the given label. If it is to the right of, the function
 searches row by row while staying in between the column ranges
 of the cell with the given label. If it is below of, similarly,
 we search row by row while staying in between the row ranges of
-the cell with the given label.
+the cell with the given label. On top of this you have the option
+on how to pick your data (to the right of or beneath of) once you have found your desired key within
+the cell range.
 
 Parameters:
 - `label` label of cell you want to search in between
 - `find` the name of the cell you want to find in between the cell with that label's range
-- `type` type of direction you want your value to come from, choices are:
-  - `right_of` once you find the cell with the name in find, pick the value right of it
-  - `below_of` once you find the cell with the name in find, pick the value beneath it
+- `direction` direction you want to search for your value, choices are:
+  - `right_of` this will search the right of the cell between the columns row wise
+  - `below_of` this will search the beneath the cell between the rows row wise
+- `perform` the action you want to perform to fetch your data, your options are:
+  - `right_of` fetch the value to the right of the cell labeled `find`
+  - `below_of` fetch the value to beneath of the cell labeled`find`
 
 ### `search_below_of`
 Searches for non-empty cell below of the cell with the given label.
