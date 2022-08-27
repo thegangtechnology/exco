@@ -19,6 +19,19 @@ non_existent_cell = 'non existent'
 right_of_name = 'right of'
 cell_above_everything = 'top hidden cell'
 
+# directions
+right_of_direction = "right_of"
+below_of_direction = 'below_of'
+
+
+def _create_error_message(table_name: str = None,
+                          cell_name: str = None,
+                          direction: str = None,
+                          label: str = None) -> str:
+    if label is not None:
+        return "Unable to find cell with label " + label
+    return "Unable to find cell " + cell_name + " to the " + direction.replace('_', ' ') + " " + table_name
+
 
 @pytest.fixture
 def wb() -> CellFullPath:
@@ -92,36 +105,40 @@ def wb() -> CellFullPath:
 
 
 def test_within_locator_no_such_label_on_table_fail(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label='fake table', find=repeated_cell_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label='fake table', find=repeated_cell_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell with label fake table")
+    assert result == LocatingResult.bad(msg=_create_error_message(label='fake table'))
 
 
 def test_within_locator_no_such_perform_on_table_fail(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=repeated_cell_name, perform='top_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=repeated_cell_name, perform='top_of')
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Incorrect perform, must be one of the following ['right_of', 'below_of']")
+    assert result == LocatingResult.bad(msg="Incorrect perform, must be one of the following ['" +
+                                            right_of_direction + "', '" + below_of_direction + "']")
 
 
 def test_within_locator_no_such_direction_fail(wb: Workbook):
-    rol = WithinLocator(direction='top_of', label=test_table_name, find=repeated_cell_name, perform='right_of')
+    rol = WithinLocator(direction='top_of', label=test_table_name, find=repeated_cell_name, perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
     ), workbook=wb)
     assert result == LocatingResult.bad(
-        msg="Incorrect direction, must be one of the following ['right_of', 'below_of']")
+        msg="Incorrect direction, must be one of the following ['"
+            + right_of_direction + "', '" + below_of_direction + "']")
 
 
 # RIGHT OF
 def test_within_right_of(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=repeated_cell_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=repeated_cell_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
@@ -132,7 +149,8 @@ def test_within_right_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=repeated_cell_name, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=repeated_cell_name,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
@@ -145,7 +163,8 @@ def test_within_right_of(wb: Workbook):
 
 
 def test_within_right_of_single_cell(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=single_cell_name, find=right_of_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=single_cell_name, find=right_of_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -156,7 +175,8 @@ def test_within_right_of_single_cell(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='right_of', label=single_cell_name, find=right_of_name, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=single_cell_name, find=right_of_name,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -169,16 +189,20 @@ def test_within_right_of_single_cell(wb: Workbook):
 
 
 def test_within_right_of_single_cell_fail(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=single_cell_name, find=non_existent_cell, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=single_cell_name, find=non_existent_cell,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + non_existent_cell + " to the right of single cell")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=single_cell_name,
+                                                                  cell_name=non_existent_cell,
+                                                                  direction=right_of_direction))
 
 
 def test_within_right_of_boundary_single_cell(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=single_cell_name, find=single_cell_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=single_cell_name, find=single_cell_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -189,7 +213,8 @@ def test_within_right_of_boundary_single_cell(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='right_of', label=single_cell_name, find=single_cell_name, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=single_cell_name, find=single_cell_name,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -202,55 +227,74 @@ def test_within_right_of_boundary_single_cell(wb: Workbook):
 
 
 def test_within_right_of_fail(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=right_of_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=right_of_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A10"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + right_of_name + " to the right of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=right_of_name,
+                                                                  direction=right_of_direction))
 
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=right_of_name, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=right_of_name,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A10"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + right_of_name + " to the right of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=right_of_name,
+                                                                  direction=right_of_direction))
 
 
 def test_within_right_of_boundary_top_check_fail(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=test_table_2_name, find=unable_to_find, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_2_name, find=unable_to_find,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A5"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the right of test table 2")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_2_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=right_of_direction))
 
-    rol = WithinLocator(direction='right_of', label=test_table_2_name, find=unable_to_find, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_2_name, find=unable_to_find,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A5"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the right of test table 2")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_2_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=right_of_direction))
 
 
 def test_within_right_of_boundary_below_check_fail(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=unable_to_find, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=unable_to_find,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A4"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the right of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=right_of_direction))
 
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=unable_to_find, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=unable_to_find,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A4"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the right of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=right_of_direction))
 
 
 def test_within_same_find_right_of(wb: Workbook):
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=repeated_cell_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=repeated_cell_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A6"
@@ -261,7 +305,8 @@ def test_within_same_find_right_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='right_of', label=test_table_2_name, find=repeated_cell_name, perform='right_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_2_name, find=repeated_cell_name,
+                        perform=right_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A7"
@@ -272,7 +317,8 @@ def test_within_same_find_right_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='right_of', label=test_table_name, find=repeated_cell_name, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_name, find=repeated_cell_name,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
@@ -283,7 +329,8 @@ def test_within_same_find_right_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='right_of', label=test_table_2_name, find=repeated_cell_name, perform='below_of')
+    rol = WithinLocator(direction=right_of_direction, label=test_table_2_name, find=repeated_cell_name,
+                        perform=below_of_direction)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A3"
@@ -297,23 +344,29 @@ def test_within_same_find_right_of(wb: Workbook):
 
 # below OF
 def test_within_below_of_single_cell_fail(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=single_cell_name, find=non_existent_cell, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=single_cell_name, find=non_existent_cell,
+                        perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + non_existent_cell + " to the below of single cell")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=single_cell_name,
+                                                                  cell_name=non_existent_cell,
+                                                                  direction=below_of_direction))
 
-    rol = WithinLocator(direction='below_of', label=single_cell_name, find=non_existent_cell, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=single_cell_name, find=non_existent_cell,
+                        perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + non_existent_cell + " to the below of single cell")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=single_cell_name,
+                                                                  cell_name=non_existent_cell,
+                                                                  direction=below_of_direction))
 
 
 def test_within_below_of_single_cell(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=single_cell_name, find=below_of_name, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=single_cell_name, find=below_of_name, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -324,7 +377,7 @@ def test_within_below_of_single_cell(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='below_of', label=single_cell_name, find=below_of_name, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=single_cell_name, find=below_of_name, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -337,7 +390,7 @@ def test_within_below_of_single_cell(wb: Workbook):
 
 
 def test_within_below_of_boundary_single_cell(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=single_cell_name, find=single_cell_name, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=single_cell_name, find=single_cell_name, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -348,7 +401,7 @@ def test_within_below_of_boundary_single_cell(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='below_of', label=single_cell_name, find=single_cell_name, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=single_cell_name, find=single_cell_name, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="Z1"
@@ -361,7 +414,7 @@ def test_within_below_of_boundary_single_cell(wb: Workbook):
 
 
 def test_within_below_of(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=below_of_name, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=below_of_name, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B3"
@@ -372,7 +425,7 @@ def test_within_below_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=below_of_name, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=below_of_name, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B3"
@@ -385,30 +438,36 @@ def test_within_below_of(wb: Workbook):
 
 
 def test_within_below_of_fail(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=right_of_name, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=right_of_name, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B10"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + right_of_name + " to the below of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=right_of_name,
+                                                                  direction=below_of_direction))
 
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=right_of_name, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=right_of_name, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B10"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + right_of_name + " to the below of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=right_of_name,
+                                                                  direction=below_of_direction))
 
 
 def test_within_below_of_boundary_top_check_fail(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=test_table_2_name, find=unable_to_find, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_2_name, find=unable_to_find, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B5"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the below of test table 2")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_2_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=below_of_direction))
 
-    rol = WithinLocator(direction='below_of', label=test_table_name,
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name,
                         find=cell_above_everything,
                         perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
@@ -416,16 +475,19 @@ def test_within_below_of_boundary_top_check_fail(wb: Workbook):
         coordinate="B5"
     ), workbook=wb)
     assert result == LocatingResult.bad(
-        msg="Unable to find cell " + cell_above_everything + " to the below of test table")
+        msg=_create_error_message(table_name=test_table_name, cell_name=cell_above_everything,
+                                  direction=below_of_direction))
 
-    rol = WithinLocator(direction='below_of', label=test_table_2_name, find=unable_to_find, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_2_name, find=unable_to_find, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B5"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the below of test table 2")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_2_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=below_of_direction))
 
-    rol = WithinLocator(direction='below_of', label=test_table_name,
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name,
                         find=cell_above_everything,
                         perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
@@ -433,27 +495,32 @@ def test_within_below_of_boundary_top_check_fail(wb: Workbook):
         coordinate="B5"
     ), workbook=wb)
     assert result == LocatingResult.bad(
-        msg="Unable to find cell " + cell_above_everything + " to the below of test table")
+        msg=_create_error_message(table_name=test_table_name, cell_name=cell_above_everything,
+                                  direction=below_of_direction))
 
 
 def test_within_below_of_boundary_below_check_fail(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=unable_to_find, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=unable_to_find, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B4"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the below of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=below_of_direction))
 
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=unable_to_find, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=unable_to_find, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B4"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Unable to find cell " + unable_to_find + " to the below of test table")
+    assert result == LocatingResult.bad(msg=_create_error_message(table_name=test_table_name,
+                                                                  cell_name=unable_to_find,
+                                                                  direction=below_of_direction))
 
 
 def test_within_same_find_below_of(wb: Workbook):
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=below_of_name, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=below_of_name, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B6"
@@ -464,7 +531,7 @@ def test_within_same_find_below_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='below_of', label=test_table_3_name, find=below_of_name, perform="below_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_3_name, find=below_of_name, perform="below_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B7"
@@ -475,7 +542,7 @@ def test_within_same_find_below_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='below_of', label=test_table_name, find=below_of_name, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_name, find=below_of_name, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B6"
@@ -486,7 +553,7 @@ def test_within_same_find_below_of(wb: Workbook):
     )
     assert result == LocatingResult.good(cell_loc)
 
-    rol = WithinLocator(direction='below_of', label=test_table_3_name, find=below_of_name, perform="right_of")
+    rol = WithinLocator(direction=below_of_direction, label=test_table_3_name, find=below_of_name, perform="right_of")
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="B7"
