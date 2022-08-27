@@ -182,3 +182,95 @@ def get_bottommost_coordinate(sheet: Worksheet, cell: Cell) -> CellLocation:
         coordinate=tuple_to_coordinate(merged_cell.max_row, cell.column),
         sheet_name=sheet.title
     )
+
+
+def iter_rows_between(sheet: Worksheet, cell: Cell) -> Generator[Cell, None, None]:
+    """Loops over the cells to the right of the rows between cell (inclusive). This works for cells and merged cells.
+
+    Args:
+        sheet (Worksheet): worksheet
+        cell (Cell): Cell
+
+    Returns:
+        Generator of Cells
+    """
+    merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
+    cell_range = coordinate_to_tuple(cell.coordinate) if merged_cell is None else merged_cell
+    if type(cell_range) is MergedCellRange:
+        min_col = cell_range.max_col
+        min_row = cell_range.min_row
+        max_col = sheet.max_column
+        max_row = cell_range.max_row
+    else:
+        min_col = cell_range[1]
+        min_row = cell_range[0]
+        max_col = sheet.max_column
+        max_row = cell_range[0]
+    for row in range(min_row, max_row + 1):
+        cells = (sheet.cell(row=row, column=column) for column in range(min_col, max_col + 1))
+        yield tuple(cells)
+
+
+def iter_cols_between(sheet: Worksheet, cell: Cell) -> Generator[Cell, None, None]:
+    """Loops over the cells beneath the columns between cell (inclusive). This works for cells and merged cells.
+
+    Args:
+        sheet (Worksheet): worksheet
+        cell (Cell): Cell
+
+    Returns:
+        Generator of Cells
+    """
+    merged_cell = get_merged_cell(sheet=sheet, coordinates=cell.coordinate)
+    cell_range = coordinate_to_tuple(cell.coordinate) if merged_cell is None else merged_cell
+    if type(cell_range) is MergedCellRange:
+        min_col = cell_range.min_col
+        min_row = cell_range.max_row
+        max_col = cell_range.max_col
+        max_row = sheet.max_row
+    else:
+        min_col = cell_range[1]
+        min_row = cell_range[0]
+        max_col = cell_range[1]
+        max_row = sheet.max_row
+    for row in range(min_row + 1, max_row + 1):
+        cells = (sheet.cell(row=row, column=column) for column in range(min_col, max_col + 1))
+        yield tuple(cells)
+
+
+def search_right_of_scope(sheet: Worksheet, cell: Cell, label: str) -> Optional[Cell]:
+    """Loop over the cells to the right of the rows between cell (inclusive) and
+    find the cell with the specified label.
+
+    Args:
+        sheet (Worksheet): worksheet
+        cell (Cell): Cell
+        label (str): cell name to find
+
+    Returns:
+        Generator of Cells
+    """
+    for row in iter_rows_between(sheet=sheet, cell=cell):
+        for cell in row:
+            if cell.value == label:
+                return cell
+    return None
+
+
+def search_below_of_scope(sheet: Worksheet, cell: Cell, label: str) -> Optional[Cell]:
+    """Loop over the cells beneath the columns between cell (inclusive) and
+    find the cell with the specified label.
+
+    Args:
+        sheet (Worksheet): worksheet
+        cell (Cell): Cell
+        label (str): cell name to find
+
+    Returns:
+        Generator of Cells
+    """
+    for col in iter_cols_between(sheet=sheet, cell=cell):
+        for cell in col:
+            if cell.value == label:
+                return cell
+    return None
