@@ -120,8 +120,8 @@ def test_within_locator_no_such_perform_on_table_fail(wb: Workbook):
         sheet_name="Sheet",
         coordinate="A3"
     ), workbook=wb)
-    assert result == LocatingResult.bad(msg="Incorrect perform, must be one of the following ['" +
-                                            right_of_direction + "', '" + below_of_direction + "']")
+    assert result == LocatingResult.bad(msg="Incorrect perform, must be one of the following ['"
+                                            + right_of_direction + "', '" + below_of_direction + "']")
 
 
 def test_within_locator_no_such_direction_fail(wb: Workbook):
