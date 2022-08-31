@@ -345,3 +345,6 @@ See [Advance Features Notebook](notebooks/quickstart/1%20Advance%20Features.ipyn
 processor = exco.from_excel('./custom_locator/custom_locator_template.xlsx',
                             extra_locators={'diagonal_of': DiagonalOfLocator})
 ```
+# Working with .xls files.
+
+Exco will not read Excel 97-2003 workbook (.xls) files. Use [XLS2XLSX](https://pypi.org/project/xls2xlsx/) to convert .xls files to the supported .xlsx format.
