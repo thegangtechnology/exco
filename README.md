@@ -212,6 +212,7 @@ togo to the right of.
 
 Parameters:
 - `regex` string for the regular expression.
+- `n` Optional. Default value is 1. Indicates the number of columns to move from regex matched cell to located cell.
 
 ### `below_of`
 Locate the cell below of the cell with the given label.
