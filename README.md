@@ -224,6 +224,24 @@ Parameters:
 - `label` label to match.
 - `n` Optional. Default value is 1. Indicates the number of rows to skip from label cell to located cell.
 
+### `search_below_of`
+Searches for non-empty cell below of the cell with the given label.
+
+Parameters:
+- `label` label to match.
+- `max_empty_row_search` Indicates the maximum number of rows to search for non-empty cell below of label.
+
+### `below_of_regex`
+Locate the cell below of the cell with a regex match.
+Similarly, in the case of a merged cell, below_of_regex will 
+pick the bottommost row and leftmost row of the merged cell 
+togo to the bottom of.
+
+Parameters:
+- `regex` string for the regular expression.
+- `n` Optional. Default value is 1. Indicates the number of rows to move from regex matched cell to located cell.
+
+
 ### `within`
 Locate the cell between a cell with the given label.
 This function searches to the right of or below of the
@@ -245,12 +263,6 @@ Parameters:
   - `right_of` fetch the value to the right of the cell labeled in `find`
   - `below_of` fetch the value to beneath of the cell labeled in `find`
 
-### `search_below_of`
-Searches for non-empty cell below of the cell with the given label.
-
-Parameters:
-- `label` label to match.
-- `max_empty_row_search` Indicates the maximum number of rows to search for non-empty cell below of label.
 
 ## Assumption
 
