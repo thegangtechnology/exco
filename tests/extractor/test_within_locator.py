@@ -81,6 +81,12 @@ def wb() -> CellFullPath:
     ws['H22'] = 2
     ws['G23'] = 1
 
+    # 5 to the right of repeated_cell_name
+    ws['L22'] = 5
+
+    # 6 to the below of repeated_cell_name
+    ws['G27'] = 6
+
     ws['D36'] = below_of_name
     ws['D37'] = 8
     ws['E36'] = 9
@@ -102,6 +108,34 @@ def wb() -> CellFullPath:
     ws['E60'] = 15
 
     return wb
+
+
+def test_within_locator_n_right_of(wb: Workbook):
+    rol = WithinLocator(direction=right_of_direction, label=test_table_2_name, find=repeated_cell_name,
+                        perform=right_of_direction, n=5)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="C1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="L22"
+    )
+    assert result == LocatingResult.good(cell_loc)
+
+
+def test_within_locator_n_below_of(wb: Workbook):
+    rol = WithinLocator(direction=right_of_direction, label=test_table_2_name, find=repeated_cell_name,
+                        perform=below_of_direction, n=5)
+    result = rol.locate(anchor_cell_location=CellLocation(
+        sheet_name="Sheet",
+        coordinate="C1"
+    ), workbook=wb)
+    cell_loc = CellLocation(
+        sheet_name="Sheet",
+        coordinate="G27"
+    )
+    assert result == LocatingResult.good(cell_loc)
 
 
 def test_within_locator_no_such_label_on_table_fail(wb: Workbook):
