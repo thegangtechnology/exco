@@ -15,6 +15,7 @@ class WithinLocator(Locator):
     find: str
     direction: str
     perform: str
+    n: int = 1
 
     valid_directions = ["right_of", "below_of"]
 
@@ -51,11 +52,11 @@ class WithinLocator(Locator):
             coord = util.get_rightmost_coordinate(sheet=sheet, cell=cell)
             return CellLocation(
                 sheet_name=sheet.title,
-                coordinate=util.shift_coord(coord.coordinate, (0, 1))
+                coordinate=util.shift_coord(coord.coordinate, (0, self.n))
             )
         if self.perform == "below_of":
             coord = util.get_bottommost_coordinate(sheet=sheet, cell=cell)
             return CellLocation(
                 sheet_name=sheet.title,
-                coordinate=util.shift_coord(coord.coordinate, (1, 0))
+                coordinate=util.shift_coord(coord.coordinate, (self.n, 0))
             )
