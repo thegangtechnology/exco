@@ -20,7 +20,7 @@ class BelowOfRegexLocator(Locator):
         for row in sheet.iter_rows():
             for cell in row:
                 if compiled_regex.fullmatch(str(cell.value)) is not None:
-                    coord = util.get_rightmost_coordinate(sheet=sheet, cell=cell)
+                    coord = util.get_bottommost_coordinate(sheet=sheet, cell=cell)
                     cell_loc = CellLocation(
                         sheet_name=anchor_cell_location.sheet_name,
                         coordinate=util.shift_coord(coord.coordinate, (self.n, 0))
