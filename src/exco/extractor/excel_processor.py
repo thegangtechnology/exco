@@ -1,11 +1,9 @@
-import random
 import secrets
 from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List, Optional, Generic, Type
 
 import openpyxl
 from openpyxl import Workbook
-from openpyxl.worksheet.worksheet import Worksheet
 
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException, TableExtractionTaskCreationException

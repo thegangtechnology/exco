@@ -1,7 +1,6 @@
 import re
 from os.path import dirname, join
 
-import openpyxl
 import pytest
 
 from exco import CellLocation, ExcoTemplate, CellExtractionSpec, LocatorSpec, ExcelProcessorSpec
