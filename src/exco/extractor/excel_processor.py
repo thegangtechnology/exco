@@ -1,8 +1,10 @@
+import random
 from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List, Optional, Generic, Type
 
 import openpyxl
 from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 
 from exco.cell_location import CellLocation
 from exco.exception import ExcoException, ExtractionTaskCreationException, TableExtractionTaskCreationException
@@ -119,6 +121,7 @@ class ExcelProcessor:
     spec: ExcelProcessorSpec  # raw spec
     factory: 'ExcelProcessorFactory'
     sheet_name_checkers: SheetNameAliasCheckers
+    accept_only_visible_sheets: bool
 
     def deref(self, workbook: Optional[Workbook]) -> ExcelDerefedProcessor:
         if workbook is not None:
@@ -134,16 +137,24 @@ class ExcelProcessor:
     def normalize_workbook_sheet_names(self, workbook: Workbook) -> Workbook:
         if not self.sheet_name_checkers:
             return workbook
-
+        hidden_sheet_names = []
+        if self.accept_only_visible_sheets:
+            hidden_sheet_names = [sheet.title for sheet in workbook.worksheets if sheet.sheet_state == "hidden"]
         name_mapping: Dict[SheetName, SheetName] = {}
-        for sheet_name in workbook.sheetnames:
+        for sheet in workbook.worksheets:
+            sheet_name = sheet.title
             for template_sheet_name, checker in self.sheet_name_checkers.items():
+                if self.accept_only_visible_sheets and sheet.sheet_state == "hidden":
+                    continue
                 if checker(sheet_name):
+                    if self.accept_only_visible_sheets:
+                        # incase the hidden sheet may have the exact same name as the template file.
+                        if template_sheet_name in hidden_sheet_names:
+                            workbook[template_sheet_name].title = "duplicate_sheet_name" + str(random.randint(1, 10000))
                     name_mapping[sheet_name] = template_sheet_name
                     break
         for sheet_name, template_sheet_name in name_mapping.items():
             workbook[sheet_name].title = template_sheet_name
-
         return workbook
 
     def process_excel(self, fname: str) -> ExcelProcessingResult:
@@ -232,20 +243,29 @@ class ExcelProcessorFactory:
                                      table_processors=table_tasks)
 
     def create_from_spec(self, spec: ExcelProcessorSpec,
-                         sheet_name_checkers: Optional[SheetNameAliasCheckers] = None) -> ExcelProcessor:
-        return ExcelProcessor(spec=spec, factory=self, sheet_name_checkers=sheet_name_checkers)
+                         sheet_name_checkers: Optional[SheetNameAliasCheckers] = None,
+                         accept_only_visible_sheets: bool = False) -> ExcelProcessor:
+        return ExcelProcessor(spec=spec, factory=self,
+                              sheet_name_checkers=sheet_name_checkers,
+                              accept_only_visible_sheets=accept_only_visible_sheets)
 
     def create_from_template_excel(self,
                                    fname: str,
-                                   sheet_name_checkers: Optional[SheetNameAliasCheckers] = None
+                                   sheet_name_checkers: Optional[SheetNameAliasCheckers] = None,
+                                   accept_only_visible_sheets: bool = False
                                    ) -> ExcelProcessor:
         workbook = openpyxl.load_workbook(fname, data_only=True)
-        return self.create_from_template_workbook(workbook, sheet_name_checkers=sheet_name_checkers)
+        return self.create_from_template_workbook(workbook,
+                                                  sheet_name_checkers=sheet_name_checkers,
+                                                  accept_only_visible_sheets=accept_only_visible_sheets)
 
     def create_from_template_workbook(
             self,
             workbook: Workbook,
-            sheet_name_checkers: Optional[SheetNameAliasCheckers] = None
+            sheet_name_checkers: Optional[SheetNameAliasCheckers] = None,
+            accept_only_visible_sheets: bool = False
     ) -> ExcelProcessor:
         spec = ExcelProcessorSpec.from_workbook_template(workbook)
-        return self.create_from_spec(spec, sheet_name_checkers=sheet_name_checkers)
+        return self.create_from_spec(spec,
+                                     sheet_name_checkers=sheet_name_checkers,
+                                     accept_only_visible_sheets=accept_only_visible_sheets)
