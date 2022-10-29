@@ -77,7 +77,6 @@ def test_excel_processor_accept_hidden(simple_hidden_sheets_template_path: str, 
     processor = ExcelProcessorFactory.default().create_from_template_excel(fname=simple_hidden_sheets_template_path,
                                                                            sheet_name_checkers=checkers,
                                                                            accept_only_visible_sheets=False)
-    duplicate_name_check = re.compile("(duplicate_sheet_name).*")
     assert processor.__str__() is not None
     assert processor.accept_only_visible_sheets is False
     result: ExcelProcessingResult = processor.process_excel(simple_hidden_sheets_path)

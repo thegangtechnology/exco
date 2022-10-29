@@ -1,4 +1,5 @@
 import random
+import secrets
 from dataclasses import dataclass
 from typing import TypeVar, Dict, Any, List, Optional, Generic, Type
 
@@ -150,7 +151,7 @@ class ExcelProcessor:
                     if self.accept_only_visible_sheets:
                         # incase the hidden sheet may have the exact same name as the template file.
                         if template_sheet_name in hidden_sheet_names:
-                            workbook[template_sheet_name].title = "duplicate_sheet_name" + str(random.randint(1, 10000))
+                            workbook[template_sheet_name].title = "duplicate_sheet_name" + str(secrets.randbelow(10000))
                     name_mapping[sheet_name] = template_sheet_name
                     break
         for sheet_name, template_sheet_name in name_mapping.items():
