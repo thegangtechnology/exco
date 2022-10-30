@@ -133,12 +133,18 @@ class ExcelProcessor:
         workbook = self.normalize_workbook_sheet_names(workbook)
         return self.deref(workbook).process_workbook(workbook)
 
+    def deal_with_duplicates(self, workbook: Workbook, template_sheet_names: List[str]) -> Workbook:
+        hidden_sheet_names = [sheet.title for sheet in workbook.worksheets if sheet.sheet_state == "hidden"]
+        for template_sheet_name in template_sheet_names:
+            if template_sheet_name in hidden_sheet_names:
+                workbook[template_sheet_name].title = "duplicate_sheet_name" + str(secrets.randbelow(10000))
+        return workbook
+
     def normalize_workbook_sheet_names(self, workbook: Workbook) -> Workbook:
         if not self.sheet_name_checkers:
             return workbook
-        hidden_sheet_names = []
         if self.accept_only_visible_sheets:
-            hidden_sheet_names = [sheet.title for sheet in workbook.worksheets if sheet.sheet_state == "hidden"]
+            workbook = self.deal_with_duplicates(workbook, list(self.sheet_name_checkers.keys()))
         name_mapping: Dict[SheetName, SheetName] = {}
         for sheet in workbook.worksheets:
             sheet_name = sheet.title
@@ -146,10 +152,6 @@ class ExcelProcessor:
                 if self.accept_only_visible_sheets and sheet.sheet_state == "hidden":
                     continue
                 if checker(sheet_name):
-                    if self.accept_only_visible_sheets:
-                        # incase the hidden sheet may have the exact same name as the template file.
-                        if template_sheet_name in hidden_sheet_names:
-                            workbook[template_sheet_name].title = "duplicate_sheet_name" + str(secrets.randbelow(10000))
                     name_mapping[sheet_name] = template_sheet_name
                     break
         for sheet_name, template_sheet_name in name_mapping.items():

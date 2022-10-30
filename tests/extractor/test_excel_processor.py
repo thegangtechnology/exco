@@ -1,6 +1,7 @@
 import re
 from os.path import dirname, join
 
+import openpyxl
 import pytest
 
 from exco import CellLocation, ExcoTemplate, CellExtractionSpec, LocatorSpec, ExcelProcessorSpec
@@ -13,7 +14,7 @@ from exco.extractor_spec.table_extraction_spec import TableExtractionSpec, Table
 
 test_regex = re.compile("(test).*")
 checkers = {
-    'test15654651': lambda sheet_name: test_regex.fullmatch(sheet_name) is not None
+    'test': lambda sheet_name: test_regex.fullmatch(sheet_name) is not None
 }
 
 
@@ -70,6 +71,19 @@ def test_excel_processor_only_visible(simple_hidden_sheets_template_path: str, s
     assert result_dict["a"] == 4
     assert result_dict["b"] == 5
     assert result_dict["c"] == 6
+
+
+def test_duplicate_sheet_names(simple_hidden_sheets_template_path: str, simple_hidden_sheets_path: str):
+    processor = ExcelProcessorFactory.default().create_from_template_excel(fname=simple_hidden_sheets_template_path,
+                                                                           sheet_name_checkers=checkers,
+                                                                           accept_only_visible_sheets=True)
+    simple_wb = openpyxl.load_workbook(simple_hidden_sheets_path)
+    wb = processor.normalize_workbook_sheet_names(simple_wb)
+    assert "test" in wb.sheetnames
+    duplicate_sheet_name_regex = re.compile("(duplicate_sheet_name).*")
+    duplicate_sheet_names = [sheet_name for sheet_name in wb.sheetnames
+                             if duplicate_sheet_name_regex.fullmatch(sheet_name)]
+    assert len(duplicate_sheet_names) == 1
 
 
 def test_excel_processor_accept_hidden(simple_hidden_sheets_template_path: str, simple_hidden_sheets_path: str):
