@@ -351,6 +351,13 @@ checkers: Dict[SheetName, SheetNameAliasChecker] = {'Test 1/1/2021': test_sheet_
 processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers)
 ```
 
+In the case where there are hidden sheets that might have information that you dont want to extract,
+make sure to set the accept_only_visible_sheets parameter to True
+
+```
+processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers, accept_only_visible_sheets=True)
+```
+
 # Custom Locator/Parser Etc.
 
 See [Advance Features Notebook](notebooks/quickstart/1%20Advance%20Features.ipynb). But, in essence,
