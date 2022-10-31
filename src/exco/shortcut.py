@@ -11,7 +11,8 @@ def from_excel(fname: str,
                extra_assumptions: Optional[Dict[str, Type[Assumption]]] = None,
                extra_parsers: Optional[Dict[str, Type[Parser]]] = None,
                extra_validators: Optional[Dict[str, Type[Validator]]] = None,
-               extra_table_end_conditions: Optional[Dict[str, Type[TableEndCondition]]] = None) -> ExcelProcessor:
+               extra_table_end_conditions: Optional[Dict[str, Type[TableEndCondition]]] = None,
+               accept_only_visible_sheets: bool = False) -> ExcelProcessor:
     """ A shortcut to create excel processor.
 
     Args:
@@ -23,6 +24,8 @@ def from_excel(fname: str,
         extra_validators (Optional[Dict[str, Type[Validator]]]): Optional Default None. Extra Validators
         extra_table_end_conditions (Optional[Dict[str, Type[TableEndCondition]]]): Optional.
             Default None. ExtraTableEndCondition.
+        accept_only_visible_sheets (bool): true if you want to accept only visible sheets,
+            false if you want to accept hidden sheets aswell
 
     Returns:
         ExcelProcessor.
@@ -33,5 +36,6 @@ def from_excel(fname: str,
                                         extra_validators=extra_validators,
                                         extra_table_end_conditions=extra_table_end_conditions)
     return fac.create_from_template_excel(fname=fname,
-                                          sheet_name_checkers=sheet_name_checkers
+                                          sheet_name_checkers=sheet_name_checkers,
+                                          accept_only_visible_sheets=accept_only_visible_sheets
                                           )
