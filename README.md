@@ -248,6 +248,7 @@ Parameters:
 - `regex` string for the regular expression.
 - `n` Optional. Default value is 1. Indicates the number of rows to move from regex matched cell to located cell.
 
+
 ### `search_below_of_regex`
 Searches for non-empty cell below of the cell with a regex match.
 
@@ -363,6 +364,13 @@ SheetNameAliasChecker = Callable[[SheetName], bool]
 test_sheet_checker: SheetNameAliasChecker = lambda sheetname: 'Test' in sheetname
 checkers: Dict[SheetName, SheetNameAliasChecker] = {'Test 1/1/2021': test_sheet_checker}
 processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers)
+```
+
+In the case where there are hidden sheets that might have information that you dont want to extract,
+make sure to set the accept_only_visible_sheets parameter to True
+
+```
+processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers, accept_only_visible_sheets=True)
 ```
 
 # Custom Locator/Parser Etc.
