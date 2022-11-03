@@ -10,6 +10,8 @@ from exco.extractor.locator.built_in.below_of_regex_locator import BelowOfRegexL
 from exco.extractor.locator.built_in.within_locator import WithinLocator
 from exco.extractor.locator.built_in.search_right_of_locator import SearchRightOfLocator
 from exco.extractor.locator.built_in.search_below_of_locator import SearchBelowOfLocator
+from exco.extractor.locator.built_in.search_right_of_regex_locator import SearchRightOfRegexLocator
+from exco.extractor.locator.built_in.search_below_of_regex_locator import SearchBelowOfRegexLocator
 from exco.extractor.locator.locator import Locator
 
 
@@ -31,7 +33,9 @@ class LocatorFactory(BaseFactory[Locator, LocatorSpec]):
             BelowOfRegexLocator,
             WithinLocator,
             SearchRightOfLocator,
-            SearchBelowOfLocator
+            SearchBelowOfLocator,
+            SearchRightOfRegexLocator,
+            SearchBelowOfRegexLocator
         ])
         extras = {} if extras is None else extras
         return cls({**defaults, **extras})

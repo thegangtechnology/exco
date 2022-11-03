@@ -214,6 +214,13 @@ Parameters:
 - `regex` string for the regular expression.
 - `n` Optional. Default value is 1. Indicates the number of columns to move from regex matched cell to located cell.
 
+### `search_right_of_regex`
+Searches for non-empty cell right of the cell with a regex match.
+
+Parameters:
+- `regex` string for the regular expression
+- `max_empty_col_search` Indicates the maximum number of columns to search for non-empty cell right of regex cell 
+
 ### `below_of`
 Locate the cell below of the cell with the given label.
 In the case of a merged cell, below_of will pick the 
@@ -240,6 +247,13 @@ togo to the bottom of.
 Parameters:
 - `regex` string for the regular expression.
 - `n` Optional. Default value is 1. Indicates the number of rows to move from regex matched cell to located cell.
+
+### `search_below_of_regex`
+Searches for non-empty cell below of the cell with a regex match.
+
+Parameters:
+- `regex` string for regular expression.
+- `max_empty_row_search` Indicates the maximum number of rows to search for non-empty cell below of regex cell.
 
 
 ### `within`
