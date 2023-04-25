@@ -7,6 +7,10 @@ from exco.extractor.locator.built_in.right_of_locator import RightOfLocator
 from exco.extractor.locator.built_in.right_of_regex_locator import RightOfRegexLocator
 from exco.extractor.locator.locating_result import LocatingResult
 
+E4_CELL_VALUE = 'right of horizontal merged cell'
+E6_CELL_VALUE = 'right of boxed merged cell'
+B6_CELL_VALUE = 'right of vertical merged cell'
+
 
 @pytest.fixture
 def wb() -> CellFullPath:
@@ -21,15 +25,15 @@ def wb() -> CellFullPath:
 
     ws.merge_cells('E4:H4')
     ws['I4'] = 20
-    ws['E4'] = 'right of horizontal merged cell'
+    ws['E4'] = E4_CELL_VALUE
 
     ws.merge_cells('E6:H11')
     ws['I6'] = 321
-    ws['E6'] = 'right of boxed merged cell'
+    ws['E6'] = E6_CELL_VALUE
 
     ws.merge_cells('B6:B11')
     ws['C6'] = 123
-    ws['B6'] = 'right of vertical merged cell'
+    ws['B6'] = B6_CELL_VALUE
 
     return wb
 
@@ -68,7 +72,7 @@ def test_right_of_locator(wb: Workbook):
 
 
 def test_right_of_locator_horizontal_merged_cell(wb: Workbook):
-    rol = RightOfLocator(label='right of horizontal merged cell')
+    rol = RightOfLocator(label=E4_CELL_VALUE)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A5"
@@ -81,7 +85,7 @@ def test_right_of_locator_horizontal_merged_cell(wb: Workbook):
 
 
 def test_right_of_locator_vertical_merged_cell(wb: Workbook):
-    rol = RightOfLocator(label='right of vertical merged cell')
+    rol = RightOfLocator(label=B6_CELL_VALUE)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A6"
@@ -94,7 +98,7 @@ def test_right_of_locator_vertical_merged_cell(wb: Workbook):
 
 
 def test_right_of_locator_boxed_merged_cell(wb: Workbook):
-    rol = RightOfLocator(label='right of boxed merged cell')
+    rol = RightOfLocator(label=E6_CELL_VALUE)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A7"
@@ -130,7 +134,7 @@ def test_right_of_locator_regex_failed(wb: Workbook):
 
 
 def test_right_of_locator_regex_boxed_merged_cell(wb: Workbook):
-    rol = RightOfRegexLocator(regex='right of boxed merged cell')
+    rol = RightOfRegexLocator(regex=E6_CELL_VALUE)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A10"
@@ -143,7 +147,7 @@ def test_right_of_locator_regex_boxed_merged_cell(wb: Workbook):
 
 
 def test_right_of_locator_regex_vertical_merged_cell(wb: Workbook):
-    rol = RightOfRegexLocator(regex='right of vertical merged cell')
+    rol = RightOfRegexLocator(regex=B6_CELL_VALUE)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A10"
@@ -156,7 +160,7 @@ def test_right_of_locator_regex_vertical_merged_cell(wb: Workbook):
 
 
 def test_right_of_locator_regex_horizontal_merged_cell(wb: Workbook):
-    rol = RightOfRegexLocator(regex='right of horizontal merged cell')
+    rol = RightOfRegexLocator(regex=E4_CELL_VALUE)
     result = rol.locate(anchor_cell_location=CellLocation(
         sheet_name="Sheet",
         coordinate="A5"
