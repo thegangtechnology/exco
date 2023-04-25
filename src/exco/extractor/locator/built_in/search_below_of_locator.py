@@ -30,7 +30,7 @@ class SearchBelowOfLocator(Locator):
             msg=f"Unable to find cell below of {self.label}")
 
     def _search_empty_row(self, cell_cor: str, sheet: Worksheet) -> str:
-        for i in range(0, self.max_empty_row_search):
+        for _ in range(0, self.max_empty_row_search):
             cell_cor = util.shift_coord(cell_cor, (1, 0))
             if sheet[cell_cor].value is not None:
                 return cell_cor
