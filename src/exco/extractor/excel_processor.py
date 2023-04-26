@@ -59,7 +59,6 @@ class ExcelProcessingResult:
             for result in results:
                 if key == result.key:
                     return LookupResult(cl, result)
-            # TODO: Fix this O(n) search.
         return None
 
     def cell_result_for_key(
@@ -73,12 +72,12 @@ class ExcelProcessingResult:
     def to_dict(self) -> Dict[str, Any]:
         ret = {}
         for results in self.cell_results.values(
-        ):  # TODO: Warn of duplicate key
+        ):
             for result in results:
                 ret[result.key] = result.get_value()
 
         for results in self.table_results.values(
-        ):  # TODO: Warn of duplicate key
+        ):
             for result in results:
                 ret[result.key] = result.get_value()
         return ret

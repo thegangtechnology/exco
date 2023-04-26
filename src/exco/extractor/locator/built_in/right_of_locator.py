@@ -9,7 +9,7 @@ from exco.extractor.locator.locator import Locator
 
 
 @dataclass
-class RightOfLocator(Locator):  # TODO: Add search scope
+class RightOfLocator(Locator):
     label: str
     n: int = 1
 

@@ -12,7 +12,6 @@ class ValidatorSpec:
     """
     Validation is something to check after parsing
     Ex: if the parsed value is greater than 99
-    # TODO: Maybe I should put a source here too
     """
     name: str
     params: SpecParam = field(default_factory=dict)
