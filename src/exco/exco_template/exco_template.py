@@ -147,7 +147,7 @@ class ExcoTemplate:
                             CommentWithNoExcoBlockWarning)
                     ret.add_to_block_collections(cell_loc, ebc)
                 except ExcoException as e:  # throw error with cell info
-                    raise BadTemplateException(  # Todo: maybe be all these should be warning
+                    raise BadTemplateException(
                         f'Bad Template at sheet: {cell_loc.sheet_name}, cell: {cell_loc.coordinate}') from e
         return ret
 

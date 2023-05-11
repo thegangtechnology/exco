@@ -25,7 +25,6 @@ class APVSpec(Generic[T]):  # Assume Parse Validate
         st.k_key, st.k_validations, st.k_assumptions, st.k_metadata}
     allowed_keys: ClassVar[Set[str]] = consumed_keys | ParserSpec.allowed_keys
 
-    # TODO: separate derefed spec and spec
     def deref(self, dereferator: Dereferator) -> 'APVSpec[T]':
         return APVSpec(
             key=dereferator.deref_text(self.key),

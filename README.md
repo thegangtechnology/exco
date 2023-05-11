@@ -214,13 +214,6 @@ Parameters:
 - `regex` string for the regular expression.
 - `n` Optional. Default value is 1. Indicates the number of columns to move from regex matched cell to located cell.
 
-### `search_right_of_regex`
-Searches for non-empty cell right of the cell with a regex match.
-
-Parameters:
-- `regex` string for the regular expression
-- `max_empty_col_search` Indicates the maximum number of columns to search for non-empty cell right of regex cell 
-
 ### `below_of`
 Locate the cell below of the cell with the given label.
 In the case of a merged cell, below_of will pick the 
@@ -247,13 +240,6 @@ togo to the bottom of.
 Parameters:
 - `regex` string for the regular expression.
 - `n` Optional. Default value is 1. Indicates the number of rows to move from regex matched cell to located cell.
-
-### `search_below_of_regex`
-Searches for non-empty cell below of the cell with a regex match.
-
-Parameters:
-- `regex` string for regular expression.
-- `max_empty_row_search` Indicates the maximum number of rows to search for non-empty cell below of regex cell.
 
 
 ### `within`
@@ -363,6 +349,13 @@ SheetNameAliasChecker = Callable[[SheetName], bool]
 test_sheet_checker: SheetNameAliasChecker = lambda sheetname: 'Test' in sheetname
 checkers: Dict[SheetName, SheetNameAliasChecker] = {'Test 1/1/2021': test_sheet_checker}
 processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers)
+```
+
+In the case where there are hidden sheets that might have information that you dont want to extract,
+make sure to set the accept_only_visible_sheets parameter to True
+
+```
+processor = exco.from_excel(template_excel_path, sheet_name_checkers=checkers, accept_only_visible_sheets=True)
 ```
 
 # Custom Locator/Parser Etc.
