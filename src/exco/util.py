@@ -8,6 +8,7 @@ import openpyxl
 import stringcase
 from openpyxl import Workbook
 from openpyxl.cell import Cell
+from openpyxl.chartsheet.chartsheet import Chartsheet
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.merge import MergedCellRange
 from openpyxl.worksheet.worksheet import Worksheet
@@ -118,6 +119,8 @@ def iterate_cells_in_workbook(
         workbook: Workbook) -> Generator[CellFullPath, None, None]:
     for sheetname in workbook.sheetnames:
         sheet: Worksheet = workbook[sheetname]
+        if isinstance(sheet, Chartsheet):
+            continue
         for cell in iterate_cells_in_worksheet(sheet):
             yield CellFullPath(
                 workbook=workbook,
