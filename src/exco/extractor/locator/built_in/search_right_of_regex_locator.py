@@ -32,7 +32,7 @@ class SearchRightOfRegexLocator(Locator):
             msg=f"Unable to find cell right of {self.regex}")
 
     def _search_empty_col(self, cell_cor: str, sheet: Worksheet) -> str:
-        for i in range(0, self.max_empty_col_search):
+        for _ in range(0, self.max_empty_col_search):
             cell_cor = util.shift_coord(cell_cor, (0, 1))
             if sheet[cell_cor].value is not None:
                 return cell_cor
