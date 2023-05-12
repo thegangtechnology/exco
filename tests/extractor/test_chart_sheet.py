@@ -3,7 +3,6 @@ import pytest
 from os.path import join, dirname
 
 from openpyxl.workbook import Workbook
-from openpyxl.worksheet.worksheet import Worksheet
 
 import exco
 from exco import ExcelProcessorSpec, CellLocation, CellExtractionSpec, util
@@ -33,19 +32,14 @@ def test_iterate_over_chart_sheet(template):
 def test_forced_insert_spec_into_chart_sheet(template):
     workbook: Workbook = openpyxl.load_workbook(template)
     assert set(workbook.sheetnames) == {'Sheet1', 'Chart1', 'Sheet2', 'Sheet3'}
+    apv_spec = APVSpec(key="chart_key", parser=ParserSpec(name="string"), fallback=None)
     test_spec = ExcelProcessorSpec(table_specs={},
-                                   cell_specs={
+                                   cell_specs=
+                                   {
                                        CellLocation(sheet_name="Chart1", coordinate="A1"):
-                                           [
-                                               CellExtractionSpec(
-                                                   apv=APVSpec(
-                                                       key="chart_key",
-                                                       parser=ParserSpec(name="string"),
-                                                       fallback=None
-                                                   )
-                                               )
-                                           ]
-                                   })
+                                           [CellExtractionSpec(apv=apv_spec)]
+                                   }
+                                   )
     processor = exco.from_excel(
         fname=template,
         sheet_name_checkers=sheet_checkers
